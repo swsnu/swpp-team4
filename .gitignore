@@ -4,3 +4,6 @@
 
 # Environments
 venv/
+
+# Django stuffs
+db.sqlite3
