@@ -1,1 +1,6 @@
+### root ###
+# misc
 .idea/
+
+# Environments
+venv/
