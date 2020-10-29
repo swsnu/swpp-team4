@@ -1,25 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ConnectedRouter } from 'connected-react-router';
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-function App() {
+import Container from '@material-ui/core/Container';
+
+function App(props) {
+  const dispatch = useDispatch();
+  const reduxStore = useSelector((s) => s);
+
+  // useEffect(() => {
+  //   dispatch(checkLogin())
+  // }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ConnectedRouter history={props.history}>
+      <div className="App">
+        <Container>
+          {reduxStore.user.userLogin === true ? (
+            <Switch>
+              <Redirect exact from="/login" to="/dashboard" />
+              <Route path="/dashboard" exact component={<>{'Dashboard'}</>} />
+              <Route path="/" exact component={<>{'Landing Page'}</>} />
+            </Switch>
+          ) : (
+            <Switch>
+              <Route path="/login" exact component={<>{'login Page'}</>} />
+              <Redirect to="/" />
+            </Switch>
+          )}
+        </Container>
+      </div>
+    </ConnectedRouter>
   );
 }
 
