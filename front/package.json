@@ -45,7 +45,7 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.11.0",
+    "eslint": "^7.12.1",
     "eslint-plugin-react": "^7.21.4",
     "husky": "^4.3.0",
     "jest-stare": "^2.2.0",
