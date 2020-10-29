@@ -4,6 +4,9 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Container from '@material-ui/core/Container';
+import { LandingPage } from './page/landingPage';
+import { LoginPage } from './page/loginPage';
+import { DashboardPage } from './page/dashboardPage';
 
 function App(props) {
   const dispatch = useDispatch();
@@ -17,15 +20,16 @@ function App(props) {
     <ConnectedRouter history={props.history}>
       <div className="App">
         <Container>
-          {reduxStore.user.userLogin === true ? (
+          {reduxStore.user.loggedIn === true ? (
             <Switch>
               <Redirect exact from="/login" to="/dashboard" />
-              <Route path="/dashboard" exact component={<>{'Dashboard'}</>} />
-              <Route path="/" exact component={<>{'Landing Page'}</>} />
+              <Route path="/dashboard" exact component={DashboardPage} />
+              <Route path="/" exact component={LandingPage} />
             </Switch>
           ) : (
             <Switch>
-              <Route path="/login" exact component={<>{'login Page'}</>} />
+              <Route path="/login" exact component={LoginPage} />
+              <Route path="/" exact component={LandingPage} />
               <Redirect to="/" />
             </Switch>
           )}

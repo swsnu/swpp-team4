@@ -1,9 +1,12 @@
 const initialState = {
-  todos: [],
-  selectedTodo: null,
+  userInfo: {
+    email: '',
+    name: '',
+  },
+  loggedIn: false,
 };
 
-const reducer = (state = initialState, action) => {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'RESET':
       console.log(state);
@@ -13,4 +16,4 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export default reducer;
+export default userReducer;
