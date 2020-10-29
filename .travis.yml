@@ -6,6 +6,11 @@ matrix:
   include:
     - language: node_js
       node_js: "12"
+      addon:
+        sonarcloud:
+          organization: "swsnu"
+          token:
+            secure: "6cde875dedb0f1f906a4c59fbd7795abfa8db16e"
       cache:
         - yarn: true
       before_install:
@@ -28,3 +33,4 @@ matrix:
         - pylint **/*.py --load-plugins pylint_django
         - coverage run --source='.' manage.py test
         - coverage xml
+        - cd .. && sonar_scanner
