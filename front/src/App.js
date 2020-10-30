@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 import Container from '@material-ui/core/Container';
 import { LandingPage } from './page/landingPage';
-import { LoginPage } from './page/loginPage';
 import { DashboardPage } from './page/dashboardPage';
 
 function App(props) {
@@ -22,13 +21,11 @@ function App(props) {
         <Container>
           {reduxStore.user.loggedIn === true ? (
             <Switch>
-              <Redirect exact from="/login" to="/dashboard" />
               <Route path="/dashboard" exact component={DashboardPage} />
               <Route path="/" exact component={LandingPage} />
             </Switch>
           ) : (
             <Switch>
-              <Route path="/login" exact component={LoginPage} />
               <Route path="/" exact component={LandingPage} />
               <Redirect to="/" />
             </Switch>

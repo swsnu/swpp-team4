@@ -6,34 +6,14 @@ import { useHistory } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import { MenuBar } from '../Component/menuBar';
 
 export const LandingPage = () => {
   const history = useHistory();
 
   return (
-    <>
-      This is Landing Page. Now work and fill this.
-      <br />
-      <Button
-        color={'primary'}
-        variant={'contained'}
-        onClick={() => {
-          history.push('login');
-        }}
-      >
-        To Login Page
-      </Button>
-      <br />
-      <br />
-      <Button
-        color={'primary'}
-        variant={'contained'}
-        onClick={() => {
-          history.push('dashboard');
-        }}
-      >
-        To Dashboard
-      </Button>
-    </>
+    <div>
+      <MenuBar />
+    </div>
   );
 };
