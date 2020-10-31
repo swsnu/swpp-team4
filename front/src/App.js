@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 import Container from '@material-ui/core/Container';
 import { LandingPage } from './page/landingPage';
-import { LoginPage } from './page/loginPage';
 import { DashboardPage } from './page/dashboardPage';
 import { WritePage } from './page/writePage';
 
@@ -30,7 +29,6 @@ function App(props) {
             </Switch>
           ) : (
             <Switch>
-              <Route path="/login" exact component={LoginPage} />
               <Route path="/" exact component={LandingPage} />
               <Redirect to="/" />
             </Switch>
