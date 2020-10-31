@@ -63,4 +63,5 @@
     "src/**/*.{js,jsx}": [
       "eslint . --fix"
     ]
+  }
 }

@@ -17,6 +17,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import AppBar from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
+import MenuBar from '../component/menuBar';
 
 const drawerWidth = 240;
 
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     height: 60,
     margin: 'auto',
+    backgroundColor:'#FFFFFF',
     paddingTop: 10,
     paddingLeft: 10,
   },
@@ -53,7 +55,7 @@ export const DashboardPage = () => {
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
-        <Typography variant={'h6'}>Quant Cash Dashboard</Typography>
+        <MenuBar/>
       </AppBar>
       <div>
         <Drawer
@@ -62,26 +64,26 @@ export const DashboardPage = () => {
           open={true}
           className={classes.drawer}
         >
-          <Toolbar />
+          <Toolbar/>
           <div className={classes.drawerContainer}>
             <List>
               {['My Algorithms', 'New Algorithm'].map((text, index) => (
                 <ListItem button key={text}>
                   <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                    {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
                   </ListItemIcon>
-                  <ListItemText primary={text} />
+                  <ListItemText primary={text}/>
                 </ListItem>
               ))}
             </List>
-            <Divider />
+            <Divider/>
             <List>
               {['Test Results', 'Settings'].map((text, index) => (
                 <ListItem button key={text}>
                   <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                    {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
                   </ListItemIcon>
-                  <ListItemText primary={text} />
+                  <ListItemText primary={text}/>
                 </ListItem>
               ))}
             </List>

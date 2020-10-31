@@ -7,20 +7,22 @@ import { withRouter } from 'react-router-dom';
 const SignupModal = () => {
   return (
     <div>
-      <Paper elevation={3}>
+      <Paper elevation={3} style={{ padding: 10 }}>
         Username
-        <br />
-        <TextField variant="outlined" />
-        <br />
+        <br/>
+        <TextField variant="outlined" size='small'/>
+        <br/>
         email
-        <br />
-        <TextField variant="outlined" />
-        <br />
+        <br/>
+        <TextField variant="outlined" size='small'/>
+        <br/>
         Password
-        <br />
-        <TextField variant="outlined" />
-        <br />
-        <Button>Sign up</Button>
+        <br/>
+        <TextField variant="outlined" size='small'/>
+        <br/>
+        <Button fullWidth style={{ marginTop: 10 }}>
+          Sign up
+        </Button>
       </Paper>
     </div>
   );

@@ -16,6 +16,7 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@material-ui/core/Modal';
 import Dialog from '@material-ui/core/Dialog';
+import MenuBar from '../component/menuBar';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -176,9 +177,7 @@ export const WritePage = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky" className={classes.appBar}>
-        <Typography variant={'h6'}>Quant Cash Dashboard</Typography>
-      </AppBar>
+      <MenuBar />
       <Grid container justify="center" spacing={2}>
         <Grid item xs={4} style={{ backgroundColor: '#eeeeee' }}>
           API DOC

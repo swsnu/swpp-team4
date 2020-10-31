@@ -43,13 +43,13 @@ export const MenuBar = (props) => {
   const signUpOpen = Boolean(signUpAnchorEl);
 
   return (
-    <div>
+    <div style={{ height: 70 }}>
       <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
         <Toolbar>
           <Button onClick={() => props.history.push('/')}>
             <Typography>QuantCash</Typography>
           </Button>
-          <div className={classes.grow} />
+          <div className={classes.grow}/>
           <Button
             onClick={() => {
               props.history.push('/leaderboard');
@@ -74,7 +74,7 @@ export const MenuBar = (props) => {
                 }}
                 onClose={handleLogInClose}
               >
-                <LoginModal />
+                <LoginModal/>
               </Popover>
               <Button onClick={handleSignUpClick}>Sign up</Button>
               <Popover
@@ -90,7 +90,7 @@ export const MenuBar = (props) => {
                 }}
                 onClose={handleSignUpClose}
               >
-                <SignupModal />
+                <SignupModal/>
               </Popover>
             </div>
           ) : (
@@ -103,10 +103,12 @@ export const MenuBar = (props) => {
               >
                 Dashboard
               </Button>
-              <Button onClick={() => {}} className={classes.button}>
+              <Button onClick={() => {
+              }} className={classes.button}>
                 Manage algo
               </Button>
-              <Button onClick={() => {}} className={classes.button}>
+              <Button onClick={() => {
+              }} className={classes.button}>
                 Manage data
               </Button>
               <Button

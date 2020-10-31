@@ -26,26 +26,33 @@ const LoginModal = () => {
 
   return (
     <div>
-      <Paper elevation={1}>
+      <Paper elevation={1} style={{ padding: 10 }}>
         Username
-        <br />
+        <br/>
         <TextField
           id="id_input"
           variant="outlined"
+          size='small'
           value={Username}
           onChange={handleUsernameChange}
         />
-        <br />
+        <br/>
         Password
-        <br />
+        <br/>
         <TextField
           id="password_input"
           variant="outlined"
+          size='small'
           value={Password}
           onChange={handlePasswordChange}
         />
-        <br />
-        <Button id="login_button" onClick={handleLoginSubmit}>
+        <br/>
+        <Button
+          id="login_button"
+          onClick={handleLoginSubmit}
+          fullWidth
+          style={{ marginTop: 10 }}
+        >
           Log in
         </Button>
       </Paper>
