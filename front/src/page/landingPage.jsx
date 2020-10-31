@@ -2,38 +2,23 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import MenuBar from '../Component/menuBar';
+import { bigLogo, explain, getStarted } from '../static';
 
 export const LandingPage = () => {
-  const history = useHistory();
-
   return (
-    <>
-      This is Landing Page. Now work and fill this.
+    <div>
+      <MenuBar />
+      <img src={bigLogo} style={{ marginTop: 200, width: '40%' }} />
       <br />
-      <Button
-        color={'primary'}
-        variant={'contained'}
-        onClick={() => {
-          history.push('login');
-        }}
-      >
-        To Login Page
+      <img src={explain} style={{ marginTop: 10, width: '30%' }} />
+      <br />
+      <Button>
+        <img src={getStarted} style={{ marginTop: 20, width: '70%' }} />
       </Button>
-      <br />
-      <br />
-      <Button
-        color={'primary'}
-        variant={'contained'}
-        onClick={() => {
-          history.push('dashboard');
-        }}
-      >
-        To Dashboard
-      </Button>
-    </>
+    </div>
   );
 };
