@@ -14,17 +14,13 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
+import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/theme/neat.css');
 require('codemirror/mode/python/python.js');
-
-const codeMirrorOptions = {
-  mode: 'python',
-  theme: 'material',
-  lineNumbers: true,
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +69,17 @@ export const WritePage = () => {
     setSnippetValidated({ ...snippetValidated, [i]: v });
   };
 
+  const [snippetSubmitted, setSnippetSubmitted] = useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+  });
+
+  const handleSnippetSubmittionChange = (i, v) => {
+    setSnippetSubmitted({ ...snippetSubmitted, [i]: v });
+  };
+
   const [snippetName, setSnippetName] = useState({
     1: '',
     2: '',
@@ -81,29 +88,59 @@ export const WritePage = () => {
   });
 
   const [algorithmName, setAlgorithmName] = useState('');
-
-  useEffect(() => {
-    console.log(editorValue);
-  }, [editorValue]);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const handleImport = (n) => {
-    // TODO  setEditorValue  setSnippetName
+  // const [errorMsg, setErrorMsg] = useState({
+  //   1: '',
+  //   2: '',
+  //   3: '',
+  //   4: '',
+  // });
+  //
+  // const handleErrorMsgChange = (i, v) => {
+  //   setErrorMsg({ ...errorMsg, [i]: v });
+  // };
+
+  useEffect(() => {
+    // TODO: editor라는 store의 loadedDraftName 항목을 통해 draft의 이름을 불러온다
+    handleDraft(undefined);
+  }, []);
+
+  const handleDraft = (n) => {
+    if (n !== undefined) {
+      const draft = JSON.parse(localStorage.getItem(n));
+      setEditorValue(draft.code);
+      setSnippetName(draft.name);
+    }
+  };
+
+  const handleImport = () => {
+    setImportModalOpen(true);
+    // TODO: change content of modal
+    // make editor readonly by changing snippetValidated & snippetSubmitted
   };
 
   const handleValidate = (i) => {
     if (Math.random() > 0.5) {
-      console.log('validated');
+      window.alert('validated');
       handleEditorValidationChange(i, true);
+    } else {
+      window.alert('validation fail: change name');
     }
   };
 
-  const handleSubmitSnippet = (n) => {
-    // TODO: check for name duplicate
-    // error message handling and disabling editor
+  const handleSubmitSnippet = (i) => {
+    // TODO: send request to check for name duplicate
+    if (Math.random() > 0.5) {
+      window.alert('duplicate name, please change snippet name');
+    } else {
+      window.alert('snippet submitted! ');
+      handleSnippetSubmittionChange(i, true);
+    }
   };
 
   const saveAlgorithmAsDraft = () => {
@@ -115,11 +152,26 @@ export const WritePage = () => {
       }),
     );
     // TODO: message?
+    window.alert('code saved to localstorage');
   };
 
   const handleSubmitAlgorithm = () => {
     // TODO: check for name duplicate
     // TODO: message?
+    if (
+      snippetSubmitted[1] === true &&
+      snippetSubmitted[2] === true &&
+      snippetSubmitted[3] === true &&
+      snippetSubmitted[1] === true
+    ) {
+      if (Math.random() > 0.5) {
+        window.alert('duplicate name, please change snippet name');
+      } else {
+        window.alert('algorithm submitted');
+      }
+    } else {
+      window.alert('Please submit algorithms first');
+    }
   };
 
   return (
@@ -173,7 +225,11 @@ export const WritePage = () => {
             </div>
             <CodeMirror
               value={editorValue[TabValue]}
-              options={codeMirrorOptions}
+              options={{
+                mode: 'python',
+                theme: 'material',
+                lineNumbers: true,
+              }}
               onBeforeChange={(editor, data, value) => {
                 handleEditorValueChange(TabValue, value);
               }}
@@ -192,7 +248,9 @@ export const WritePage = () => {
               </Button>
               <Button
                 size={'small'}
-                disabled={snippetValidated[TabValue]}
+                disabled={
+                  snippetName[TabValue] === '' || snippetValidated[TabValue]
+                }
                 onClick={() => {
                   handleValidate(TabValue);
                 }}
@@ -201,7 +259,9 @@ export const WritePage = () => {
               </Button>
               <Button
                 size={'small'}
-                disabled={!snippetValidated[TabValue]}
+                disabled={
+                  snippetName[TabValue] === '' || !snippetValidated[TabValue]
+                }
                 onClick={() => {
                   handleSubmitSnippet(TabValue);
                 }}
@@ -210,7 +270,12 @@ export const WritePage = () => {
               </Button>
             </ButtonGroup>
             <Typography component="span" style={{ color: '#ff0000' }}>
-              Duplicate name: change name and submit again
+              Status:{' '}
+              {snippetValidated[TabValue] === true
+                ? snippetSubmitted[TabValue] === true
+                  ? 'Submitted'
+                  : 'Not submitted'
+                : 'Unvalidated'}
             </Typography>
           </Paper>
 
@@ -236,6 +301,7 @@ export const WritePage = () => {
                   Save As Draft
                 </Button>
                 <Button
+                  disabled={algorithmName === ''}
                   onClick={() => {
                     handleSubmitAlgorithm();
                   }}
@@ -252,6 +318,16 @@ export const WritePage = () => {
           </Grid>
         </Grid>
       </Grid>
+      <Dialog
+        fullWidth={true}
+        maxWidth={'sm'}
+        open={importModalOpen}
+        onClose={() => {
+          setImportModalOpen(false);
+        }}
+      >
+        <Paper style={{ width: '100%', height: 400 }}>{'asdasd'}</Paper>
+      </Dialog>
     </div>
   );
 };
