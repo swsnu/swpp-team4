@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import { LandingPage } from './page/landingPage';
 import { DashboardPage } from './page/dashboardPage';
+import { WritePage } from './page/writePage';
 
 function App(props) {
   // const dispatch = useDispatch();
@@ -18,9 +19,11 @@ function App(props) {
   return (
     <ConnectedRouter history={props.history}>
       <div className="App">
-        <Container>
+        <Container maxWidth="lg">
           {reduxStore.user.loggedIn === true ? (
             <Switch>
+              <Redirect exact from="/login" to="/dashboard" />
+              <Route path="/algo/write" exact component={WritePage} />
               <Route path="/dashboard" exact component={DashboardPage} />
               <Route path="/" exact component={LandingPage} />
             </Switch>

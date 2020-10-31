@@ -18,8 +18,6 @@ import AppBar from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import Editor from '@monaco-editor/react';
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +51,7 @@ export const DashboardPage = () => {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
         <Typography variant={'h6'}>Quant Cash Dashboard</Typography>
       </AppBar>
@@ -89,10 +87,7 @@ export const DashboardPage = () => {
             </List>
           </div>
         </Drawer>
-        <div>
-          This is Dashboard Page. Now work and fill this.
-          <Editor height={400} width={300} theme={'dark'} language="python" />
-        </div>
+        <div>This is Dashboard Page. Now work and fill this.</div>
       </div>
     </div>
   );
