@@ -15,6 +15,7 @@
 #### 2. Setup environment for running QuantCash Front & Backend
 
 For now, these steps assume that you are using Windows 10 as all 4 members are developing under such environment.
+Please install npm modules with yarn and start frontend server with `yarn start`
 
 ##### (1) setup virtual environment for backend
 
