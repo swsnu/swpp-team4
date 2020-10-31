@@ -1,9 +1,11 @@
+import * as actionTypes from '../actions/actionTypes';
+
 const initialState = {
   userInfo: {
     email: '',
     name: '',
   },
-  loggedIn: true,
+  loggedIn: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -11,9 +13,12 @@ const userReducer = (state = initialState, action) => {
     case 'RESET':
       console.log(state);
       return initialState;
+    case actionTypes.SIGN_IN:
+      return { ...state, userInfo: action.userInfo, loggedIn: action.loggedIn };
     default:
-      return initialState;
+      break;
   }
+  return state;
 };
 
 export default userReducer;
