@@ -10,7 +10,7 @@ matrix:
         sonarcloud:
           organization: "swsnu"
           token:
-            secure: "E2T2Ocmt6MtYuKDyNFfwBcNJ5clvHWpwKgHcVqrC0sH1dfYJVyFVRip4DmTzZMWoovyfb82RLvHS4hD/5kP24jg81KNJtNWmqX0jSMK5RRAU7RMZZrwAW8747M5/Ocu9UT+3Kd8iSLxOEWb1Y1ma9XD54h+VZj+zcEIVyOk1fa8ER3KxSo6WgKSGpKgOYBNDjq6Gr4uYi34xAB6LdzNAYul7ynal+OykdTe84tB8x+V40509ChNPPW3KIiNNyG465ZcWWRHe9C8I0JQwTRaRaPwImSwBPm1Irc9zTeDsfD8J3WKZDkk0PLPShyVcgUsq5Zav6UZN6s8rZmpGHjBYgSDMBOrCfZtiOjVOEuVl4wVnYRVmA+sx+0v+EIS55wpFeZtTZhLiWJsRCnA0IAhoYnXY0tspLDrzE8P2vK1EBQgJWSeeWrD2VkSLR2rZficnc6ex2dk05daVYTgQ+Ju+WtxecTXzeAUmfBlmV1alEgoj5nhazW0aHmvgwi38I9tO1jKEMfoQrnF7FoAOqcbT81YASsrJUNUgtRbsSTNJckXVmlzHlR8djgPDNuJuXgysOH0uLNf2WF6KRI0wAEbfx4rBEK93HFy7YWke1LjdMaEN872tJ/5DslZYq9uKqsiC25Fww0cPsGhyP9cCLadE9jpL5lb6khJqRAVCfZ+EvkM="
+            secure: "FI/uj38C0qQ/GghjRiTGDLMZHIMU6Vs0E8gWOG5yINOnP6btp5V/UoPW1xG8IiU6ptWhpgeGo2lmlq3pJJhoYL07glSfnDuZxrjSkfn/WxKO3pit0255/LBrFBkK6GWkD68IeKDU5gT7UhMf34//CiiwkjCrIPwNPQsnC3/zAHiOqTvzIeU3YwgeEETDSYfM33DRFxpAEOU55my3vTMK8QuO4/zRoVrGKLVp0EBE0oL8ZZa5QSWo4zlmhfoZ8q25D7uZOD+ySFxG/jn/6JNzY8rhDTO04xatpWMrmJPouvspkVA8EpFScYWUAuIAhosEUpZUwErv+A4M2MYWh/M0I5+aw4snKzUe6YBIs/T7HHZLALaryFUjqKIIFkfmNtQjSBp+lE/s0OkYSoi52NQoKwXWMfFDj9Wu9ybQ51HeizZ/DK+IfMzw50NRIrFNMED/wYDssLf+DJVITn2j8JM5Wo3z1i5m4nT5gxR9NZgbHVtdSyZR/cOGpNEITppg+6tEVB4Op/risV2dzxownymFvyuqn26fdSEafs2fWrWBF5rMTH4UVXXEn2/U8eY52MfoLTkLfcc8UbxHU9Zj963z7fo3767djK6/3tfdTfzFiCqIyKZIWrT5v2b0Y6bX3QBCABPEfDyvL3goQq7i5neUxyxGPmn0NqLCU4AROvyJeqM="
       cache:
         - yarn: true
       before_install:
@@ -20,11 +20,16 @@ matrix:
       script:
         - ./node_modules/.bin/eslint src/
         - yarn test --coverage --watchAll=false
-	- cd ..
-	- sonar-scanner
+	    - cd ..
+	    - sonar-scanner
 
     - language: python
       python: "3.7"
+      addon:
+        sonarcloud:
+          organization: "swsnu"
+          token:
+            secure: "FI/uj38C0qQ/GghjRiTGDLMZHIMU6Vs0E8gWOG5yINOnP6btp5V/UoPW1xG8IiU6ptWhpgeGo2lmlq3pJJhoYL07glSfnDuZxrjSkfn/WxKO3pit0255/LBrFBkK6GWkD68IeKDU5gT7UhMf34//CiiwkjCrIPwNPQsnC3/zAHiOqTvzIeU3YwgeEETDSYfM33DRFxpAEOU55my3vTMK8QuO4/zRoVrGKLVp0EBE0oL8ZZa5QSWo4zlmhfoZ8q25D7uZOD+ySFxG/jn/6JNzY8rhDTO04xatpWMrmJPouvspkVA8EpFScYWUAuIAhosEUpZUwErv+A4M2MYWh/M0I5+aw4snKzUe6YBIs/T7HHZLALaryFUjqKIIFkfmNtQjSBp+lE/s0OkYSoi52NQoKwXWMfFDj9Wu9ybQ51HeizZ/DK+IfMzw50NRIrFNMED/wYDssLf+DJVITn2j8JM5Wo3z1i5m4nT5gxR9NZgbHVtdSyZR/cOGpNEITppg+6tEVB4Op/risV2dzxownymFvyuqn26fdSEafs2fWrWBF5rMTH4UVXXEn2/U8eY52MfoLTkLfcc8UbxHU9Zj963z7fo3767djK6/3tfdTfzFiCqIyKZIWrT5v2b0Y6bX3QBCABPEfDyvL3goQq7i5neUxyxGPmn0NqLCU4AROvyJeqM="
       cache:
         - pip: true
       before_install:
