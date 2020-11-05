@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import MenuBar from '../component/menuBar';
+import MenuBar from '../Component/menuBar';
 import { bigLogo, explain, getStarted } from '../static';
 
 export const LandingPage = () => {
