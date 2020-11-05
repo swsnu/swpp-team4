@@ -13,7 +13,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
-import MenuBar from '../Component/menuBar';
+import MenuBar from '../component/menuBar';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
