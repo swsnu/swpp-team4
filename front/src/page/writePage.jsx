@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ConnectedRouter } from 'connected-react-router';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-import AppBar from '@material-ui/core/AppBar';
+// import { ConnectedRouter } from 'connected-react-router';
+// import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
-import Modal from '@material-ui/core/Modal';
 import Dialog from '@material-ui/core/Dialog';
 import MenuBar from '../component/menuBar';
 
@@ -137,10 +134,10 @@ export const WritePage = () => {
   const handleSubmitSnippet = (i) => {
     // TODO: send request to check for name duplicate
     if (Math.random() > 0.5) {
-      window.alert('duplicate name, please change snippet name');
-    } else {
       window.alert('snippet submitted! ');
       handleSnippetSubmittionChange(i, true);
+    } else {
+      window.alert('duplicate name, please change snippet name');
     }
   };
 
@@ -177,12 +174,12 @@ export const WritePage = () => {
 
   return (
     <div className={classes.root}>
-      <MenuBar />
+      <MenuBar/>
       <Grid container justify="center" spacing={2}>
         <Grid item xs={4} style={{ backgroundColor: '#eeeeee' }}>
           API DOC
         </Grid>
-        <Grid item xs={8} spacing={2} alignItems="stretch">
+        <Grid item xs={8}>
           <Paper elevation={1}>
             <Paper elevation={3} style={{ marginBottom: 5, marginTop: 5 }}>
               <Tabs
@@ -191,12 +188,11 @@ export const WritePage = () => {
                 indicatorColor="primary"
                 textColor="primary"
                 centered
-                dense
               >
-                <Tab label="Snippet One" value={1} />
-                <Tab label="Snippet Two" value={2} />
-                <Tab label="Snippet Three" value={3} />
-                <Tab label="Snippet Four" value={4} />
+                <Tab id='snippet_1' label="Snippet One" value={1}/>
+                <Tab id='snippet_2' label="Snippet Two" value={2}/>
+                <Tab id='snippet_3' label="Snippet Three" value={3}/>
+                <Tab id='snippet_4' label="Snippet Four" value={4}/>
               </Tabs>
             </Paper>
             <div
@@ -238,6 +234,7 @@ export const WritePage = () => {
             />
             <ButtonGroup color="primary" style={{ margin: 10 }}>
               <Button
+                id='import_algorithm'
                 size={'small'}
                 onClick={() => {
                   handleImport(TabValue);
@@ -246,6 +243,7 @@ export const WritePage = () => {
                 Import
               </Button>
               <Button
+                id='snippet_validate'
                 size={'small'}
                 disabled={
                   snippetName[TabValue] === '' || snippetValidated[TabValue]
@@ -257,6 +255,7 @@ export const WritePage = () => {
                 Validate
               </Button>
               <Button
+                id='submit_snippet'
                 size={'small'}
                 disabled={
                   snippetName[TabValue] === '' || !snippetValidated[TabValue]
@@ -268,13 +267,13 @@ export const WritePage = () => {
                 Submit Snippet
               </Button>
             </ButtonGroup>
-            <Typography component="span" style={{ color: '#ff0000' }}>
-              Status:{' '}
-              {snippetValidated[TabValue] === true
+            <Typography id='status_message' component="span" style={{ color: '#ff0000' }}>
+              {`Status: ${snippetValidated[TabValue] === true
                 ? snippetSubmitted[TabValue] === true
                   ? 'Submitted'
                   : 'Not submitted'
-                : 'Unvalidated'}
+                : 'Unvalidated'}`
+              }
             </Typography>
           </Paper>
 
@@ -293,6 +292,7 @@ export const WritePage = () => {
               />
               <ButtonGroup color="primary" style={{ marginTop: 2 }}>
                 <Button
+                  id='save_algorithm'
                   onClick={() => {
                     saveAlgorithmAsDraft();
                   }}
@@ -300,6 +300,7 @@ export const WritePage = () => {
                   Save As Draft
                 </Button>
                 <Button
+                  id='submit_algorithm'
                   disabled={algorithmName === ''}
                   onClick={() => {
                     handleSubmitAlgorithm();

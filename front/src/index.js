@@ -14,8 +14,8 @@ import { createBrowserHistory } from 'history';
 
 import userReducer from './store/reducers/user';
 
-const history = createBrowserHistory();
-const rootReducer = combineReducers({
+export const history = createBrowserHistory();
+export const rootReducer = combineReducers({
   user: userReducer,
   router: connectRouter(history),
 });
@@ -31,15 +31,17 @@ const logger = (store) => {
   };
 };
 
+export const middlewares = [logger, thunk, routerMiddleware(history)];
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
+export const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(logger, thunk, routerMiddleware(history))),
+  composeEnhancers(applyMiddleware(...middlewares)),
 );
 
 ReactDOM.render(
   <Provider store={store}>
-    <App history={history} />
+    <App history={history}/>
   </Provider>,
   document.getElementById('root'),
 );
