@@ -17,7 +17,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import AppBar from '@material-ui/core/AppBar';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import MenuBar from '../component/menuBar';
+import MenuBar from '../Component/menuBar';
 
 const drawerWidth = 240;
 

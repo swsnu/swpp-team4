@@ -16,7 +16,7 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@material-ui/core/Modal';
 import Dialog from '@material-ui/core/Dialog';
-import MenuBar from '../component/menuBar';
+import MenuBar from '../Component/menuBar';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
