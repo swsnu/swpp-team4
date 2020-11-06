@@ -1,13 +1,12 @@
 """
 Wallet library to handle stocks possessed by the user.
 """
-from typing import Optional, Dict, List, Any
-
 import datetime
+from functools import reduce
+from typing import Optional, Dict, List, Any
 
 from .stock import Stock
 from .stock import StockCoin
-from functools import reduce
 
 
 class Wallet:
@@ -66,7 +65,7 @@ class Wallet:
                   stock: Stock,
                   amount: int,
                   time: datetime) -> bool:
-        """ Sell coin"""
+        """ Sell stock """
         stock_id = stock.get_id()
         if amount == 0 or stock_id not in self.stock_id_to_coin.keys():
             return False
@@ -76,28 +75,28 @@ class Wallet:
 
         if possessed_amount < amount:
             return False
+        if possessed_amount == amount:
+            self.budget += stock.get_price() * amount
+            stock_coin.sell_coin(time, amount)
+            self.stock_id_list.remove(stock_id)
+            print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
         else:
-            if possessed_amount == amount:
-                self.budget += stock.get_price() * amount
-                stock_coin.sell_coin(time, amount)
-                self.stock_id_list.remove(stock_id)
-                print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
-            else:
-                self.budget += stock.get_price() * amount
-                stock_coin.sell_coin(time, amount)
-                print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
-            return True
+            self.budget += stock.get_price() * amount
+            stock_coin.sell_coin(time, amount)
+            print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
+        return True
 
     def purchase_coin(self,
                       stock: Stock,
                       amount: int,
                       time: datetime):
+        """ Purchase stocks """
         stock_id = stock.get_id()
         if self.budget < stock.get_price() * amount or amount == 0:
             print("cannot buy")
             return False
 
-        elif stock_id not in self.stock_id_to_coin:
+        if stock_id not in self.stock_id_to_coin:
             stock_coin = StockCoin(stock.get_name(), stock_id, stock.get_price(),
                                    amount, list(), list(), stock.get_price())
             self.stock_id_to_coin.update({stock_id: stock_coin})
@@ -105,8 +104,6 @@ class Wallet:
             # stock_coin.purchase_coin(time, amount)
             self.stock_id_list.append(stock_id)
             print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}')
-            return True
-
         else:
             stock_coin = self.stock_id_to_coin[stock_id]
             self.budget -= stock.get_price() * amount
@@ -115,7 +112,7 @@ class Wallet:
                 self.stock_id_list.append(stock_id)
             stock_coin.purchase_coin(time, amount)
             print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}')
-            return True
+        return True
 
     def get_summaries(self) -> Dict[str, Any]:
         """ Calculates the statistics of the current status and returns it."""
