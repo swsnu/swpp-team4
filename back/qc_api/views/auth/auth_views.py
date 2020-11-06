@@ -1,13 +1,19 @@
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
-from django.contrib.auth.models import User
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.csrf import csrf_exempt
+"""
+Views for authorization.
+"""
 import json
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from ..utils import check_request_method
 
 
 # Create your views here.
 def sign_up(request):
+    """ Handle sign up request """
     req_data = json.loads(request.body.decode())
     username = req_data['username']
     password = req_data['password']
@@ -16,19 +22,20 @@ def sign_up(request):
 
 
 @csrf_exempt
+@check_request_method(['POST'])
 def sign_in(request):
-    if request.method == 'POST':
-        req_data = json.loads(request.body.decode())
-        username = req_data['username']
-        password = req_data['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponse(status=204)
-        else:
-            return HttpResponse(status=401)
+    """ Handle sign in request """
+    req_data = json.loads(request.body.decode())
+    username = req_data['username']
+    password = req_data['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return HttpResponse(status=204)
+    return HttpResponse(status=401)
 
 
 def sign_out(request):
+    """ Handle sign out request """
     logout(request)
     return HttpResponse(status=204)
