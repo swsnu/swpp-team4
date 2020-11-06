@@ -53,13 +53,13 @@ class Wallet:
             try:
                 _coin = universe_today.loc[universe_today['code'] == str(int(coin.get_id()))].iloc[0]
                 coin.set_price(_coin['close'])
-            except IndexError as e:
+            except IndexError as error:
                 coin.set_price(0)
                 self.stock_id_list.remove(coin.get_id())
                 print("this is causing Error!!!!!!!!!")
                 print(coin)
                 print(coin.get_name())
-                print(e)
+                print(error)
 
     def sell_coin(self,
                   stock: Stock,
