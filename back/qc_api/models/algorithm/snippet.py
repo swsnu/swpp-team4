@@ -17,6 +17,7 @@ class Snippet(PolymorphicModel):
         User,
         related_name='liked_snippets'
     )
+    type = models.CharField(max_length=10)
     is_shared = models.BooleanField(default=False)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
