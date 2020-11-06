@@ -1,3 +1,6 @@
+"""
+test_lib.py
+"""
 from django.test import TestCase
 
 from ..lib import SandBox
@@ -6,10 +9,15 @@ from ..util.utility import parse_date
 
 
 class SandBoxTestCase(TestCase):
-    def setUp(self):
-        pass
+    """
+    Tests for Sandbox library
+    """
+    def setUp(self) -> None:
+        """ Setup """
+        return
 
-    def test_sandbox_backtest(self):
+    def test_sandbox_backtest(self) -> None:
+        """ Test sandbox backtest """
         stub_kospi = Kospi(date='2020-10-10', close=2300, open=2290, high=2301, low=2280, volume=10000000,
                            d1_diff_rate=0.63)
         stub_kospi.save()
