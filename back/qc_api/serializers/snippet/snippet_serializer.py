@@ -6,7 +6,7 @@ class SnippetSerializer(serializers.ModelSerializer):
     """Serializer class for generic snippet class"""
     class Meta:
         model = Snippet
-        fields = ['code', 'name', 'description', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
         read_only_fields = ('create_at', 'update_at')
 
 
