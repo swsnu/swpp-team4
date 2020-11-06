@@ -1,34 +1,42 @@
-from ...models import Snippet, SnippetSell, SnippetScope, SnippetBuy, SnippetAmount
-from ...serializers import SnippetScopeSerializer, SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
+from ...models import Snippet
+from ...serializers import SnippetSerializer, SnippetScopeSerializer, SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
 from ...util.decorator import catch_bad_request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from typing import Dict, Any
 
 
-def type_extract_and_delete(data):
+def type_extract(data) -> (str, Dict[str, Any]):
+    """get request data and extract type"""
     try:
         snippet_type = data.get("type")
-        del data["type"]
         return snippet_type, data
     except KeyError:
         raise KeyError
 
 
+def check_type_and_serialize_request(snippet_type: str, data: dict) -> Any:
+    """get snippet type and return snippet type"""
+    if snippet_type == 'scope':
+        serializer = SnippetScopeSerializer(data=data)
+    elif snippet_type == 'buy':
+        serializer = SnippetBuySerializer(data=data)
+    elif snippet_type == 'sell':
+        serializer = SnippetSellSerializer(data=data)
+    else:
+        serializer = SnippetAmountSerializer(data=data)
+    return serializer
+
+
 @api_view(['GET', 'POST'])
 @catch_bad_request
-def get_or_post_snippets(request):
+def get_or_post_snippets(request: Any) -> Any:
+    """api endpoint for snippet lists"""
     if request.method == 'POST':
-        snippet_type, checked_data = type_extract_and_delete(request.data)
+        snippet_type, checked_data = type_extract(request.data)
 
-        if snippet_type == 'scope':
-            serializer = SnippetScopeSerializer(data=checked_data)
-        elif snippet_type == 'buy':
-            serializer = SnippetBuySerializer(data=checked_data)
-        elif snippet_type == 'sell':
-            serializer = SnippetSellSerializer(data=checked_data)
-        else:
-            serializer = SnippetAmountSerializer(data=checked_data)
+        serializer = check_type_and_serialize_request(snippet_type=snippet_type, data=checked_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -36,7 +44,6 @@ def get_or_post_snippets(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        snippet_type = request.query_params.get("type")
-        return Response(status=status.HTTP_200_OK)
-
-
+        snippets = Snippet.objects.filter(**request.query_params)
+        response = SnippetSerializer(snippets, many=True)
+        return Response(response.data, status=status.HTTP_200_OK)
