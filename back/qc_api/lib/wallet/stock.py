@@ -1,36 +1,44 @@
+"""
+Stock library to manage single stock data.
+"""
 from functools import reduce
 import datetime
 
+from typing import List, Tuple
+
 
 class Stock:
-    """ this class does not depend on user"""
-    """ price를 어떻게 다뤄야 할지 모르겠어. 실시간으로 가격이 바뀔텐데 그럴 때마다 overwrite해주면 오버헤드가 너무 커질 것 같아"""
-
-    def __init__(self,
-                 name: str,
-                 stock_id,
-                 price: int):
-        """ data types per attribute """
-        """ name: str """
-        """ id: str or int """
-        """ price: int or long > 0"""
+    """
+    Stock class to manage single stock data.
+    This class does not depend on user.
+    """
+    def __init__(self, name: str, stock_id: int, price: float):
+        """
+        Parameters:
+            name: name of the stock
+            stock_id: unique id of stock
+            price: (current) price of the stock
+        """
         self.name = name
         self.stock_id = stock_id
         self.price = price
 
-    def get_name(self):
+    def get_name(self) -> str:
+        """Get name of Stock"""
         return self.name
 
-    def get_id(self):
+    def get_id(self) -> int:
+        """Get Id of stock"""
         return self.stock_id
 
-    def get_price(self):
+    def get_price(self) -> float:
+        """Get current price of stock"""
         return self.price
 
-    def set_price(self, price):
+    def set_price(self, price) -> None:
+        """Set price of stock"""
         if price > 0:
             self.price = price
-        return
 
     def __str__(self):
         stock_to_dict = dict()
@@ -40,51 +48,61 @@ class Stock:
 
 
 class StockCoin(Stock):
-    """ a Stock object stored in a wallet"""
-    """ extended to handle user-specific information"""
-
+    """
+    A Stock object stored in a wallet.
+    Extended to handle user-specific information.
+    """
     def __init__(self,
                  name: str,
-                 stock_id,
-                 price: int,
+                 stock_id: int,
+                 price: float,
                  amount: int,
-                 purchase_log: list,
-                 sell_log: list,
-                 avg_purchase_price: int):
+                 purchase_log: List[Tuple[datetime, int]],
+                 sell_log: List[Tuple[datetime, int]],
+                 avg_purchase_price: float):
+        """
+        Parameters:
+            name: name of the stock
+            stock_id: id of the stock
+            price: price of the stock
+            amount: the amount of the stock the user has, must be non-negative
+            purchase_log: purchase history in the form of (dateTime, amount)
+            sell_log: sell history
+            avg_purchase_price: average perchase price
+        """
         super().__init__(name, stock_id, price)
-        """ data types per attribute """
-        """ stock_coin: class StockCoin """
-        """ amount: int >= 0 """
-        """ purchase_log: list of tuple of (dateTime, amount) """  # need to have price data?
-        """ sell_log: list of tuple of (dateTime, amount) """
         self.amount = amount
         self.purchase_log = purchase_log
         self.sell_log = sell_log
         self.avg_purchase_price = avg_purchase_price
 
-    def get_amount(self):
+    def get_amount(self) -> int:
+        """Get possessed amount of the stock"""
         return self.amount
 
     def sell_coin(self,
                   date_time: datetime,
-                  amount: int):
-        """ amount checking must be done before calling this method"""
+                  amount: int) -> None:
+        """Amount checking must be done before calling this method"""
         self.amount -= amount
         self.sell_log.append((date_time, amount))
 
     def purchase_coin(self,
                       date_time: datetime,
-                      amount: int):
-        """ budget checking must be done before calling this method"""
+                      amount: int) -> None:
+        """Budget checking must be done before calling this method"""
         self.amount += amount
         self.purchase_log.append((date_time, amount))
 
-    def fix_avg_purchase_price(self, bought_at, new_amount):
+    def fix_avg_purchase_price(self, bought_at: float, new_amount: int) -> None:
         """update avg_purchase_rate"""
         self.avg_purchase_price = (self.avg_purchase_price * self.amount + bought_at * new_amount) / (
                     self.amount + new_amount)
 
     def check_consistency(self):
+        """
+        Check if the current log is correct.
+        """
         checker = reduce(lambda x, y: x[1] + y[1], self.purchase_log) \
                   - reduce(lambda x, y: x[1] + y[1], self.sell_log)
 
