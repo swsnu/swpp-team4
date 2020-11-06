@@ -1,7 +1,11 @@
+""" Report model for saving backtest result """
 from django.db import models
 
 
 class Report(models.Model):
+    """
+    Model for reporting backtest status
+    """
     class BackTestStatus(models.TextChoices):
         PENDING = 'PEND'  # , _('Pending')
         EXECUTING = 'EXEC'  # , _('Executing')
@@ -10,6 +14,10 @@ class Report(models.Model):
         CANCELED = 'QUIT'  # , _('Canceled')
 
     def has_started(self):  # dummy method to show usage
+        """
+        Returns:
+            true if the status of backtest is not PENDING
+        """
         return self.status != self.BackTestStatus.PENDING
 
     # algorithm = models.ForeignKey()
