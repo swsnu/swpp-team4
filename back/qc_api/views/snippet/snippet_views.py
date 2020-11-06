@@ -37,7 +37,6 @@ def get_or_post_snippets(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         snippet_type = request.query_params.get("type")
-        print("snippet_type", snippet_type)
         return Response(status=status.HTTP_200_OK)
 
 
