@@ -20,8 +20,6 @@ def kospi_to_db(chunk) -> None:
     Helper function to inject kospi data to database
     Parameters:
         chunk:
-    Returns:
-        nothing
     """
     bulk_list = []
     for row in chunk:
@@ -42,8 +40,6 @@ def kosdaq_to_db(chunk) -> None:
     Helper function to inject kosdaq data to database
     Parameters:
         chunk:
-    Returns:
-        nothing
     """
     bulk_list = []
     for row in chunk:
@@ -64,8 +60,6 @@ def insert_into_sql(chunk) -> None:
     Helper function to inject other data to sqlite
     Parameters:
         chunk:
-    Returns:
-        nothing
     """
     print("hello world!")
     bulk_list = []
@@ -121,8 +115,6 @@ def run(chunk_size) -> None:
     Insert stock data into the database
     Parameters:
         chunk_size
-    Returns:
-        nothing
     """
     _input = str(input("enter the file name from which the data will be fetched: "))
     _to = str(input("enter the db table name to which the fetched data will be injected: "))
