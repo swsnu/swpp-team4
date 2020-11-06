@@ -7,7 +7,7 @@ class SnippetScopeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetScope
-        fields = ['code', 'name', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared']
         read_only_fields = ('create_at', 'update_at')
 
 
