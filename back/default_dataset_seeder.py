@@ -1,17 +1,28 @@
-import csv
-import os
-import django
-import pandas as pd
-import numpy as np
+"""
+Utils to inject stock data into database
+"""
+
 import datetime
+import os
+
+import django
+import numpy as np
+import pandas as pd
+
+from qc_api.models import Kospi, Kosdaq, StockData
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qc_back.settings')
 django.setup()
 
-from qc_api.models import Kospi, Kosdaq, StockData
 
-
-def kospi_to_db(chunk):
+def kospi_to_db(chunk) -> None:
+    """
+    Helper function to inject kospi data to database
+    Parameters:
+        chunk:
+    Returns:
+        nothing
+    """
     bulk_list = []
     for row in chunk:
         bulk_list.append(Kospi(
@@ -26,7 +37,14 @@ def kospi_to_db(chunk):
     Kospi.objects.bulk_create(bulk_list)
 
 
-def kosdaq_to_db(chunk):
+def kosdaq_to_db(chunk) -> None:
+    """
+    Helper function to inject kosdaq data to database
+    Parameters:
+        chunk:
+    Returns:
+        nothing
+    """
     bulk_list = []
     for row in chunk:
         bulk_list.append(Kosdaq(
@@ -41,7 +59,14 @@ def kosdaq_to_db(chunk):
     Kosdaq.objects.bulk_create(bulk_list)
 
 
-def insert_into_sql(chunk):
+def insert_into_sql(chunk) -> None:
+    """
+    Helper function to inject other data to sqlite
+    Parameters:
+        chunk:
+    Returns:
+        nothing
+    """
     print("hello world!")
     bulk_list = []
     for row in chunk:
@@ -91,20 +116,31 @@ def insert_into_sql(chunk):
     StockData.objects.bulk_create(bulk_list)
 
 
-def run(chunk_size):
+def run(chunk_size) -> None:
+    """
+    Insert stock data into the database
+    Parameters:
+        chunk_size
+    Returns:
+        nothing
+    """
     _input = str(input("enter the file name from which the data will be fetched: "))
     _to = str(input("enter the db table name to which the fetched data will be injected: "))
-    if _to == 'kospi' or _to == 'kosdaq':
-        for chunk in pd.read_csv(_input, chunksize=chunk_size, header=0,
-                                 names=['date', 'close', 'open', 'high', 'low', 'volume', 'd1_diff_rate']):
+    if _to in ('kospi', 'kosdaq'):
+        for chunk in pd.read_csv(_input,chunksize=chunk_size, header=0,
+                                 names=['date', 'close', 'open', 'high',
+                                        'low', 'volume', 'd1_diff_rate']):
+
             chunk['volume'] = (chunk['volume'].replace(r'[MB]+$', '', regex=True).astype(float) *
                                chunk['volume'].str.extract(r'[\d\.]+([MB]+)', expand=False)
                                .fillna(1)
                                .replace(['M', 'B'], [1, 10 ** 3]).astype(float))  # 1 Million as an unit
+
             for column in ['close', 'open', 'high', 'low']:
                 if chunk.dtypes[f'{column}'] == np.object:
                     chunk[f'{column}'] = chunk[f'{column}'].apply(lambda x: x.replace(',', ''))
             chunk['date'] = chunk['date'].apply(lambda x: datetime.datetime.strptime(x, '%b %d, %Y'))
+
             if _to == 'kospi':
                 print(chunk.to_numpy())
                 kospi_to_db(chunk.to_numpy())
