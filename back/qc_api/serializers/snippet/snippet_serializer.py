@@ -15,7 +15,7 @@ class SnippetScopeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetScope
-        fields = ['code', 'name', 'description', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
         read_only_fields = ('create_at', 'update_at')
 
 
@@ -24,7 +24,7 @@ class SnippetBuySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetBuy
-        fields = ['code', 'name', 'description', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
         read_only_fields = ('create_at', 'update_at')
 
 
@@ -33,7 +33,7 @@ class SnippetSellSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetSell
-        fields = ['code', 'name', 'description', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
         read_only_fields = ('create_at', 'update_at')
 
 
@@ -42,5 +42,5 @@ class SnippetAmountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetAmount
-        fields = ['code', 'name', 'description', 'author', 'is_shared']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
         read_only_fields = ('create_at', 'update_at')
