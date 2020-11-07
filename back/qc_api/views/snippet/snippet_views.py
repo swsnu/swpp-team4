@@ -1,7 +1,9 @@
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from ...models import Snippet
 from ...serializers import SnippetSerializer, SnippetScopeSerializer, SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
 from ...util.decorator import catch_bad_request
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
 from typing import Dict, Any
@@ -30,6 +32,8 @@ def check_type_and_serialize_request(snippet_type: str, data: dict) -> Any:
 
 
 @api_view(['GET', 'POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 @catch_bad_request
 def get_or_post_snippets(request: Any) -> Any:
     """api endpoint for snippet lists"""
