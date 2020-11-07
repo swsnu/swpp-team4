@@ -39,7 +39,7 @@ def get_or_post_snippets(request: Any) -> Any:
     """api endpoint for snippet lists"""
     if request.method == 'POST':
         snippet_type, checked_data = type_extract(request.data)
-
+        checked_data.update({'author': request.user.id})
         serializer = check_type_and_serialize_request(snippet_type=snippet_type, data=checked_data)
 
         if serializer.is_valid():
