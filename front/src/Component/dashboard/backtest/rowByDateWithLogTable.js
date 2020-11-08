@@ -11,7 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import React, {useState} from "react";
 
-export const BacktestDetailRow = (row) => {
+export const RowByDateWithLogTable = ({row}) => {
 
   const [rowExpanded, setRowExpanded] = useState(false)
 

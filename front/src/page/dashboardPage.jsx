@@ -28,6 +28,7 @@ import {BacktestRow} from "../Component/dashboard/backtest/backtestRow";
 import {BacktestDetailDialog} from "../Component/dashboard/backtest/backtestDetailDialog";
 import {rows} from '../Component/dashboard/backtest/mock'
 import {NewBackTestForm} from "../Component/dashboard/backtest/newBackTestForm";
+import {RowByDateWithLogTable} from "../Component/dashboard/backtest/rowByDateWithLogTable";
 
 export const DashboardPage = () => {
 
@@ -118,7 +119,7 @@ export const DashboardPage = () => {
                   Backtests
                 </Typography>
                 <TableContainer component={Paper} style={{maxHeight: 300, overflowY: 'auto'}}>
-                  <Table stickyHeader >
+                  <Table stickyHeader>
                     <TableHead>
                       <TableRow>
                         <TableCell style={{width: 30}}/>
@@ -136,14 +137,14 @@ export const DashboardPage = () => {
                     </TableHead>
                     <TableBody>
                       {rows.map((row) =>
-                        BacktestRow({
-                          data: row,
-                          onOpenLog: () => {
+                        <BacktestRow
+                          data={row}
+                          onOpenLog={() => {
                             // TODO
                             setBacktestDetailDialogData([])
                             setDialogOpen(true)
-                          }
-                        })
+                          }}
+                        />
                       )}
                     </TableBody>
                   </Table>
@@ -157,8 +158,39 @@ export const DashboardPage = () => {
                   console.log(d)
                 }}/>
               </div>
-              <div style={{display: tab === 1 ? 'block' : 'none'}}>
-
+              <div style={{display: tab === 1 ? 'block' : 'none', height: 400, marginTop: 16}}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Simulation
+                </Typography>
+                <TableContainer component={Paper} style={{maxHeight: 300, overflowY: 'auto'}}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell style={{width: 30}}/>
+                        <TableCell>
+                          Date
+                        </TableCell>
+                        <TableCell align="right">
+                          Profit(%)
+                        </TableCell>
+                        <TableCell align="right">
+                          Bought
+                        </TableCell>
+                        <TableCell align="right">
+                          Sold
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row) =>
+                        <RowByDateWithLogTable row={row}/>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div>
+                  show BacktestDetailDialog like collapsing two level table
+                </div>
               </div>
             </div>
           </Grid>

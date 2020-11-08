@@ -9,7 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import React from "react";
-import {BacktestDetailRow} from "./backtestDetailRow";
+import {RowByDateWithLogTable} from "./rowByDateWithLogTable";
 import {rows} from './mock'
 
 export const BacktestDetailDialog = ({data, open, handleClose}) => {
@@ -44,7 +44,9 @@ export const BacktestDetailDialog = ({data, open, handleClose}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => BacktestDetailRow(row))}
+            {rows.map((row) =>
+              <RowByDateWithLogTable row={row}/>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
