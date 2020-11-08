@@ -44,7 +44,7 @@ export const MenuBar = (props) => {
 
   return (
     <div style={{ height: 70 }}>
-      <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
+      <AppBar style={{ background: 'transparent' }}>
         <Toolbar>
           <Button onClick={() => props.history.push('/')}>
             <Typography>QuantCash</Typography>
