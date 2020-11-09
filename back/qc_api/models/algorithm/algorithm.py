@@ -16,7 +16,7 @@ class Algorithm(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        related_name='snippets',
+        related_name='algorithms',
         null=True
     )
     is_public = models.BooleanField(default=False)
@@ -42,3 +42,6 @@ class Algorithm(models.Model):
     )
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'algorithm'
