@@ -3,6 +3,7 @@ from django.db import models
 
 
 class StockData(models.Model):
+    """ Stock data model"""
     date = models.DateField()  # 해당 데이터 생성일자
     code = models.CharField(max_length=10)  # 종목코드
     code_name = models.CharField(max_length=50)  # 종목명 e.g) 삼성전자
