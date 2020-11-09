@@ -20,13 +20,17 @@ class AlgorithmSerializer(serializers.ModelSerializer):
                             'snippet_buy_data', 'snippet_amount_data')
 
     def get_snippet_scope_data(self, obj: Algorithm) -> Dict[str, Any]:
+        """relational representation for snippet_scope"""
         return SnippetScopeSerializer(obj.snippet_scope).data
 
-    def get_snippet_sell_data(self, obj):
+    def get_snippet_sell_data(self, obj: Algorithm) -> Dict[str, Any]:
+        """relational representation for snippet_sell"""
         return SnippetSellSerializer(obj.snippet_sell).data
 
-    def get_snippet_buy_data(self, obj):
+    def get_snippet_buy_data(self, obj: Algorithm) -> Dict[str, Any]:
+        """relational representation for snippet_buy"""
         return SnippetBuySerializer(obj.snippet_buy).data
 
-    def get_snippet_amount_data(self, obj):
+    def get_snippet_amount_data(self, obj: Algorithm) -> Dict[str, Any]:
+        """relational representation for snippet_amount"""
         return SnippetAmountSerializer(obj.snippet_scope).data
