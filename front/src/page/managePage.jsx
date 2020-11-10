@@ -11,18 +11,63 @@ import Grid from "@material-ui/core/Grid";
 import {withRouter} from "react-router-dom";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import * as theme from "@material-ui/system";
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import withStyles from "@material-ui/core/styles/withStyles";
 
 const useStyles = makeStyles(() => ({
     grow: {
         flexGrow: 1,
     },
     button: {
-        marginLeft: 500,
+        marginLeft: 100,
     },
     paper: {
         textAlign: 'center',
     }
 }));
+
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, .03)',
+        borderBottom: '1px solid rgba(0, 0, 0, .125)',
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+}))(MuiAccordionDetails);
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -52,6 +97,11 @@ TabPanel.propTypes = {
 
 const Algo = props => {
     const classes = useStyles();
+    const [expanded, setExpanded] = React.useState('');
+
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
 
     const [Public, setPublic] = useState(true);
 
@@ -61,14 +111,22 @@ const Algo = props => {
 
     return (
         <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                {props.name}
-                <Button className={classes.button}
-                        onClick={handleClick}
-                        variant="outlined"
-                        color="primary">{Public ? 'Public' : 'Private'}</Button>
-                <Button variant="outlined" color="primary">Delete</Button>
-            </Paper>
+            <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                    <Typography>{props.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
+                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+                    </Typography>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={handleClick}>{Public ? 'Public' : 'Private'}</Button>
+                    <Button variant="outlined" color="primary">Delete</Button>
+
+                </AccordionDetails>
+            </Accordion>
         </Grid>
     );
 }
@@ -76,20 +134,35 @@ const Algo = props => {
 const SavedAlgo = props => {
     const classes = useStyles();
 
+    const [expanded, setExpanded] = React.useState('');
+
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
     const handleClick = () => {
-        window.location.replace('/algo/write');
+        props.history.push('/algo/write');
     }
 
     return (
         <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                {props.name}
-                <Button className={classes.button}
-                        onClick={handleClick}
-                        variant="outlined"
-                        color="primary">resume</Button>
-                <Button variant="outlined" color="primary">Delete</Button>
-            </Paper>
+            <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                    <Typography>{props.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        This is an algorithm made by Hwarim. This is an algorithm made by Hwarim. This is an algorithm made by Hwarim.
+                        This is an algorithm made by Hwarim. This is an algorithm made by Hwarim. This is an algorithm made by Hwarim.
+                    </Typography>
+                    <Button className={classes.button}
+                            onClick={handleClick}
+                            variant="outlined"
+                            color="primary">resume</Button>
+                    <Button variant="outlined" color="primary">Delete</Button>
+
+                </AccordionDetails>
+            </Accordion>
         </Grid>
     );
 }
@@ -99,19 +172,35 @@ const Snippet = props => {
 
     const [Public, setPublic] = useState(true);
 
+    const [expanded, setExpanded] = React.useState('');
+
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
     const handleClick = () => {
         setPublic(!Public);
     }
 
     return (
         <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                {props.name}
-                <Button className={classes.button}
-                        onClick={handleClick}
-                        variant="outlined"
-                        color="primary">{Public ? 'Public' : 'Private'}</Button>
-            </Paper>
+            <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                    <Typography>{props.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
+                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+                    </Typography>
+                    <Button className={classes.button}
+                         onClick={handleClick}
+                         variant="outlined"
+                         color="primary">{Public ? 'Public' : 'Private'}</Button>
+
+                </AccordionDetails>
+            </Accordion>
         </Grid>
     );
 }
@@ -119,14 +208,30 @@ const Snippet = props => {
 const LikedSnippet = props => {
     const classes = useStyles();
 
+    const [expanded, setExpanded] = React.useState('');
+
+    const handleChange = (panel) => (event, newExpanded) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
     return (
         <Grid item xs={12}>
-            <Paper className={classes.paper}>
-                {props.name}
-                <Button className={classes.button}
-                        variant="outlined"
-                        color="primary">unlike</Button>
-            </Paper>
+            <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                    <Typography>{props.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                        sit amet blandit leo lobortis eget. Lorem ipsum dolor sit amet, consectetur adipiscing
+                        elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
+                    </Typography>
+                    <Button className={classes.button}
+                         variant="outlined"
+                         color="primary">unlike</Button>
+
+                </AccordionDetails>
+            </Accordion>
         </Grid>
     );
 }
@@ -149,8 +254,8 @@ export const ManagePage = props => {
                     marginLeft: 1050,
                 }}
                 onClick={() => {
-                props.history.push('/algo/write');
-            }} variant="contained" color="primary">
+                    props.history.push('/algo/write');
+                }} variant="contained" color="primary">
                 New Algorithm
             </Button>
             <Tabs onChange={handleTabChange}
@@ -162,25 +267,13 @@ export const ManagePage = props => {
                 <Tab value="four" label="Saved Algos"/>
             </Tabs>
             <TabPanel value={value} index="one">
-                <Algo name="Algo 1"/>
-                <Algo name="Algo 2"/>
-                <Algo name="Algo 3"/>
-                <Algo name="Algo 4"/>
-                <Algo name="Algo 5"/>
-                <Algo name="Algo 6"/>
-                <Algo name="Algo 7"/>
-                <Algo name="Algo 8"/>
-                <Algo name="Algo 9"/>
+                <Algo name="Algo #1"/>
             </TabPanel>
             <TabPanel value={value} index="two">
                 <Snippet name="Snippet 1"/>
                 <Snippet name="Snippet 2"/>
                 <Snippet name="Snippet 3"/>
                 <Snippet name="Snippet 4"/>
-                <Snippet name="Snippet 5"/>
-                <Snippet name="Snippet 6"/>
-                <Snippet name="Snippet 7"/>
-                <Snippet name="Snippet 8"/>
             </TabPanel>
             <TabPanel value={value} index="three">
                 <LikedSnippet name="Snippet 1"/>
@@ -191,12 +284,9 @@ export const ManagePage = props => {
                 <LikedSnippet name="Snippet 6"/>
             </TabPanel>
             <TabPanel value={value} index="four">
-                <SavedAlgo name="Algo 1"/>
-                <SavedAlgo name="Algo 2"/>
-                <SavedAlgo name="Algo 3"/>
-                <SavedAlgo name="Algo 4"/>
-                <SavedAlgo name="Algo 5"/>
-                <SavedAlgo name="Algo 6"/>
+                <SavedAlgo name="Algo #1"/>
+                <SavedAlgo name="Algo #2"/>
+                <SavedAlgo name="Algo #3"/>
             </TabPanel>
         </div>
     );
