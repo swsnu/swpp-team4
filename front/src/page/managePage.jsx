@@ -149,7 +149,7 @@ export const ManagePage = props => {
                     marginLeft: 1050,
                 }}
                 onClick={() => {
-                window.location.replace('/algo/write')
+                props.history.push('/algo/write');
             }} variant="contained" color="primary">
                 New Algorithm
             </Button>
