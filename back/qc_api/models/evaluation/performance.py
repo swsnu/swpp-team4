@@ -8,13 +8,8 @@ class Performance(models.Model):
     """
     Performance model to store the daily simulation result.
     """
-    algorithm = models.ForeignKey(
+    algorithm = models.OneToOneField(
         Algorithm,
-        on_delete=models.CASCADE,
-        related_name="performances",
-    )
-    author = models.ForeignKey(
-        User,
         on_delete=models.CASCADE,
         related_name="performances",
     )
