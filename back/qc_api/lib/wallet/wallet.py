@@ -51,10 +51,6 @@ class Wallet:
             except IndexError as error:
                 coin.set_price(0)
                 self.stock_id_list.remove(coin.get_id())
-                print("this is causing Error!!!!!!!!!")
-                print(coin)
-                print(coin.get_name())
-                print(error)
 
     def sell_coin(self,
                   stock: Stock,
