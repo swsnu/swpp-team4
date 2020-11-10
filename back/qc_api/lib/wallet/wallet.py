@@ -12,11 +12,10 @@ from .stock import StockCoin
 class Wallet:
     """ Wallet class per user """
 
-    def __init__(self, user, budget: float, stock_id_to_coin: Optional[Dict[int, StockCoin]] = None):
+    def __init__(self, budget: float, stock_id_to_coin: Optional[Dict[int, StockCoin]] = None):
         """ default constructor """
         # WARNING: stock_id_list only has ids of stock with positive amount
         # this means that stocks which were started as amount > 0 but reduced to == 0 are not included.
-        self.user = user  # type?
         self.budget = budget
         self.initial_asset = budget
 
@@ -27,10 +26,6 @@ class Wallet:
             self.stock_id_to_coin = stock_id_to_coin
             self.stock_id_list = list(map(lambda stock: stock.get_id() if stock.get_amount() > 0 else None,
                                           [self.stock_id_to_coin[i] for i in self.stock_id_to_coin]))
-
-    def get_user(self):
-        """ Get the possessor of the wallet """
-        return self.user
 
     def get_budget(self) -> float:
         """ Get budget"""
