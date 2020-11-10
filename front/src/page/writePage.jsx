@@ -52,10 +52,20 @@ export const WritePage = (props) => {
   const algorithmSubmitStore = useSelector(s => s.user.algorithmSubmit)
 
   const [editorValue, setEditorValue] = useState({
-    1: '1111',
-    2: '2222',
-    3: '33333',
-    4: '44',
+    1: 'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
+    2: `for index, candidate in enumerate(shopping_list):
+            if index==0:
+                chosen_stocks.append(candidate)
+                break`,
+    3: `for index, candidate in enumerate(sell_candidates):
+            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:
+                chosen_stocks.append(candidate)`,
+    4: `if opt == "buy":
+        for stock in chosen_stocks:
+            buy_amount_list.append((stock, 1))
+else:
+    for stock in chosen_stocks:
+        sell_amount_list.append((stock, stock.get_amount()))`,
   });
 
   /* istanbul ignore next */

@@ -13,7 +13,7 @@ const initialState = {
     3: false,
     4: false,
   },
-  algorithmSubmit: false
+  algorithmSubmit: false,
 };
 
 const userReducer = (state = initialState, action) => {
