@@ -37,4 +37,4 @@ class AlgorithmSerializer(serializers.ModelSerializer):
 
     def get_snippet_amount_data(self, obj: Algorithm) -> Dict[str, Any]:
         """relational representation for snippet_amount"""
-        return SnippetAmountSerializer(obj.snippet_scope).data
+        return SnippetAmountSerializer(obj.snippet_amount).data
