@@ -1,5 +1,6 @@
 """ Report model for saving backtest result """
 from django.db import models
+from qc_api.models.algorithm.algorithm import Algorithm
 
 
 class Report(models.Model):
@@ -20,7 +21,11 @@ class Report(models.Model):
         """
         return self.status != self.BackTestStatus.PENDING
 
-    # algorithm = models.ForeignKey()
+    algorithm = models.ForeignKey(
+        Algorithm,
+        on_delete=models.CASCADE,
+        related_name="reports",
+    )
 
     # statistics
     alpha = models.FloatField()
@@ -29,7 +34,7 @@ class Report(models.Model):
     optional_stat = models.TextField()
 
     # backtest settings
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 

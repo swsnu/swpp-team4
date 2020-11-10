@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ...models import Algorithm
-from ...serializers import SnippetScopeSerializer, SnippetSellSerializer, SnippetBuySerializer, SnippetAmountSerializer
+from qc_api.models import Algorithm
+from qc_api.serializers import *
 from typing import Dict, Any
 
 

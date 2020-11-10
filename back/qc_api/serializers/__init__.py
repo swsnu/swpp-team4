@@ -4,3 +4,4 @@ from .snippet.snippet_serializer import (SnippetScopeSerializer,
                                          SnippetSellSerializer,
                                          SnippetSerializer)
 from .algorithm.algorithm_serializer import AlgorithmSerializer
+from .tracking.report_serializer import ReportSerializer
