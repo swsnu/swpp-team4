@@ -18,6 +18,10 @@ class Wallet:
         # this means that stocks which were started as amount > 0 but reduced to == 0 are not included.
         self.budget = budget
         self.initial_asset = budget
+        self.transaction_log = {
+            "sell": [],
+            "buy": []
+        }
 
         if stock_id_to_coin is None:
             self.stock_id_list = list()
@@ -55,7 +59,7 @@ class Wallet:
     def sell_coin(self,
                   stock: Stock,
                   amount: int,
-                  time: datetime) -> bool:
+                  time: datetime.date) -> bool:
         """ Sell stock """
         stock_id = stock.get_id()
         if amount == 0 or stock_id not in self.stock_id_to_coin.keys():
@@ -70,10 +74,20 @@ class Wallet:
             self.budget += stock.get_price() * amount
             stock_coin.sell_coin(time, amount)
             self.stock_id_list.remove(stock_id)
+            self.transaction_log.get("sell").append({
+                "name": stock.get_name(),
+                "price": stock.get_price(),
+                "amount": amount
+            })
             print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
         else:
             self.budget += stock.get_price() * amount
             stock_coin.sell_coin(time, amount)
+            self.transaction_log.get("sell").append({
+                "name": stock.get_name(),
+                "price": stock.get_price(),
+                "amount": amount
+            })
             print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
         return True
 
@@ -95,6 +109,11 @@ class Wallet:
             # stock_coin.purchase_coin(time, amount)
             self.stock_id_list.append(stock_id)
             print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}')
+            self.transaction_log.get("buy").append({
+                "name": stock.get_name(),
+                "price": stock.get_price(),
+                "amount": amount
+            })
         else:
             stock_coin = self.stock_id_to_coin[stock_id]
             self.budget -= stock.get_price() * amount
@@ -103,6 +122,11 @@ class Wallet:
                 self.stock_id_list.append(stock_id)
             stock_coin.purchase_coin(time, amount)
             print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}')
+            self.transaction_log.get("buy").append({
+                "name": stock.get_name(),
+                "price": stock.get_price(),
+                "amount": amount
+            })
         return True
 
     def get_summaries(self) -> Dict[str, Any]:
@@ -123,6 +147,25 @@ class Wallet:
             self.stock_id_list
         ], 0)})
         return summaries
+
+    def get_profit(self):
+        remaining_budget = self.get_budget()
+        possessed_stock_value = reduce(lambda a, b: a + b, [
+                self.stock_id_to_coin[index].get_price() * self.stock_id_to_coin[index].amount for index in
+                self.stock_id_list
+            ], 0)
+        profit = 100*(remaining_budget+possessed_stock_value)/self.initial_asset
+        return profit
+
+    def get_transaction_log(self, date):
+        rv = {}
+        rv.update(self.transaction_log)
+        rv.update({'date': date})
+        self.transaction_log = {
+            "sell": [],
+            "buy": []
+        }
+        return rv
 
     def __str__(self):
         return str(self.get_coins())
