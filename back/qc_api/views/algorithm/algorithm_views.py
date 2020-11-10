@@ -1,17 +1,17 @@
 """
     algorithm views
 """
-
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from ...models import Algorithm
-from ...serializers import AlgorithmSerializer
-from ...util.decorator import catch_bad_request
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status
-from ...lib import SandBox
+
+from qc_api.lib import SandBox
+from qc_api.models import Algorithm
+from qc_api.serializers import AlgorithmSerializer
+from qc_api.util.decorator import catch_bad_request
 from ...util.utility import parse_date
 
 
@@ -29,8 +29,7 @@ def get_or_post_algorithms(request: Request) -> Response:
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         algorithms = Algorithm.objects.filter(**request.query_params)
         response = AlgorithmSerializer(algorithms, many=True)
@@ -41,7 +40,12 @@ def get_or_post_algorithms(request: Request) -> Response:
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def run_backtest(request: Request) -> Response:
-    budget, start, end = request.data.get("budget"), parse_date(request.data.get("start")), \
-                         parse_date(request.data.get("end"))
+    """
+    Initialize sandbox and run backtests.
+    Returns:
+        HttpResponse: with status 200.
+    """
+    budget = request.data.get("budget")
+    start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
     sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
     return Response(sandbox.date_rows, status=status.HTTP_200_OK)
