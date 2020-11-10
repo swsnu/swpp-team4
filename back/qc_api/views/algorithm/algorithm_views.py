@@ -45,9 +45,7 @@ def run_backtest(request: Request) -> Response:
     Returns:
         HttpResponse: with status 200.
     """
-    budget, start, end = request.data.get("budget"),\
-                         parse_date(request.data.get("start")), \
-    budget, start, end = request.data.get("budget"), parse_date(request.data.get("start")), \
-                         parse_date(request.data.get("end"))
+    budget = request.data.get("budget")
+    start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
     sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
     return Response(sandbox.date_rows, status=status.HTTP_200_OK)
