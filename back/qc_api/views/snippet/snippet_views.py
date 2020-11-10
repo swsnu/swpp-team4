@@ -56,3 +56,12 @@ def get_or_post_snippets(request: Request) -> Response:
         snippets = Snippet.objects.filter(**request.query_params)
         response = SnippetSerializer(snippets, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def get_my_snippets(request: Request) -> Response:
+    snippets = Snippet.objects.filter(**request.query_params, author=request.user.id)
+    serializer = SnippetSerializer(snippets, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
