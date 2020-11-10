@@ -14,7 +14,7 @@ const initialState = {
     4: false
   },
   algorithmSubmit: false,
-  loading: true
+  loading: false
 };
 
 const userReducer = (state = initialState, action) => {

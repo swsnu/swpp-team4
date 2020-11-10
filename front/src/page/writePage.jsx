@@ -56,7 +56,7 @@ export const WritePage = (props) => {
 
   const [editorValue, setEditorValue] = useState({
     1: "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
-    2: `for index, candidate in enumerate(shopping_list):
+    2: `for index, candidate in enumerate(scope):
             if index==0:
                 chosen_stocks.append(candidate)
                 break`,
