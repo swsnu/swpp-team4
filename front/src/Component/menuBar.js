@@ -1,12 +1,12 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import LoginModal from './loginModal';
 import SignupModal from './signupModal';
 
@@ -43,8 +43,8 @@ export const MenuBar = (props) => {
   const signUpOpen = Boolean(signUpAnchorEl);
 
   return (
-    <div style={{ height: 70 }}>
-      <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
+    <div style={{height: 70}}>
+      <AppBar style={{background: 'transparent', boxShadow: 'none'}}>
         <Toolbar>
           <Button onClick={() => props.history.push('/')}>
             <Typography>QuantCash</Typography>
@@ -103,8 +103,12 @@ export const MenuBar = (props) => {
               >
                 Dashboard
               </Button>
-              <Button onClick={() => {
-              }} className={classes.button}>
+              <Button
+                onClick={() => {
+                  props.history.push('/algo/write');
+                }}
+                className={classes.button}
+              >
                 Manage algo
               </Button>
               <Button onClick={() => {

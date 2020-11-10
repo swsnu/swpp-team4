@@ -22,8 +22,8 @@ function App(props) {
         <Container maxWidth="lg">
           {reduxStore.user.loggedIn === true ? (
             <Switch>
-              <Redirect exact from="/login" to="/dashboard" />
               <Route path="/algo/write" exact component={WritePage} />
+              <Redirect exact from="/login" to="/dashboard" />
               <Route path="/dashboard" exact component={DashboardPage} />
               <Route path="/" exact component={LandingPage} />
             </Switch>

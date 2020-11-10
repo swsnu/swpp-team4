@@ -32,7 +32,7 @@ def check_type_and_serialize_request(snippet_type: str, data: dict) -> ModelSeri
         serializer = SnippetBuySerializer(data=data)
     elif snippet_type == 'sell':
         serializer = SnippetSellSerializer(data=data)
-    else:
+    else:  # snippet_type == amount
         serializer = SnippetAmountSerializer(data=data)
     return serializer
 
