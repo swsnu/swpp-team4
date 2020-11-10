@@ -15,7 +15,7 @@ from qc_api.util.decorator import catch_bad_request
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 @catch_bad_request
-def get_report(request: Request, algo_id: int) -> Response:
+def get_reports_by_algo(request: Request, algo_id: int) -> Response:
     """
     Given an algorithm, returns the backtest reports corresponding to it.
     Parameters:

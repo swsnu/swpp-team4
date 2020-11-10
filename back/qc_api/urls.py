@@ -9,5 +9,7 @@ urlpatterns = [
     path('snippet', views.get_or_post_snippets, name='snippet'),
     path('algo', views.get_or_post_algorithms, name='algo'),
     path('algo/backtest', views.run_backtest, name='backtest'),
-    path('algo/<int:algo_id>/report', views.get_report, name='report'),
+    path('algo/<int:algo_id>/report', views.get_reports_by_algo, name='report'),
+    path('algo/<int:algo_id>/performance', views.get_performance_by_algo, name='performance'),
+    path('performance', views.get_all_performances, name='all-performances')
 ]

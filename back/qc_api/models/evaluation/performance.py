@@ -1,16 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+from qc_api.models import Algorithm
 
 
 class Performance(models.Model):
     """
     Performance model to store the daily simulation result.
     """
-    # algorithm = models.ForeignKey()
+    algorithm = models.ForeignKey(
+        Algorithm,
+        on_delete=models.CASCADE,
+        related_name="performances",
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="performances",
     )
     name = models.CharField(max_length=100)
     description = models.TextField()
