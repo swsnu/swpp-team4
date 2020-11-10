@@ -24,7 +24,8 @@ def get_all_performances(request: Request) -> Response:
         The algorithm should be declared 'public' to be returned.
         Filtered algorithms are sorted in the descending order by the value of alpha.
     """
-    performances = Performance.objects.filter(**request.query_params, algorithm__is_public=True) \
+    performances = Performance.objects\
+        .filter(**request.query_params, algorithm__is_public=True) \
         .order_by('-alpha')
     serializer = PerformanceSerializer(performances, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -42,7 +43,7 @@ def get_performance_by_algo(request: Request, algo_id: int) -> Response:
         algo_id: Algorithm Id to query.
     Returns:
         An HTTP Response containing list of serialized Performance model
-        (type: List[Dict[str: ANY]]) as its data.
+        (type: Dict[str: ANY]) as its data.
     """
     try:
         performance = Performance.objects.get(**request.query_params, algorithm=algo_id)
