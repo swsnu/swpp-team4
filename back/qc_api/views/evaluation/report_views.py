@@ -15,15 +15,16 @@ from qc_api.util.decorator import catch_bad_request
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 @catch_bad_request
-def get_report(request: Request) -> Response:
+def get_reports_by_algo(request: Request, algo_id: int) -> Response:
     """
     Given an algorithm, returns the backtest reports corresponding to it.
     Parameters:
         request: HTTP Request.
+        algo_id: Algorithm Id to query.
     Returns:
         An HTTP Response containing list of serialized Report model
         (type: List[Dict[str: ANY]]) as its data.
     """
-    reports = Report.objects.filter(**request.query_params)
+    reports = Report.objects.filter(**request.query_params, algorithm=algo_id)
     serializer = ReportSerializer(reports, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)

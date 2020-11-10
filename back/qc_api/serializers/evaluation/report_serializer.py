@@ -1,6 +1,6 @@
 """ Serialization utils for report model."""
 from rest_framework import serializers
-from qc_api.models.evaluation.report import Report
+from qc_api.models import Report
 
 
 class ReportSerializer(serializers.ModelSerializer):
