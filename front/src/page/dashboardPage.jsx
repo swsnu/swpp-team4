@@ -28,21 +28,623 @@ import { rows } from "../Component/dashboard/backtest/mock";
 import { NewBackTestForm } from "../Component/dashboard/backtest/newBackTestForm";
 import { RowByDateWithLogTable } from "../Component/dashboard/backtest/rowByDateWithLogTable";
 import { getAllMyAlgorithm } from "../store/actions/algo";
+import axios from "axios";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 export const DashboardPage = () => {
 
   const [tab, setTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState([]);
+  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState(
+    {
+      id: 0,
+      transaction_log: [],
+      daily_profit: []
+    }
+  );
   const [selectedAlgorithmId, setSelectedAlgorithmId] = useState(0);
   const dispatch = useDispatch();
   const ownedAlgorithmListStore = useSelector(s => s.algo.ownedAlgorithmList);
+  const [tableData, setTableData] = useState([]);
 
 
   useEffect(() => {
-    // TODO: get list of all my algorithms
-    dispatch(getAllMyAlgorithm())
+    // get list of all my algorithms
+    dispatch(getAllMyAlgorithm());
   }, []);
+
+  const selectAlgorithm = (id) => {
+    setSelectedAlgorithmId(id);
+    // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+    try {
+      // axios.get('api/?????')
+      setTableData([
+        {
+          id: 10001,
+          "alpha": 95.00557420115997,
+          "profit": 92.4978,
+          "MDD": 5.355000000000004,
+          "transaction_log": [
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-03"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "대신정보통신",
+                  "price": 1400,
+                  "amount": 714
+                }
+              ],
+              "date": "2020-01-06"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-07"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-08"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-09"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-10"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-13"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-14"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-15"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-16"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-17"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-20"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-21"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "글로스퍼랩스",
+                  "price": 375,
+                  "amount": 1
+                }
+              ],
+              "date": "2020-01-22"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-23"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-28"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-29"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-30"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-31"
+            }
+          ],
+          "daily_profit": [
+            {
+              "date": "2020-01-03",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-06",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-07",
+              "profit": 100.714
+            },
+            {
+              "date": "2020-01-08",
+              "profit": 96.787
+            },
+            {
+              "date": "2020-01-09",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-10",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-13",
+              "profit": 103.927
+            },
+            {
+              "date": "2020-01-14",
+              "profit": 103.57
+            },
+            {
+              "date": "2020-01-15",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-16",
+              "profit": 102.856
+            },
+            {
+              "date": "2020-01-17",
+              "profit": 102.142
+            },
+            {
+              "date": "2020-01-20",
+              "profit": 99.286
+            },
+            {
+              "date": "2020-01-21",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-22",
+              "profit": 101.428
+            },
+            {
+              "date": "2020-01-23",
+              "profit": 102.4982
+            },
+            {
+              "date": "2020-01-28",
+              "profit": 97.1404
+            },
+            {
+              "date": "2020-01-29",
+              "profit": 96.7833
+            },
+            {
+              "date": "2020-01-30",
+              "profit": 95.3535
+            },
+            {
+              "date": "2020-01-31",
+              "profit": 92.4978
+            }
+          ]
+        },
+        {
+          id: 10002,
+          "alpha": 95.00557420115997,
+          "profit": 92.4978,
+          "MDD": 5.355000000000004,
+          "transaction_log": [
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-03"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "대신정보통신",
+                  "price": 1400,
+                  "amount": 714
+                }
+              ],
+              "date": "2020-01-06"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-07"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-08"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-09"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-10"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-13"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-14"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-15"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-16"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-17"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-20"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-21"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "글로스퍼랩스",
+                  "price": 375,
+                  "amount": 1
+                }
+              ],
+              "date": "2020-01-22"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-23"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-28"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-29"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-30"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-31"
+            }
+          ],
+          "daily_profit": [
+            {
+              "date": "2020-01-03",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-06",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-07",
+              "profit": 100.714
+            },
+            {
+              "date": "2020-01-08",
+              "profit": 96.787
+            },
+            {
+              "date": "2020-01-09",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-10",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-13",
+              "profit": 103.927
+            },
+            {
+              "date": "2020-01-14",
+              "profit": 103.57
+            },
+            {
+              "date": "2020-01-15",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-16",
+              "profit": 102.856
+            },
+            {
+              "date": "2020-01-17",
+              "profit": 102.142
+            },
+            {
+              "date": "2020-01-20",
+              "profit": 99.286
+            },
+            {
+              "date": "2020-01-21",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-22",
+              "profit": 101.428
+            },
+            {
+              "date": "2020-01-23",
+              "profit": 102.4982
+            },
+            {
+              "date": "2020-01-28",
+              "profit": 97.1404
+            },
+            {
+              "date": "2020-01-29",
+              "profit": 96.7833
+            },
+            {
+              "date": "2020-01-30",
+              "profit": 95.3535
+            },
+            {
+              "date": "2020-01-31",
+              "profit": 92.4978
+            }
+          ]
+        },
+        {
+          id: 10003,
+          "alpha": 95.00557420115997,
+          "profit": 92.4978,
+          "MDD": 5.355000000000004,
+          "transaction_log": [
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-03"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "대신정보통신",
+                  "price": 1400,
+                  "amount": 714
+                }
+              ],
+              "date": "2020-01-06"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-07"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-08"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-09"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-10"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-13"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-14"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-15"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-16"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-17"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-20"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-21"
+            },
+            {
+              "sell": [],
+              "buy": [
+                {
+                  "name": "글로스퍼랩스",
+                  "price": 375,
+                  "amount": 1
+                }
+              ],
+              "date": "2020-01-22"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-23"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-28"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-29"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-30"
+            },
+            {
+              "sell": [],
+              "buy": [],
+              "date": "2020-01-31"
+            }
+          ],
+          "daily_profit": [
+            {
+              "date": "2020-01-03",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-06",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-07",
+              "profit": 100.714
+            },
+            {
+              "date": "2020-01-08",
+              "profit": 96.787
+            },
+            {
+              "date": "2020-01-09",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-10",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-13",
+              "profit": 103.927
+            },
+            {
+              "date": "2020-01-14",
+              "profit": 103.57
+            },
+            {
+              "date": "2020-01-15",
+              "profit": 104.641
+            },
+            {
+              "date": "2020-01-16",
+              "profit": 102.856
+            },
+            {
+              "date": "2020-01-17",
+              "profit": 102.142
+            },
+            {
+              "date": "2020-01-20",
+              "profit": 99.286
+            },
+            {
+              "date": "2020-01-21",
+              "profit": 100.0
+            },
+            {
+              "date": "2020-01-22",
+              "profit": 101.428
+            },
+            {
+              "date": "2020-01-23",
+              "profit": 102.4982
+            },
+            {
+              "date": "2020-01-28",
+              "profit": 97.1404
+            },
+            {
+              "date": "2020-01-29",
+              "profit": 96.7833
+            },
+            {
+              "date": "2020-01-30",
+              "profit": 95.3535
+            },
+            {
+              "date": "2020-01-31",
+              "profit": 92.4978
+            }
+          ]
+        }
+      ]);
+    } catch (e) {
+      setTableData();
+    }
+  };
 
   const getAlgorithmEvaluation = (id) => {
     // TODO: get Backtesting and Performance(daily test) data of certain algorithm
@@ -58,59 +660,22 @@ export const DashboardPage = () => {
               <Typography variant="h6" gutterBottom component="div">
                 My Algorithms
               </Typography>
-              <List style={{ margin: 8 }}>
-                <ListItem
-                  divider button
-                  selected={selectedAlgorithmId === 0}
-                  onClick={() => {
-                    setSelectedAlgorithmId(0);
-                  }}
-                >
-                  <ListItemText
-                    primary="Algorithm name (#id)"
-                    secondary={"Description for it? "}
-                  />
-                </ListItem>
-                <ListItem
-                  divider button
-                  selected={selectedAlgorithmId === 1}
-                  onClick={() => {
-                    setSelectedAlgorithmId(1);
-                  }}
-                >
-                  <ListItemText
-                    primary="Algorithm name (#id)"
-                    secondary={"Description for it? "}
-                  />
-                </ListItem>
-                <ListItem
-                  divider button
-                  selected={selectedAlgorithmId === 2}
-                  onClick={() => {
-                    setSelectedAlgorithmId(2);
-                  }}
-                >
-                  <ListItemText
-                    primary="Algorithm name (#id)"
-                    secondary={"Description for it? "}
-                  />
-                </ListItem>
-                <ListItem
-                  divider button
-                  selected={selectedAlgorithmId === 3}
-                  onClick={() => {
-                    setSelectedAlgorithmId(3);
-                  }}
-                >
-                  <ListItemText
-                    primary="Algorithm name (#id)"
-                    secondary={"Description for it? "}
-                  />
-                </ListItem>
+              <List style={{ margin: 8, maxHeight: 500, overflowY: "auto" }}>
+                {ownedAlgorithmListStore.map(e =>
+                  <ListItem
+                    divider button
+                    selected={selectedAlgorithmId === e.id}
+                    onClick={() => {
+                      selectAlgorithm(e.id);
+                    }}
+                  >
+                    <ListItemText
+                      primary={`${e.name} (#${e.id})`}
+                      secondary={e.description}
+                    />
+                  </ListItem>
+                )}
               </List>
-              The right-sided bar contains the list of user's algorithm which are available for testing
-              (i.e. algorithm which the user has accessed) In the side bar,
-              the algorithms are ordered by the reverse of the algorithm's id.
             </div>
           </Grid>
           <Grid item xs={9}>
@@ -147,12 +712,15 @@ export const DashboardPage = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row) =>
+                      {tableData.map((row) =>
                         <BacktestRow
                           data={row}
                           onOpenLog={() => {
-                            // TODO
-                            setBacktestDetailDialogData([]);
+                            setBacktestDetailDialogData({
+                              id: row.id,
+                              transaction_log: row.transaction_log,
+                              daily_profit: row.daily_profit
+                            });
                             setDialogOpen(true);
                           }}
                         />
@@ -161,7 +729,9 @@ export const DashboardPage = () => {
                   </Table>
                 </TableContainer>
                 <BacktestDetailDialog
-                  data={backtestDetailDialogData}
+                  id={backtestDetailDialogData.id}
+                  transaction_log={backtestDetailDialogData.transaction_log}
+                  daily_profit={backtestDetailDialogData.daily_profit}
                   open={dialogOpen}
                   handleClose={() => setDialogOpen(false)}
                 />
@@ -193,9 +763,9 @@ export const DashboardPage = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row) =>
-                        <RowByDateWithLogTable row={row}/>
-                      )}
+                      {/*{rows.map((row) =>*/}
+                      {/*  <RowByDateWithLogTable row={row}/>*/}
+                      {/*)}*/}
                     </TableBody>
                   </Table>
                 </TableContainer>

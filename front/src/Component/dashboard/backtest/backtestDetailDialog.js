@@ -9,26 +9,26 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import React from "react";
-import {RowByDateWithLogTable} from "./rowByDateWithLogTable";
-import {rows} from './mock'
+import { RowByDateWithLogTable } from "./rowByDateWithLogTable";
+import { rows } from "./mock";
 
-export const BacktestDetailDialog = ({data, open, handleClose}) => {
+export const BacktestDetailDialog = ({ id, transaction_log, daily_profit, open, handleClose }) => {
 
   return <Dialog
     fullWidth={true}
-    maxWidth={'md'}
+    maxWidth={"md"}
     open={open}
     onClose={handleClose}
   >
     <DialogTitle>
-      Log of Backtest #92753
+      Log of Backtest #{id}
     </DialogTitle>
     <DialogContent>
-      <TableContainer component={Paper} style={{maxHeight: 500, overflowY: 'auto'}}>
+      <TableContainer component={Paper} style={{ maxHeight: 500, overflowY: "auto" }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell style={{width: 30}}/>
+              <TableCell style={{ width: 30 }}/>
               <TableCell>
                 Date
               </TableCell>
@@ -44,12 +44,18 @@ export const BacktestDetailDialog = ({data, open, handleClose}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) =>
-              <RowByDateWithLogTable row={row}/>
+            {daily_profit.map((e, i) => {
+                console.log(e);
+                console.log(i);
+                return <RowByDateWithLogTable
+                  transaction_log={transaction_log[i]}
+                  daily_profit={daily_profit[i]}
+                />;
+              }
             )}
           </TableBody>
         </Table>
       </TableContainer>
     </DialogContent>
-  </Dialog>
-}
+  </Dialog>;
+};
