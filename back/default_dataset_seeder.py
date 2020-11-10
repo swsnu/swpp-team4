@@ -9,10 +9,10 @@ import django
 import numpy as np
 import pandas as pd
 
-from qc_api.models import Kospi, Kosdaq, StockData
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qc_back.settings')
 django.setup()
+
+from qc_api.models import Kospi, Kosdaq, StockData
 
 
 def kospi_to_db(chunk) -> None:

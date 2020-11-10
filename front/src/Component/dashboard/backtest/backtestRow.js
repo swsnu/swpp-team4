@@ -31,9 +31,10 @@ export const BacktestRow = ({ data, onOpenLog }) => {
       <TableCell style={{ width: 30 }}/>
       <TableCell align="left" colSpan={3}>
         {/*Backtest Settings: (start date, end date, initial_budget)*/}
-        Testing Period: 2020/02/24 ~ 2020/12/31,
+        Testing Period: {data.start_date.slice(0,10)} ~ {data.end_date.slice(0,10)},
         <br/>
-        Initial budget: 40,000,000KRW
+        Initial budget: {data.initial_budget}KRW
+      {/*  end_date: "2020-02-02T00:00:00Z"  */}
       </TableCell>
       <TableCell style={{ width: 120 }}>
         <Button variant='contained' color='primary' onClick={onOpenLog}>
