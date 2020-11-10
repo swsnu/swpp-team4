@@ -46,6 +46,8 @@ def run_backtest(request: Request) -> Response:
         HttpResponse: with status 200.
     """
     budget = request.data.get("budget")
+    algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
+    algorithm_data = AlgorithmSerializer(algorithm).data
     start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
-    return Response(sandbox.date_rows, status=status.HTTP_200_OK)
+    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
+    return Response(sandbox.report, status=status.HTTP_200_OK)
