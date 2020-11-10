@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from qc_api.models.tracking.report import Report
+from qc_api.models.evaluation.report import Report
 
 
 class ReportSerializer(serializers.ModelSerializer):
