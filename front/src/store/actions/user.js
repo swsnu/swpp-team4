@@ -1,29 +1,28 @@
-import * as actionTypes from './actionTypes';
-import axios from 'axios';
+import * as actionTypes from "./actionTypes";
+import axios from "axios";
 
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 export const sign_in = (username, password) => {
   return async (dispatch) => {
     const data = {
       username: username,
-      password: password,
+      password: password
     };
     try {
-    const response = await axios.post('/api/sign_in', data);
+      const response = await axios.post("/api/sign_in", data);
       const userInfo = {
         username: username,
-        password: password,
+        password: password
       };
       dispatch({
         type: actionTypes.SIGN_IN,
         userInfo: userInfo,
-        loggedIn: true,
+        loggedIn: true
       });
-
-    } catch(error) {
-      alert('email or password is wrong');
+    } catch (error) {
+      alert("email or password is wrong");
       // TODO
     }
   };
@@ -31,7 +30,7 @@ export const sign_in = (username, password) => {
 
 export const sign_out = () => {
   return async dispatch => {
-    const response = await axios.get('/api/sign_out');
-    dispatch({type: actionTypes.SIGN_OUT, loggedIn: false});
-  }
-}
+    const response = await axios.get("/api/sign_out");
+    dispatch({ type: actionTypes.SIGN_OUT, loggedIn: false });
+  };
+};
