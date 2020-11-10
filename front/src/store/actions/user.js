@@ -27,3 +27,10 @@ export const sign_in = (username, password) => {
     }
   };
 };
+
+export const sign_out = () => {
+  return async dispatch => {
+    const response = await axios.get('/api/sign_out');
+    dispatch({type: actionTypes.SIGN_OUT, loggedIn: false});
+  }
+}

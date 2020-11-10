@@ -9,6 +9,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import {withRouter} from 'react-router-dom';
 import LoginModal from './loginModal';
 import SignupModal from './signupModal';
+import { useDispatch } from 'react-redux';
+import * as actionCreators from "../store/actions/user";
 
 const useStyles = makeStyles(() => ({
   grow: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles(() => ({
 
 export const MenuBar = (props) => {
   const reduxStore = useSelector((s) => s);
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
@@ -41,6 +44,10 @@ export const MenuBar = (props) => {
     setSignUpAnchorEl(null);
   };
   const signUpOpen = Boolean(signUpAnchorEl);
+
+  const handleLogOut = () => {
+    dispatch(actionCreators.sign_out());
+  }
 
   return (
     <div style={{height: 70}}>
@@ -116,9 +123,7 @@ export const MenuBar = (props) => {
                 Manage data
               </Button>
               <Button
-                onClick={() => {
-                  props.history.push('/');
-                }}
+                onClick={handleLogOut}
                 className={classes.button}
               >
                 Log out
