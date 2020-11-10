@@ -1,11 +1,15 @@
-from rest_framework import serializers
-from qc_api.models import Algorithm
-from qc_api.serializers import *
+""" Serialization utils for algorithm """
 from typing import Dict, Any
+
+from rest_framework import serializers
+
+from qc_api.models import Algorithm
+from qc_api.serializers import SnippetScopeSerializer, SnippetBuySerializer,\
+    SnippetSellSerializer, SnippetAmountSerializer
 
 
 class AlgorithmSerializer(serializers.ModelSerializer):
-    """Serializer class for Algorithm"""
+    """ Serializer class for Algorithm """
     snippet_scope_data = serializers.SerializerMethodField()
     snippet_sell_data = serializers.SerializerMethodField()
     snippet_buy_data = serializers.SerializerMethodField()

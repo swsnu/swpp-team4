@@ -8,6 +8,9 @@ class Report(models.Model):
     Model for reporting backtest status
     """
     class BackTestStatus(models.TextChoices):
+        """
+        Enum class for backtest status.
+        """
         PENDING = 'PEND'  # , _('Pending')
         EXECUTING = 'EXEC'  # , _('Executing')
         DONE = 'DONE'  # , _('Done')
@@ -17,7 +20,7 @@ class Report(models.Model):
     def has_started(self):  # dummy method to show usage
         """
         Returns:
-            true if the status of backtest is not PENDING
+            bool: true if the status of backtest is not PENDING
         """
         return self.status != self.BackTestStatus.PENDING
 

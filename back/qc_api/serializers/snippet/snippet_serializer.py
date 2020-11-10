@@ -1,3 +1,4 @@
+""" Serialization utils for Snippet models """
 from rest_framework import serializers
 from ...models import Snippet, SnippetScope, SnippetAmount, SnippetBuy, SnippetSell
 

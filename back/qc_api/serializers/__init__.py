@@ -1,3 +1,4 @@
+""" import shortcuts for model serializers """
 from .snippet.snippet_serializer import (SnippetScopeSerializer,
                                          SnippetAmountSerializer,
                                          SnippetBuySerializer,
