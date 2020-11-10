@@ -14,6 +14,7 @@ class BackTester:
         self.snippet_sell = algorithm.get("snippet_sell_data").get("code")
         self.snippet_buy = algorithm.get("snippet_buy_data").get("code")
         self.snippet_amount = algorithm.get("snippet_amount_data").get("code")
+        self.scope = []
         self.budget = budget
         self.wallet = Wallet(budget=self.budget)
         self.universe = None
@@ -21,11 +22,10 @@ class BackTester:
         self.sell_amount_list = []
         self.today = datetime.date(1985, 1, 1)
         self.report = {
-            "MDD": 0,
-            "profit": 0,
             "alpha": 0,
-            "beta": 0,
-            "daily_portfolio": [],
+            "profit": 0,
+            "MDD": 0,
+            "transaction_log": [],
             "daily_profit": []
         }
         self.max_min_dict = {
@@ -59,6 +59,31 @@ class BackTester:
             self.make_amount_list(opt="sell", chosen_stocks=chosen_stocks)
             for index, stock_tuple in enumerate(self.sell_amount_list):
                 self.wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.today)
+
+    def make_buy_order(self):
+        if len(self.scope) == 0:
+            pass
+        else:
+            shopping_list = self.scope
+            chosen_stocks = []
+            exec_dict = {}
+            scope = dict(locals(), **globals())
+            exec(self.snippet_buy, scope, exec_dict)
+            self.make_amount_list(opt="buy", chosen_stocks=chosen_stocks)
+            for index, stock_tuple in enumerate(self.buy_amount_list):
+                try:
+                    self.wallet.purchase_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.today)
+                except IndexError:
+                    pass
+
+    def make_scope(self):
+        universe = self.universe
+        exec_dict = {}
+        scope = dict(locals(), **globals())
+        exec(self.snippet_scope, scope, exec_dict)
+        self.scope = exec_dict.get("scope")
+        for stock in exec_dict.get("shoppingList"):
+            self.scope.append(stock)
 
     def make_amount_list(self, opt, chosen_stocks):
         buy_amount_list = []
