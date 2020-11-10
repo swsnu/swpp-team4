@@ -8,4 +8,4 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = '__all__'
-        read_only_fields = '__all__'
+        read_only_fields = ('create_at', 'update_at')

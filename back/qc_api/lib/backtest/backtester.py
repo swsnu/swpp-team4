@@ -98,7 +98,7 @@ class BackTester:
     def make_daily_report(self):
         profit = self.wallet.get_profit()
         self.report.get("transaction_log").append(self.wallet.get_transaction_log(self.today))
-        self.report.get("daily_profit").append({"date": self.today, "profit": profit})
+        self.report.get("daily_profit").append({"date": str(self.today), "profit": profit})
         self.track_max_min(profit=profit)
 
     def track_max_min(self, profit):
