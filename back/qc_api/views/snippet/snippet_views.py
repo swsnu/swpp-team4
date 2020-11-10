@@ -1,7 +1,8 @@
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from ...models import Snippet
-from ...serializers import SnippetSerializer, SnippetScopeSerializer, SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
+from ...serializers import SnippetSerializer, SnippetScopeSerializer, SnippetBuySerializer, SnippetSellSerializer, \
+    SnippetAmountSerializer
 from ...util.decorator import catch_bad_request
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
@@ -26,7 +27,7 @@ def check_type_and_serialize_request(snippet_type: str, data: dict) -> Any:
         serializer = SnippetBuySerializer(data=data)
     elif snippet_type == 'sell':
         serializer = SnippetSellSerializer(data=data)
-    else:
+    else:  # snippet_type == amount
         serializer = SnippetAmountSerializer(data=data)
     return serializer
 

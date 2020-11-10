@@ -52,10 +52,10 @@ describe('test WritePage', () => {
     jest.spyOn(Math, 'random')
       .mockImplementation(() => 0);
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#snippet_validate').simulate('click');
-    expect(alertMock).toHaveBeenCalledTimes(1);
+    // component.find('button#snippet_validate').simulate('click');
+    // expect(alertMock).toHaveBeenCalledTimes(1);
     jest.spyOn(Math, 'random').mockImplementation(() => 1);
-    component.find('button#snippet_validate').simulate('click');
+    // component.find('button#snippet_validate').simulate('click');
     jest.spyOn(Math, 'random').mockImplementation(() => 0);
     component.find('button#submit_snippet').simulate('click');
     jest.spyOn(Math, 'random').mockImplementation(() => 1);
@@ -73,22 +73,22 @@ describe('test WritePage', () => {
     component.find('button#submit_algorithm').simulate('click');
 
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#snippet_validate').simulate('click');
+    // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_2').simulate('click');
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#snippet_validate').simulate('click');
+    // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_3').simulate('click');
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#snippet_validate').simulate('click');
+    // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_4').simulate('click');
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#snippet_validate').simulate('click');
+    // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     // TODO
