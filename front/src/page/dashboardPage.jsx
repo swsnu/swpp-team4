@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { ConnectedRouter } from "connected-react-router";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Drawer from "@material-ui/core/Drawer";
+import axios from "axios";
 import {
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
-  Divider,
   Typography
 } from "@material-ui/core";
 import MenuBar from "../Component/menuBar";
@@ -24,11 +22,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Grid from "@material-ui/core/Grid";
 import { BacktestRow } from "../Component/dashboard/backtest/backtestRow";
 import { BacktestDetailDialog } from "../Component/dashboard/backtest/backtestDetailDialog";
-import { rows } from "../Component/dashboard/backtest/mock";
 import { NewBackTestForm } from "../Component/dashboard/backtest/newBackTestForm";
-import { RowByDateWithLogTable } from "../Component/dashboard/backtest/rowByDateWithLogTable";
 import { getAllMyAlgorithm } from "../store/actions/algo";
-import axios from "axios";
+import { RowByDateWithLogTable } from "../Component/dashboard/backtest/rowByDateWithLogTable";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -48,6 +44,7 @@ export const DashboardPage = () => {
   const dispatch = useDispatch();
   const ownedAlgorithmListStore = useSelector(s => s.algo.ownedAlgorithmList);
   const [tableData, setTableData] = useState([]);
+  const [simulationData, setSimulationData] = useState([]);
 
 
   useEffect(() => {
@@ -59,7 +56,7 @@ export const DashboardPage = () => {
     setSelectedAlgorithmId(id);
     // TODO: get Backtesting and Performance(daily test) data of certain algorithm
     try {
-      // axios.get('api/?????')
+      // TODO: axios.get('api/?????')
       setTableData([
         {
           id: 10001,
@@ -642,7 +639,14 @@ export const DashboardPage = () => {
         }
       ]);
     } catch (e) {
-      setTableData();
+      setTableData([]);
+    }
+
+    try {
+      // TODO: axios.get('api/?????')
+      setSimulationData([]);  // TODO
+    } catch (e) {
+      setSimulationData([]);
     }
   };
 
@@ -699,7 +703,7 @@ export const DashboardPage = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell style={{ width: 30 }}/>
-                        <TableCell>Name?</TableCell>
+                        <TableCell>Backtest ID</TableCell>
                         <TableCell align="right">
                           Profit(%)
                         </TableCell>
@@ -763,20 +767,19 @@ export const DashboardPage = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {/*{rows.map((row) =>*/}
-                      {/*  <RowByDateWithLogTable row={row}/>*/}
-                      {/*)}*/}
+                      {simulationData.map((row) =>
+                        <RowByDateWithLogTable
+                          transaction_log={row.transaction_log}
+                          daily_profit={row.daily_profit}
+                        />
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <div>
-                  show BacktestDetailDialog like collapsing two level table
-                </div>
               </div>
             </div>
           </Grid>
         </Grid>
-
       </div>
     </div>
   );
