@@ -2,7 +2,7 @@
 import pandas as pd
 import datetime
 from ...models import Kospi, Kosdaq, StockData
-from ...util.utility import stock_data_columns
+from ...util.utility import stock_data_columns, parse_date
 from ..wallet.wallet import Wallet
 
 
@@ -32,3 +32,8 @@ class BackTester:
             "regi": [100, "eq"],  # currVal>preVal=>gt, currVal<preVal=>lt, currVal=preVal=>eq
             "list": []
         }
+
+    def set_date(self, date: str) -> None:
+        """Sets self.today"""
+        self.today = parse_date(date)
+
