@@ -33,12 +33,42 @@ class BackTester:
             "list": []
         }
 
-    def set_date(self, date: str) -> None:
+    def set_date(self, date: datetime.date) -> None:
         """Sets self.today"""
-        self.today = parse_date(date)
+        self.today = date
 
     def set_universe(self) -> None:
         """Brings today (in context of backtesting)'s stock data from StockData DB table into memory"""
         self.universe = pd.DataFrame(list(StockData.objects.filter(date=self.today).values()),
                                      columns=stock_data_columns)
+
+    def update_wallet(self):
+        self.wallet.update_coins(universe_today=self.universe)
+
+    def make_sell_order(self):
+        sell_candidates = self.wallet.get_coins()
+        if len(sell_candidates) == 0:
+            pass
+        else:
+            chosen_stocks = []
+            exec_dict = {}
+            scope = dict(locals(), **globals())
+            exec(self.snippet_sell, scope, exec_dict)
+            if exec_dict.get("chosen_stocks"):
+                chosen_stocks = exec_dict.get("chosen_stocks")
+            self.make_amount_list(opt="sell", chosen_stocks=chosen_stocks)
+            for index, stock_tuple in enumerate(self.sell_amount_list):
+                self.wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.today)
+
+    def make_amount_list(self, opt, chosen_stocks):
+        buy_amount_list = []
+        sell_amount_list = []
+        exec_dict = {}
+        scope = dict(locals(), **globals())
+        if opt == "buy":
+            exec(self.snippet_amount, scope, exec_dict)
+            self.buy_amount_list = buy_amount_list
+        else:
+            exec(self.snippet_amount, scope, exec_dict)
+            self.sell_amount_list = sell_amount_list
 
