@@ -11,7 +11,8 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from typing import Dict, Any
+from ...lib import SandBox
+from ...util.utility import parse_date
 
 
 @api_view(['GET', 'POST'])
@@ -34,3 +35,13 @@ def get_or_post_algorithms(request: Request) -> Response:
         algorithms = Algorithm.objects.filter(**request.query_params)
         response = AlgorithmSerializer(algorithms, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def run_backtest(request: Request) -> Response:
+    budget, start, end = request.data.get("budget"), parse_date(request.data.get("start")), \
+                         parse_date(request.data.get("end"))
+    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
+    return Response(sandbox.date_rows, status=status.HTTP_200_OK)
