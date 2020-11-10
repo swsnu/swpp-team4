@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 // import { ConnectedRouter } from 'connected-react-router';
 // import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 // import { useDispatch, useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import { Controlled as CodeMirror } from 'react-codemirror2';
+import {Controlled as CodeMirror} from 'react-codemirror2';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
@@ -14,6 +14,9 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MenuBar from '../Component/menuBar';
+import * as actionCreators from "../store/actions/user";
+import {useDispatch} from 'react-redux';
+import {submitSnippet} from "../store/actions/snippet";
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -43,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export const WritePage = () => {
   const classes = useStyles();
   const [TabValue, setTabValue] = useState(1);
+  const dispatch = useDispatch();
 
   const [editorValue, setEditorValue] = useState({
     1: '1111',
@@ -51,21 +55,22 @@ export const WritePage = () => {
     4: '44',
   });
 
+  /* istanbul ignore next */
   const handleEditorValueChange = (i, d) => {
-    setEditorValue({ ...editorValue, [i]: d });
-    handleEditorValidationChange(i, false);
+    setEditorValue({...editorValue, [i]: d});
+    // handleEditorValidationChange(i, false);
   };
 
-  const [snippetValidated, setSnippetValidated] = useState({
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-  });
+  // const [snippetValidated, setSnippetValidated] = useState({
+  //   1: false,
+  //   2: false,
+  //   3: false,
+  //   4: false,
+  // });
 
-  const handleEditorValidationChange = (i, v) => {
-    setSnippetValidated({ ...snippetValidated, [i]: v });
-  };
+  // const handleEditorValidationChange = (i, v) => {
+  //   setSnippetValidated({...snippetValidated, [i]: v});
+  // };
 
   const [snippetSubmitted, setSnippetSubmitted] = useState({
     1: false,
@@ -75,10 +80,17 @@ export const WritePage = () => {
   });
 
   const handleSnippetSubmittionChange = (i, v) => {
-    setSnippetSubmitted({ ...snippetSubmitted, [i]: v });
+    setSnippetSubmitted({...snippetSubmitted, [i]: v});
   };
 
   const [snippetName, setSnippetName] = useState({
+    1: '',
+    2: '',
+    3: '',
+    4: '',
+  });
+
+  const [snippetDescr, setSnippetDescr] = useState({
     1: '',
     2: '',
     3: '',
@@ -122,23 +134,21 @@ export const WritePage = () => {
     // make editor readonly by changing snippetValidated & snippetSubmitted
   };
 
-  const handleValidate = (i) => {
-    if (Math.random() > 0.5) {
-      window.alert('validated');
-      handleEditorValidationChange(i, true);
-    } else {
-      window.alert('validation fail: change name');
-    }
-  };
+  // const handleValidate = (i) => {
+  //   if (Math.random() > 0.5) {
+  //     window.alert('validated');
+  //     handleEditorValidationChange(i, true);
+  //   } else {
+  //     window.alert('validation fail: change name');
+  //   }
+  // };
 
   const handleSubmitSnippet = (i) => {
-    // TODO: send request to check for name duplicate
-    if (Math.random() > 0.5) {
-      window.alert('snippet submitted! ');
-      handleSnippetSubmittionChange(i, true);
-    } else {
-      window.alert('duplicate name, please change snippet name');
-    }
+    // TODO: check for name duplicate
+    // snippetDescr
+    const snippetType = [undefined, 'scope', 'buy', 'sell', 'amount']
+    dispatch(submitSnippet(snippetName[i], snippetDescr[i], snippetType[i], editorValue[i]))
+    handleSnippetSubmittionChange(i, true);
   };
 
   const saveAlgorithmAsDraft = () => {
@@ -176,12 +186,12 @@ export const WritePage = () => {
     <div className={classes.root}>
       <MenuBar/>
       <Grid container justify="center" spacing={2}>
-        <Grid item xs={4} style={{ backgroundColor: '#eeeeee' }}>
+        <Grid item xs={4} style={{backgroundColor: '#eeeeee'}}>
           API DOC
         </Grid>
         <Grid item xs={8}>
           <Paper elevation={1}>
-            <Paper elevation={3} style={{ marginBottom: 5, marginTop: 5 }}>
+            <Paper elevation={3} style={{marginBottom: 5, marginTop: 5}}>
               <Tabs
                 value={TabValue}
                 onChange={handleTabChange}
@@ -189,30 +199,41 @@ export const WritePage = () => {
                 textColor="primary"
                 centered
               >
-                <Tab id='snippet_1' label="Snippet One" value={1}/>
-                <Tab id='snippet_2' label="Snippet Two" value={2}/>
-                <Tab id='snippet_3' label="Snippet Three" value={3}/>
-                <Tab id='snippet_4' label="Snippet Four" value={4}/>
+                <Tab id='snippet_1' label="Snippet: Scope" value={1}/>
+                <Tab id='snippet_2' label="Snippet: Buy" value={2}/>
+                <Tab id='snippet_3' label="Snippet: Sell" value={3}/>
+                <Tab id='snippet_4' label="Snippet: Amount" value={4}/>
               </Tabs>
             </Paper>
-            <div
-              style={{
-                marginBottom: 10,
-                marginTop: 10,
-                marginLeft: 10,
-                marginRight: 10,
-              }}
-            >
+            <div style={{margin: 10}}>
               <TextField
                 id="snippet_name"
                 variant="outlined"
                 size={'small'}
                 label="snippet name"
+                disabled={snippetSubmitted[TabValue]}
                 fullWidth
                 value={snippetName[TabValue]}
                 onChange={(e) => {
                   setSnippetName({
                     ...snippetName,
+                    [TabValue]: e.target.value,
+                  });
+                }}
+              />
+            </div>
+            <div style={{margin: 10}}>
+              <TextField
+                id="snippet_descr"
+                variant="outlined"
+                size={'small'}
+                label="snippet Description"
+                disabled={snippetSubmitted[TabValue]}
+                fullWidth
+                value={snippetDescr[TabValue]}
+                onChange={(e) => {
+                  setSnippetDescr({
+                    ...snippetDescr,
                     [TabValue]: e.target.value,
                   });
                 }}
@@ -224,6 +245,7 @@ export const WritePage = () => {
                 mode: 'python',
                 theme: 'material',
                 lineNumbers: true,
+                readOnly: snippetSubmitted[TabValue]
               }}
               onBeforeChange={(editor, data, value) => {
                 handleEditorValueChange(TabValue, value);
@@ -232,33 +254,35 @@ export const WritePage = () => {
               //   // setEditor1Value(value);
               // }}
             />
-            <ButtonGroup color="primary" style={{ margin: 10 }}>
+            <ButtonGroup color="primary" style={{margin: 10}}>
               <Button
                 id='import_algorithm'
                 size={'small'}
+                disabled={snippetSubmitted[TabValue]}
                 onClick={() => {
                   handleImport(TabValue);
                 }}
               >
                 Import
               </Button>
-              <Button
-                id='snippet_validate'
-                size={'small'}
-                disabled={
-                  snippetName[TabValue] === '' || snippetValidated[TabValue]
-                }
-                onClick={() => {
-                  handleValidate(TabValue);
-                }}
-              >
-                Validate
-              </Button>
+              {/*<Button*/}
+              {/*  id='snippet_validate'*/}
+              {/*  size={'small'}*/}
+              {/*  disabled={*/}
+              {/*    snippetName[TabValue] === '' || snippetValidated[TabValue]*/}
+              {/*  }*/}
+              {/*  onClick={() => {*/}
+              {/*    handleValidate(TabValue);*/}
+              {/*  }}*/}
+              {/*>*/}
+              {/*  Validate*/}
+              {/*</Button>*/}
               <Button
                 id='submit_snippet'
                 size={'small'}
                 disabled={
-                  snippetName[TabValue] === '' || !snippetValidated[TabValue]
+                  // snippetName[TabValue] === '' || !snippetValidated[TabValue]
+                  snippetName[TabValue] === '' || snippetSubmitted[TabValue]
                 }
                 onClick={() => {
                   handleSubmitSnippet(TabValue);
@@ -267,30 +291,34 @@ export const WritePage = () => {
                 Submit Snippet
               </Button>
             </ButtonGroup>
-            <Typography id='status_message' component="span" style={{ color: '#ff0000' }}>
-              {`Status: ${snippetValidated[TabValue] === true
-                ? snippetSubmitted[TabValue] === true
-                  ? 'Submitted'
-                  : 'Not submitted'
-                : 'Unvalidated'}`
+            <Typography id='status_message' component="span" style={{color: '#ff0000'}}>
+              {/*{`Status: ${snippetValidated[TabValue] === true*/}
+              {/*  ? snippetSubmitted[TabValue] === true*/}
+              {/*    ? 'Submitted'*/}
+              {/*    : 'Not submitted'*/}
+              {/*  : 'Unvalidated'}`*/}
+              {/*}*/}
+              {`Status: ${snippetSubmitted[TabValue] === true
+                ? 'Submitted'
+                : 'Not submitted'}`
               }
             </Typography>
           </Paper>
 
-          <Grid container justify="space-between" style={{ padding: 10 }}>
+          <Grid container justify="space-between" style={{padding: 10}}>
             <Grid item>
               <TextField
                 id="algorithm_name"
                 variant="outlined"
                 label="Algorithm name"
                 size={'small'}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
                 value={algorithmName}
                 onChange={(e) => {
                   setAlgorithmName(e.target.value);
                 }}
               />
-              <ButtonGroup color="primary" style={{ marginTop: 2 }}>
+              <ButtonGroup color="primary" style={{marginTop: 2}}>
                 <Button
                   id='save_algorithm'
                   onClick={() => {
@@ -326,7 +354,7 @@ export const WritePage = () => {
           setImportModalOpen(false);
         }}
       >
-        <Paper style={{ width: '100%', height: 400 }}>{'asdasd'}</Paper>
+        <Paper style={{width: '100%', height: 400}}>{'asdasd'}</Paper>
       </Dialog>
     </div>
   );
