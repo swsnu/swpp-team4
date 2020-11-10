@@ -16,6 +16,16 @@ from ...util.utility import parse_date
 import json
 
 
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def get_my_algorithms(request: Request) -> Response:
+    """api endpoint for user-personalized algorithms"""
+    my_algorithms = Algorithm.objects.filter(author=request.user.id)
+    serializer = AlgorithmSerializer(my_algorithms, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
