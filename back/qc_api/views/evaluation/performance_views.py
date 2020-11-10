@@ -42,7 +42,7 @@ def get_performance_by_algo(request: Request, algo_id: int) -> Response:
         request: HTTP Request.
         algo_id: Algorithm Id to query.
     Returns:
-        An HTTP Response containing list of serialized Performance model
+        An HTTP Response containing single serialized Performance model
         (type: Dict[str: ANY]) as its data.
     """
     try:
