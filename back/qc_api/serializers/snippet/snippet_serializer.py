@@ -1,3 +1,4 @@
+""" Serialization utils for Snippet models """
 from rest_framework import serializers
 from ...models import Snippet, SnippetScope, SnippetAmount, SnippetBuy, SnippetSell
 
@@ -6,7 +7,7 @@ class SnippetSerializer(serializers.ModelSerializer):
     """Serializer class for generic snippet class"""
     class Meta:
         model = Snippet
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
+        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type', 'create_at', 'update_at']
         read_only_fields = ('create_at', 'update_at')
 
 

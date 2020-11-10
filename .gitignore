@@ -25,3 +25,6 @@ coverage.xml
 
 # Django stuffs
 db.sqlite3
+
+#migration files
+back/qc_api/migrations
