@@ -21,7 +21,6 @@ def sign_up(request):
 
 
 @csrf_exempt
-@api_view(['POST'])
 def sign_in(request):
     """ Handle sign in request """
     req_data = json.loads(request.body.decode())

@@ -7,8 +7,8 @@ class SnippetSerializer(serializers.ModelSerializer):
     """Serializer class for generic snippet class"""
     class Meta:
         model = Snippet
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type', 'create_at', 'update_at']
-        read_only_fields = ('create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type', 'create_at', 'update_at']
+        read_only_fields = ('id', 'create_at', 'update_at')
 
 
 class SnippetScopeSerializer(serializers.ModelSerializer):
@@ -16,8 +16,8 @@ class SnippetScopeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetScope
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
-        read_only_fields = ('create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type']
+        read_only_fields = ('id', 'create_at', 'update_at')
 
 
 class SnippetBuySerializer(serializers.ModelSerializer):
@@ -25,8 +25,8 @@ class SnippetBuySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetBuy
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
-        read_only_fields = ('create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type']
+        read_only_fields = ('id', 'create_at', 'update_at')
 
 
 class SnippetSellSerializer(serializers.ModelSerializer):
@@ -34,8 +34,8 @@ class SnippetSellSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetSell
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
-        read_only_fields = ('create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type']
+        read_only_fields = ('id', 'create_at', 'update_at')
 
 
 class SnippetAmountSerializer(serializers.ModelSerializer):
@@ -43,5 +43,5 @@ class SnippetAmountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SnippetAmount
-        fields = ['code', 'name', 'description', 'author', 'is_shared', 'type']
-        read_only_fields = ('create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type']
+        read_only_fields = ('id', 'create_at', 'update_at')
