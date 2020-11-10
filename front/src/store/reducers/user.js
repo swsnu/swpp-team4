@@ -23,6 +23,8 @@ const userReducer = (state = initialState, action) => {
       return initialState;
     case actionTypes.SIGN_IN:
       return {...state, userInfo: action.userInfo, loggedIn: action.loggedIn};
+    case actionTypes.SIGN_OUT:
+      return {...state, userInfo: null, loggedIn: action.loggedIn};
     case 'SUBMIT_SNIPPET':
       return {...state, snippetSubmit: {...state.snippetSubmit, [action.data.index]: action.data.value}}
     case 'RESET_SUBMIT_SNIPPET':

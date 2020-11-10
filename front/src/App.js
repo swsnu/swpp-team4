@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import { LandingPage } from './page/landingPage';
 import { DashboardPage } from './page/dashboardPage';
 import { WritePage } from './page/writePage';
+import { ManagePage } from './page/managePage';
 
 function App(props) {
   // const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function App(props) {
           {reduxStore.user.loggedIn === true ? (
             <Switch>
               <Route path="/algo/write" exact component={WritePage} />
+              <Route path="/algo/manage" exact component={ManagePage} />
               <Redirect exact from="/login" to="/dashboard" />
               <Route path="/dashboard" exact component={DashboardPage} />
               <Route path="/" exact component={LandingPage} />
