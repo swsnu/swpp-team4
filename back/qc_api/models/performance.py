@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 
 
 class Performance(models.Model):
+    """
+    Performance model to store the daily simulation result.
+    """
     # algorithm = models.ForeignKey()
     author = models.ForeignKey(
         User,
