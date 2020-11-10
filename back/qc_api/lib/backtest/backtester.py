@@ -3,7 +3,7 @@ import pandas as pd
 import datetime
 from ...models import Kospi, Kosdaq, StockData
 from ...util.utility import stock_data_columns, parse_date
-from ..wallet.wallet import Wallet
+from ..wallet.wallet import Wallet, Stock
 
 
 class BackTester:
@@ -16,7 +16,6 @@ class BackTester:
         self.snippet_amount = algorithm.get("snippet_amount_data").get("code")
         self.scope = []
         self.budget = budget
-        self.wallet = Wallet(budget=self.budget)
         self.universe = None
         self.buy_amount_list = []
         self.sell_amount_list = []
@@ -32,6 +31,7 @@ class BackTester:
             "regi": [100, "eq"],  # currVal>preVal=>gt, currVal<preVal=>lt, currVal=preVal=>eq
             "list": []
         }
+        self.wallet = Wallet(budget=self.budget)
 
     def set_date(self, date: datetime.date) -> None:
         """Sets self.today"""
@@ -64,11 +64,11 @@ class BackTester:
         if len(self.scope) == 0:
             pass
         else:
-            shopping_list = self.scope
+            scope = self.scope
             chosen_stocks = []
             exec_dict = {}
-            scope = dict(locals(), **globals())
-            exec(self.snippet_buy, scope, exec_dict)
+            _scope = dict(locals(), **globals())
+            exec(self.snippet_buy, _scope, exec_dict)
             self.make_amount_list(opt="buy", chosen_stocks=chosen_stocks)
             for index, stock_tuple in enumerate(self.buy_amount_list):
                 try:
@@ -79,11 +79,9 @@ class BackTester:
     def make_scope(self):
         universe = self.universe
         exec_dict = {}
-        scope = dict(locals(), **globals())
-        exec(self.snippet_scope, scope, exec_dict)
+        _scope = dict(locals(), **globals())
+        exec(self.snippet_scope, _scope, exec_dict)
         self.scope = exec_dict.get("scope")
-        for stock in exec_dict.get("shoppingList"):
-            self.scope.append(stock)
 
     def make_amount_list(self, opt, chosen_stocks):
         buy_amount_list = []
@@ -99,7 +97,8 @@ class BackTester:
 
     def make_daily_report(self):
         profit = self.wallet.get_profit()
-        self.report.get("daily_profit").append(profit)
+        self.report.get("transaction_log").append(self.wallet.get_transaction_log(self.today))
+        self.report.get("daily_profit").append({"date": self.today, "profit": profit})
         self.track_max_min(profit=profit)
 
     def track_max_min(self, profit):
@@ -135,9 +134,11 @@ class BackTester:
                 self.max_min_dict.get("regi")[1] = 'eq'
         self.max_min_dict.get("regi")[0] = profit
 
-    def report_result(self):
+    def report_result(self, start, end):
         self.report["MDD"] = self.calculate_mdd()
-        self.report["profit"] = self.report.get("daily_profit")[-1]
+        self.report["profit"] = self.report.get("daily_profit")[-1].get("profit")
+        self.report["alpha"] = self.calculate_alpha(start, end)
+        return self.report
 
     def calculate_mdd(self):
         max_min_list = self.max_min_dict.get("list")
@@ -151,3 +152,6 @@ class BackTester:
                 min_element = max_min_list[-1 * i]
         return max_diff
 
+    def calculate_alpha(self, start, end):
+        kospi_profit = Kospi.objects.get(date=end).close/Kospi.objects.get(date=start).close
+        return self.report.get("profit")/float(kospi_profit)
