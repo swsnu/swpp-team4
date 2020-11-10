@@ -1,7 +1,6 @@
 """
     algorithm views
 """
-
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -48,6 +47,7 @@ def run_backtest(request: Request) -> Response:
     """
     budget, start, end = request.data.get("budget"),\
                          parse_date(request.data.get("start")), \
+    budget, start, end = request.data.get("budget"), parse_date(request.data.get("start")), \
                          parse_date(request.data.get("end"))
     sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
     return Response(sandbox.date_rows, status=status.HTTP_200_OK)
