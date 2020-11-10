@@ -97,3 +97,40 @@ class BackTester:
             exec(self.snippet_amount, scope, exec_dict)
             self.sell_amount_list = sell_amount_list
 
+    def make_daily_report(self):
+        profit = self.wallet.get_profit()
+        self.report.get("daily_profit").append(profit)
+        self.track_max_min(profit=profit)
+
+    def track_max_min(self, profit):
+        """update max_min_dict"""
+        yesterday_profit = self.max_min_dict.get("regi")[0]
+        yesterday_mode = self.max_min_dict.get("regi")[1]
+        if yesterday_mode == 'eq':
+            if profit > yesterday_profit:
+                self.max_min_dict.get("list").append(self.max_min_dict.get("regi")[0])
+                self.max_min_dict.get("regi")[1] = 'gt'
+            elif profit < yesterday_profit:
+                self.max_min_dict.get("list").append(self.max_min_dict.get("regi")[0])
+                self.max_min_dict.get("regi")[1] = 'lt'
+            else:
+                pass
+        elif yesterday_mode == 'gt':
+            if profit < yesterday_profit:
+                """local maxima"""
+                self.max_min_dict.get("list").append(self.max_min_dict.get("regi")[0])
+                self.max_min_dict.get("regi")[1] = 'lt'
+            elif profit > yesterday_profit:
+                self.max_min_dict.get("regi")[1] = 'gt'
+            else:
+                self.max_min_dict.get("regi")[1] = 'eq'
+        else:
+            if profit < yesterday_profit:
+                self.max_min_dict.get("regi")[1] = 'lt'
+            elif profit > yesterday_profit:
+                """local minima"""
+                self.max_min_dict.get("regi")[1] = 'gt'
+                self.max_min_dict.get("list").append(self.max_min_dict.get("regi")[0])
+            else:
+                self.max_min_dict.get("regi")[1] = 'eq'
+        self.max_min_dict.get("regi")[0] = profit
