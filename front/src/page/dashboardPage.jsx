@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import {ConnectedRouter} from 'connected-react-router';
-import {BrowserRouter, Route, Redirect, Switch} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import Drawer from '@material-ui/core/Drawer';
+import React, { useEffect, useState } from "react";
+import { ConnectedRouter } from "connected-react-router";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Drawer from "@material-ui/core/Drawer";
 import {
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Divider,
-  Typography,
-} from '@material-ui/core';
-import MenuBar from '../Component/menuBar';
+  Typography
+} from "@material-ui/core";
+import MenuBar from "../Component/menuBar";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -22,78 +22,89 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import {BacktestRow} from "../Component/dashboard/backtest/backtestRow";
-import {BacktestDetailDialog} from "../Component/dashboard/backtest/backtestDetailDialog";
-import {rows} from '../Component/dashboard/backtest/mock'
-import {NewBackTestForm} from "../Component/dashboard/backtest/newBackTestForm";
-import {RowByDateWithLogTable} from "../Component/dashboard/backtest/rowByDateWithLogTable";
+import { BacktestRow } from "../Component/dashboard/backtest/backtestRow";
+import { BacktestDetailDialog } from "../Component/dashboard/backtest/backtestDetailDialog";
+import { rows } from "../Component/dashboard/backtest/mock";
+import { NewBackTestForm } from "../Component/dashboard/backtest/newBackTestForm";
+import { RowByDateWithLogTable } from "../Component/dashboard/backtest/rowByDateWithLogTable";
+import { getAllMyAlgorithm } from "../store/actions/algo";
 
 export const DashboardPage = () => {
 
-  const [tab, setTab] = useState(0)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState([])
-  const [selectedAlgorithmId, setSelectedAlgorithmId] = useState(0)
+  const [tab, setTab] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState([]);
+  const [selectedAlgorithmId, setSelectedAlgorithmId] = useState(0);
+  const dispatch = useDispatch();
+  const ownedAlgorithmListStore = useSelector(s => s.algo.ownedAlgorithmList);
+
+
+  useEffect(() => {
+    // TODO: get list of all my algorithms
+    dispatch(getAllMyAlgorithm())
+  }, []);
+
+  const getAlgorithmEvaluation = (id) => {
+    // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+  };
 
   return (
     <div>
       <MenuBar/>
       <div>
-        <Grid container spacing={3} style={{marginTop: 16}}>
+        <Grid container spacing={3} style={{ marginTop: 16 }}>
           <Grid item xs={3} component={Paper}>
-            <div style={{width: '100%', height: '100%', margin: 0}}>
+            <div style={{ width: "100%", height: "100%", margin: 0 }}>
               <Typography variant="h6" gutterBottom component="div">
                 My Algorithms
               </Typography>
-              <List style={{margin: 8}}>
+              <List style={{ margin: 8 }}>
                 <ListItem
                   divider button
                   selected={selectedAlgorithmId === 0}
                   onClick={() => {
-                    setSelectedAlgorithmId(0)
+                    setSelectedAlgorithmId(0);
                   }}
                 >
                   <ListItemText
                     primary="Algorithm name (#id)"
-                    secondary={'Description for it? '}
+                    secondary={"Description for it? "}
                   />
                 </ListItem>
                 <ListItem
                   divider button
                   selected={selectedAlgorithmId === 1}
                   onClick={() => {
-                    setSelectedAlgorithmId(1)
+                    setSelectedAlgorithmId(1);
                   }}
                 >
                   <ListItemText
                     primary="Algorithm name (#id)"
-                    secondary={'Description for it? '}
+                    secondary={"Description for it? "}
                   />
                 </ListItem>
                 <ListItem
                   divider button
                   selected={selectedAlgorithmId === 2}
                   onClick={() => {
-                    setSelectedAlgorithmId(2)
+                    setSelectedAlgorithmId(2);
                   }}
                 >
                   <ListItemText
                     primary="Algorithm name (#id)"
-                    secondary={'Description for it? '}
+                    secondary={"Description for it? "}
                   />
                 </ListItem>
                 <ListItem
                   divider button
                   selected={selectedAlgorithmId === 3}
                   onClick={() => {
-                    setSelectedAlgorithmId(3)
+                    setSelectedAlgorithmId(3);
                   }}
                 >
                   <ListItemText
                     primary="Algorithm name (#id)"
-                    secondary={'Description for it? '}
+                    secondary={"Description for it? "}
                   />
                 </ListItem>
               </List>
@@ -114,15 +125,15 @@ export const DashboardPage = () => {
                 <Tab label="Backtest"/>
                 <Tab label="Simulation"/>
               </Tabs>
-              <div style={{display: tab === 0 ? 'block' : 'none', height: 400, marginTop: 16}}>
+              <div style={{ display: tab === 0 ? "block" : "none", height: 400, marginTop: 16 }}>
                 <Typography variant="h6" gutterBottom component="div">
                   Backtests
                 </Typography>
-                <TableContainer component={Paper} style={{maxHeight: 300, overflowY: 'auto'}}>
+                <TableContainer component={Paper} style={{ maxHeight: 300, overflowY: "auto" }}>
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
-                        <TableCell style={{width: 30}}/>
+                        <TableCell style={{ width: 30 }}/>
                         <TableCell>Name?</TableCell>
                         <TableCell align="right">
                           Profit(%)
@@ -141,8 +152,8 @@ export const DashboardPage = () => {
                           data={row}
                           onOpenLog={() => {
                             // TODO
-                            setBacktestDetailDialogData([])
-                            setDialogOpen(true)
+                            setBacktestDetailDialogData([]);
+                            setDialogOpen(true);
                           }}
                         />
                       )}
@@ -155,18 +166,18 @@ export const DashboardPage = () => {
                   handleClose={() => setDialogOpen(false)}
                 />
                 <NewBackTestForm onSubmit={(d) => {
-                  console.log(d)
+                  console.log(d);
                 }}/>
               </div>
-              <div style={{display: tab === 1 ? 'block' : 'none', height: 400, marginTop: 16}}>
+              <div style={{ display: tab === 1 ? "block" : "none", height: 400, marginTop: 16 }}>
                 <Typography variant="h6" gutterBottom component="div">
                   Simulation
                 </Typography>
-                <TableContainer component={Paper} style={{maxHeight: 300, overflowY: 'auto'}}>
+                <TableContainer component={Paper} style={{ maxHeight: 300, overflowY: "auto" }}>
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell style={{width: 30}}/>
+                        <TableCell style={{ width: 30 }}/>
                         <TableCell>
                           Date
                         </TableCell>
