@@ -112,7 +112,7 @@ export const MenuBar = (props) => {
               </Button>
               <Button
                 onClick={() => {
-                  props.history.push('/algo/write');
+                  props.history.push('/algo/manage');
                 }}
                 className={classes.button}
               >

@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
-const SignupModal = props => {
+export const SignupModal = props => {
 
   const [Username, setUsername] = React.useState('');
   const [Password, setPassword] = React.useState('');
@@ -24,13 +24,12 @@ const SignupModal = props => {
   }
 
   const handleSignUpSubmit = async () => {
-    const response = await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
-    if (response.status === 201) {
-      alert('Signed up successfully');
+    try {
+      const response = await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
+      window.alert('Signed up successfully');
       props.history.push('/');
-    }
-    else if (response.status === 400) {
-      alert('Username already exists');
+    } catch(e) {
+      window.alert('Username already exists');
     }
   }
 

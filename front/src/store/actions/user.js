@@ -10,8 +10,8 @@ export const sign_in = (username, password) => {
       username: username,
       password: password,
     };
+    try {
     const response = await axios.post('/api/sign_in', data);
-    if (response.status === 204) {
       const userInfo = {
         username: username,
         password: password,
@@ -21,7 +21,8 @@ export const sign_in = (username, password) => {
         userInfo: userInfo,
         loggedIn: true,
       });
-    } else {
+
+    } catch(error) {
       alert('email or password is wrong');
       // TODO
     }
