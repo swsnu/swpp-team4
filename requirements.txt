@@ -29,3 +29,5 @@ threadpoolctl==2.1.0
 toml==0.10.1
 virtualenv==20.0.31
 wrapt==1.12.1
+
+djangorestframework~=3.12.2

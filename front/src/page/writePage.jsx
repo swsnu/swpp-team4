@@ -15,8 +15,9 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MenuBar from '../Component/menuBar';
 import * as actionCreators from "../store/actions/user";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {submitSnippet} from "../store/actions/snippet";
+import {submitAlgo} from "../store/actions/algo";
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -43,10 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const WritePage = () => {
+export const WritePage = (props) => {
   const classes = useStyles();
   const [TabValue, setTabValue] = useState(1);
   const dispatch = useDispatch();
+  const snippetSubmitStore = useSelector(s => s.user.snippetSubmit)
+  const algorithmSubmitStore = useSelector(s => s.user.algorithmSubmit)
 
   const [editorValue, setEditorValue] = useState({
     1: '1111',
@@ -72,17 +75,6 @@ export const WritePage = () => {
   //   setSnippetValidated({...snippetValidated, [i]: v});
   // };
 
-  const [snippetSubmitted, setSnippetSubmitted] = useState({
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-  });
-
-  const handleSnippetSubmittionChange = (i, v) => {
-    setSnippetSubmitted({...snippetSubmitted, [i]: v});
-  };
-
   const [snippetName, setSnippetName] = useState({
     1: '',
     2: '',
@@ -98,6 +90,7 @@ export const WritePage = () => {
   });
 
   const [algorithmName, setAlgorithmName] = useState('');
+  const [algorithmDescr, setAlgorithmDescr] = useState('');
   const [importModalOpen, setImportModalOpen] = useState(false);
 
   const handleTabChange = (event, newValue) => {
@@ -145,10 +138,8 @@ export const WritePage = () => {
 
   const handleSubmitSnippet = (i) => {
     // TODO: check for name duplicate
-    // snippetDescr
     const snippetType = [undefined, 'scope', 'buy', 'sell', 'amount']
-    dispatch(submitSnippet(snippetName[i], snippetDescr[i], snippetType[i], editorValue[i]))
-    handleSnippetSubmittionChange(i, true);
+    dispatch(submitSnippet(snippetName[i], snippetDescr[i], snippetType[i], editorValue[i], i))
   };
 
   const saveAlgorithmAsDraft = () => {
@@ -164,19 +155,17 @@ export const WritePage = () => {
   };
 
   const handleSubmitAlgorithm = () => {
-    // TODO: check for name duplicate
-    // TODO: message?
+    // TODO: check for name duplicate  => not now
+    // TODO: feedback message?
     if (
-      snippetSubmitted[1] === true &&
-      snippetSubmitted[2] === true &&
-      snippetSubmitted[3] === true &&
-      snippetSubmitted[1] === true
+      snippetSubmitStore[0] !== false
+      && snippetSubmitStore[1] !== false
+      && snippetSubmitStore[2] !== false
+      && snippetSubmitStore[3] !== false
+      && algorithmName !== ''
+      && algorithmDescr !== ''
     ) {
-      if (Math.random() > 0.5) {
-        window.alert('duplicate name, please change snippet name');
-      } else {
-        window.alert('algorithm submitted');
-      }
+      dispatch(submitAlgo(algorithmName, algorithmDescr, snippetSubmitStore))
     } else {
       window.alert('Please submit algorithms first');
     }
@@ -211,7 +200,7 @@ export const WritePage = () => {
                 variant="outlined"
                 size={'small'}
                 label="snippet name"
-                disabled={snippetSubmitted[TabValue]}
+                disabled={snippetSubmitStore[TabValue] !== false}
                 fullWidth
                 value={snippetName[TabValue]}
                 onChange={(e) => {
@@ -228,7 +217,7 @@ export const WritePage = () => {
                 variant="outlined"
                 size={'small'}
                 label="snippet Description"
-                disabled={snippetSubmitted[TabValue]}
+                disabled={snippetSubmitStore[TabValue] !== false}
                 fullWidth
                 value={snippetDescr[TabValue]}
                 onChange={(e) => {
@@ -245,7 +234,7 @@ export const WritePage = () => {
                 mode: 'python',
                 theme: 'material',
                 lineNumbers: true,
-                readOnly: snippetSubmitted[TabValue]
+                readOnly: (snippetSubmitStore[TabValue] !== false)
               }}
               onBeforeChange={(editor, data, value) => {
                 handleEditorValueChange(TabValue, value);
@@ -258,7 +247,7 @@ export const WritePage = () => {
               <Button
                 id='import_algorithm'
                 size={'small'}
-                disabled={snippetSubmitted[TabValue]}
+                disabled={snippetSubmitStore[TabValue] !== false}
                 onClick={() => {
                   handleImport(TabValue);
                 }}
@@ -282,7 +271,10 @@ export const WritePage = () => {
                 size={'small'}
                 disabled={
                   // snippetName[TabValue] === '' || !snippetValidated[TabValue]
-                  snippetName[TabValue] === '' || snippetSubmitted[TabValue]
+                  snippetName[TabValue] === ''
+                  || snippetDescr[TabValue] === ''
+                  || editorValue[TabValue] === ''
+                  || snippetSubmitStore[TabValue] !== false
                 }
                 onClick={() => {
                   handleSubmitSnippet(TabValue);
@@ -293,12 +285,12 @@ export const WritePage = () => {
             </ButtonGroup>
             <Typography id='status_message' component="span" style={{color: '#ff0000'}}>
               {/*{`Status: ${snippetValidated[TabValue] === true*/}
-              {/*  ? snippetSubmitted[TabValue] === true*/}
+              {/*  ? snippetSubmitStore[TabValue] === true*/}
               {/*    ? 'Submitted'*/}
               {/*    : 'Not submitted'*/}
               {/*  : 'Unvalidated'}`*/}
               {/*}*/}
-              {`Status: ${snippetSubmitted[TabValue] === true
+              {`Status: ${snippetSubmitStore[TabValue] !== false
                 ? 'Submitted'
                 : 'Not submitted'}`
               }
@@ -306,7 +298,7 @@ export const WritePage = () => {
           </Paper>
 
           <Grid container justify="space-between" style={{padding: 10}}>
-            <Grid item>
+            <Grid item xs={3}>
               <TextField
                 id="algorithm_name"
                 variant="outlined"
@@ -318,6 +310,22 @@ export const WritePage = () => {
                   setAlgorithmName(e.target.value);
                 }}
               />
+            </Grid>
+            <Grid item xs={9}>
+              <TextField
+                id="algorithm_descr"
+                variant="outlined"
+                label="Algorithm Description"
+                size={'small'}
+                fullWidth
+                style={{marginRight: 10}}
+                value={algorithmDescr}
+                onChange={(e) => {
+                  setAlgorithmDescr(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item style={{marginTop: 16}}>
               <ButtonGroup color="primary" style={{marginTop: 2}}>
                 <Button
                   id='save_algorithm'
@@ -329,7 +337,14 @@ export const WritePage = () => {
                 </Button>
                 <Button
                   id='submit_algorithm'
-                  disabled={algorithmName === ''}
+                  disabled={
+                    algorithmName === ''
+                    || snippetSubmitStore[1] === false
+                    || snippetSubmitStore[2] === false
+                    || snippetSubmitStore[3] === false
+                    || snippetSubmitStore[4] === false
+                    || algorithmSubmitStore !== false
+                  }
                   onClick={() => {
                     handleSubmitAlgorithm();
                   }}
@@ -338,8 +353,13 @@ export const WritePage = () => {
                 </Button>
               </ButtonGroup>
             </Grid>
-            <Grid item>
-              <Button size={'small'} color={'secondary'} variant={'contained'}>
+            <Grid item style={{marginTop: 16}}>
+              <Button
+                size={'small'} color={'secondary'} variant={'contained'}
+                onClick={() => {
+                  props.history.push('/')
+                }}
+              >
                 Back
               </Button>
             </Grid>
