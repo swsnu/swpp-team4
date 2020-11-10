@@ -41,6 +41,7 @@ class Report(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
+    daily_profit = models.TextField()
     transaction_log = models.TextField()
     initial_budget = models.IntegerField()
 

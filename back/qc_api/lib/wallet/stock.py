@@ -57,8 +57,8 @@ class StockCoin(Stock):
                  stock_id: int,
                  price: float,
                  amount: int,
-                 purchase_log: List[Tuple[datetime, int]],
-                 sell_log: List[Tuple[datetime, int]],
+                 purchase_log: List[Tuple[datetime.datetime, int]],
+                 sell_log: List[Tuple[datetime.datetime, int]],
                  avg_purchase_price: float):
         """
         Parameters:

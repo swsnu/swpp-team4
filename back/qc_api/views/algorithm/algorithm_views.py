@@ -9,10 +9,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from qc_api.lib import SandBox
-from qc_api.models import Algorithm
-from qc_api.serializers import AlgorithmSerializer
+from qc_api.models import Algorithm, Report
+from qc_api.serializers import AlgorithmSerializer, ReportSerializer
 from qc_api.util.decorator import catch_bad_request
 from ...util.utility import parse_date
+import json
 
 
 @api_view(['GET', 'POST'])
@@ -46,6 +47,23 @@ def run_backtest(request: Request) -> Response:
         HttpResponse: with status 200.
     """
     budget = request.data.get("budget")
+    algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
+    algorithm_data = AlgorithmSerializer(algorithm).data
     start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=0)
-    return Response(sandbox.date_rows, status=status.HTTP_200_OK)
+    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
+    report_data = sandbox.report
+    report_data["transaction_log"] = str(report_data["transaction_log"])
+    report_data["daily_profit"] = str(report_data["daily_profit"])
+    report_data.update({
+        "algorithm": algorithm.id,
+        "optional_stat": "N/A",
+        "start_date": start,
+        "end_date": end,
+        "initial_budget": budget,
+        "status": Report.BackTestStatus.DONE
+    })
+    serializer = ReportSerializer(data=report_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
