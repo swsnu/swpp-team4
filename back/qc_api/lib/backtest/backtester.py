@@ -134,3 +134,20 @@ class BackTester:
             else:
                 self.max_min_dict.get("regi")[1] = 'eq'
         self.max_min_dict.get("regi")[0] = profit
+
+    def report_result(self):
+        self.report["MDD"] = self.calculate_mdd()
+        self.report["profit"] = self.report.get("daily_profit")[-1]
+
+    def calculate_mdd(self):
+        max_min_list = self.max_min_dict.get("list")
+        max_diff = max_min_list[-2]-max_min_list[-1]
+        min_element = max_min_list[-1]
+        for i in range(1, len(max_min_list)+1):
+            if max_min_list[-1 * i] - min_element > max_diff:
+                max_diff = max_min_list[-1 * i] - min_element
+
+            if max_min_list[-1 * i] < min_element:
+                min_element = max_min_list[-1 * i]
+        return max_diff
+
