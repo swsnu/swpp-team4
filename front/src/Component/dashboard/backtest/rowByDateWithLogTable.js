@@ -29,7 +29,7 @@ export const RowByDateWithLogTable = ({ transaction_log, daily_profit }) => {
         {daily_profit.date}
       </TableCell>
       <TableCell align="right">
-        {daily_profit.date}
+        {daily_profit.profit}
       </TableCell>
       <TableCell align="right">
         {transaction_log.buy.length}
