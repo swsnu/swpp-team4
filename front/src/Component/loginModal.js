@@ -25,7 +25,7 @@ const LoginModal = () => {
   }
 
   return (
-    <div>
+    <div className='LoginModal'>
       <Paper elevation={1} style={{ padding: 10 }}>
         Username
         <br/>
