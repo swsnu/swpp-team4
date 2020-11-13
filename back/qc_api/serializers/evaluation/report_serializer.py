@@ -7,7 +7,7 @@ class ReportSerializer(serializers.ModelSerializer):
     """ Serializer for Report Model"""
 
     def __init__(self, *args, **kwargs):
-        super(ReportSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].read_only = True
 

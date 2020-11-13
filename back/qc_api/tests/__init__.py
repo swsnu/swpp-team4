@@ -1,1 +1,1 @@
-from .model import test_evaluation
+""" Test package for qc_api """

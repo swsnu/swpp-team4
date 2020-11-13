@@ -1,10 +1,12 @@
+""" Mocking functions for tests. """
+import json
 from enum import Enum
+
+from django.contrib.auth.models import User
 from django.test import Client
 
-import json
-
 from qc_api.models import Algorithm
-from qc_api.models.algorithm.snippet import *
+from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
 
 
 class SnippetType(Enum):
