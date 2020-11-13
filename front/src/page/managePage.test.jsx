@@ -48,7 +48,6 @@ describe('test managePage', () => {
 
   it('should handle Click', () => {
     const component = mount(managePage);
-    console.log(component.debug())
     const newButton = component.find('button#new-algorithm');
     newButton.simulate('click');
   });

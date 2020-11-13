@@ -78,7 +78,7 @@ describe('signupModal', () => {
           status: 404,
           data: { logged_in: false },
         };
-        resolve(result);
+        reject(result);
       });
     });
     wrapper3.simulate('click');

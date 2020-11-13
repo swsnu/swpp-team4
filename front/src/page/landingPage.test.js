@@ -43,7 +43,6 @@ describe('landingPage', () => {
 
   it('should render without errors', () => {
     const component = mount(landing);
-    console.log(component.debug())
     const wrapper = component.find('LandingPage');
     expect(wrapper.length).toBe(1);
     const wrapper2 = component.find('MenuBar');
