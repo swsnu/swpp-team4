@@ -5,7 +5,12 @@ from qc_api.models import Performance
 
 class PerformanceSerializer(serializers.ModelSerializer):
     """ Serializer for Performance Model"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].read_only = True
+
     class Meta:
         model = Performance
         fields = '__all__'
-        read_only_fields = '__all__'
