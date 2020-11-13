@@ -16,7 +16,7 @@ describe('user action', () => {
 
     it('should catch error', async () => {
         axios.post = jest.fn(url => {
-            return Promise.resolve({status: 400, data: {}});
+            return Promise.reject(new Error(''));
         });
 
         await store.dispatch(actionCreators.sign_in());
