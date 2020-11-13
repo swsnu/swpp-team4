@@ -1,4 +1,8 @@
 from enum import Enum
+from django.test import Client
+
+import json
+
 from qc_api.models import Algorithm
 from qc_api.models.algorithm.snippet import *
 
@@ -10,10 +14,31 @@ class SnippetType(Enum):
     AMOUNT = 4
 
 
-def get_signined_user() -> User:
-    user = User.objects.create()
-    user.save()
-    return user
+def get_signed_in_client() -> Client:
+    client = Client()
+    client.post('/api/sign_in',
+                json.dumps({'username': 'user', 'password': "pwd"}),
+                content_type='application/json')
+    return client
+
+
+def get_signed_in_user(userId: int) -> User:
+    user1 = User.objects.create(username=f"user_{userId}")
+    user1.set_password(f'pwd_{userId}')
+    user1.save()
+
+    client = Client()
+    client.post('/api/sign_in',
+                json.dumps({'username': f'user_{userId}', 'password': f"pwd_{userId}"}),
+                content_type='application/json')
+    return user1
+
+
+def get_unsigned_in_user(userId: int) -> User:
+    user1 = User.objects.create(username=f"user_{userId}")
+    user1.set_password(f'pwd_{userId}')
+    user1.save()
+    return user1
 
 
 def get_mock_snippet(snippet_type: SnippetType) -> Snippet:
