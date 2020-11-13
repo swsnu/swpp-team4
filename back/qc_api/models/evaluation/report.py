@@ -31,17 +31,17 @@ class Report(models.Model):
     )
 
     # statistics
-    alpha = models.FloatField()
-    profit = models.FloatField()
-    MDD = models.FloatField()
-    optional_stat = models.TextField()
+    alpha = models.FloatField(default=None, blank=True, null=True)
+    profit = models.FloatField(default=None, blank=True, null=True)
+    MDD = models.FloatField(default=None, blank=True, null=True)
+    optional_stat = models.TextField(default=None, blank=True, null=True)
 
     # backtest settings
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
-    transaction_log = models.TextField()
+    transaction_log = models.TextField(default=None, blank=True, null=True)
     initial_budget = models.IntegerField()
 
     # status
@@ -51,5 +51,5 @@ class Report(models.Model):
         default=BackTestStatus.PENDING,
     )
 
-    def __str__(self):  # dummy
-        return "report"
+    class Meta:
+        db_table = 'report'
