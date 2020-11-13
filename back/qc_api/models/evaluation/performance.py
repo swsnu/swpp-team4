@@ -25,3 +25,6 @@ class Performance(models.Model):
     curr_portfolio = models.TextField(default=None, blank=True, null=True)
     max_min_dict = models.TextField(default=None, blank=True, null=True)
     profit_dict = models.TextField(default=None, blank=True, null=True)
+
+    class Meta:
+        db_table = "performance"
