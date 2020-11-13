@@ -38,7 +38,7 @@ export const SignupModal = props => {
       <Paper elevation={3} style={{ padding: 10 }}>
         Username
         <br/>
-        <TextField id='username_input' onChange={handleUsernameChange} variant="outlined" size='small'/>
+        <TextField id='id_input' onChange={handleUsernameChange} variant="outlined" size='small'/>
         <br/>
         email
         <br/>

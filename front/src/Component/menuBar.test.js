@@ -88,6 +88,8 @@ describe('menuBar', () => {
         wrapper7.simulate('click', {currentTarget: true});
         wrapper6.simulate('click', {currentTarget: true});
         wrapper7.simulate('click', {currentTarget: true});
+        wrapper6.simulate('close');
+        wrapper7.simulate('close');
     })
 
 })
