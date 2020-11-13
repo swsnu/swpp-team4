@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { getMockStore } from '../test-utils/mocks';
 import { history } from '../reduxRelated';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import Container from '@material-ui/core/Container';
 
 jest.mock('react-codemirror2');

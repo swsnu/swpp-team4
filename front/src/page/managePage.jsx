@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import MenuBar from "../Component/menuBar";
-import PropTypes from 'prop-types';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from "@material-ui/core/Box";
@@ -10,7 +9,6 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {withRouter} from "react-router-dom";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import * as theme from "@material-ui/system";
 
 const useStyles = makeStyles(() => ({
     grow: {
@@ -24,7 +22,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-function TabPanel(props) {
+export const TabPanel = (props) => {
     const {children, value, index, ...other} = props;
 
     return (
@@ -37,20 +35,16 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    <div>
+                      {children}
+                    </div>
                 </Box>
             )}
         </div>
     );
 }
 
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-};
-
-const Algo = props => {
+export const Algo = props => {
     const classes = useStyles();
 
     const [Public, setPublic] = useState(true);
@@ -73,7 +67,7 @@ const Algo = props => {
     );
 }
 
-const SavedAlgo = props => {
+export const SavedAlgo = props => {
     const classes = useStyles();
 
     const handleClick = () => {
@@ -94,7 +88,7 @@ const SavedAlgo = props => {
     );
 }
 
-const Snippet = props => {
+export const Snippet = props => {
     const classes = useStyles();
 
     const [Public, setPublic] = useState(true);
@@ -116,7 +110,7 @@ const Snippet = props => {
     );
 }
 
-const LikedSnippet = props => {
+export const LikedSnippet = props => {
     const classes = useStyles();
 
     return (
@@ -133,8 +127,6 @@ const LikedSnippet = props => {
 
 export const ManagePage = props => {
 
-    const classes = useStyles();
-
     const [value, setValue] = React.useState('one');
 
     const handleTabChange = (event, newValue) => {
@@ -145,6 +137,7 @@ export const ManagePage = props => {
         <div>
             <MenuBar/>
             <Button
+              id='new-algorithm'
                 style={{
                     marginLeft: 1050,
                 }}

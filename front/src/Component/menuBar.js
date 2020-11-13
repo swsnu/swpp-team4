@@ -9,6 +9,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import {withRouter} from 'react-router-dom';
 import LoginModal from './loginModal';
 import SignupModal from './signupModal';
+import {useDispatch} from 'react-redux';
+import * as actionCreators from "../store/actions/user";
 
 const useStyles = makeStyles(() => ({
   grow: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles(() => ({
 
 export const MenuBar = (props) => {
   const reduxStore = useSelector((s) => s);
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
@@ -29,6 +32,8 @@ export const MenuBar = (props) => {
   const handleLogInClick = (event) => {
     setLogInAnchorEl(event.currentTarget);
   };
+
+  /* istanbul ignore next */
   const handleLogInClose = () => {
     setLogInAnchorEl(null);
   };
@@ -37,20 +42,27 @@ export const MenuBar = (props) => {
   const handleSignUpClick = (event) => {
     setSignUpAnchorEl(event.currentTarget);
   };
+
+  /* istanbul ignore next */
   const handleSignUpClose = () => {
     setSignUpAnchorEl(null);
   };
   const signUpOpen = Boolean(signUpAnchorEl);
 
+  const handleLogOut = () => {
+    dispatch(actionCreators.sign_out());
+  }
+
   return (
-    <div style={{height: 70}}>
+    <div className='MenuBar' style={{height: 70}}>
       <AppBar style={{background: 'transparent', boxShadow: 'none'}}>
         <Toolbar>
-          <Button onClick={() => props.history.push('/')}>
+          <Button id='logo_button' onClick={() => props.history.push('/')}>
             <Typography>QuantCash</Typography>
           </Button>
           <div className={classes.grow}/>
           <Button
+            id='leaderboard_button'
             onClick={() => {
               props.history.push('/leaderboard');
             }}
@@ -60,7 +72,7 @@ export const MenuBar = (props) => {
           </Button>
           {reduxStore.user.loggedIn === false ? (
             <div>
-              <Button onClick={handleLogInClick}>Log in</Button>
+              <Button id='login_button' onClick={handleLogInClick}>Log in</Button>
               <Popover
                 open={logInOpen}
                 anchorEl={logInAnchorEl}
@@ -76,7 +88,7 @@ export const MenuBar = (props) => {
               >
                 <LoginModal/>
               </Popover>
-              <Button onClick={handleSignUpClick}>Sign up</Button>
+              <Button id='signup_button' onClick={handleSignUpClick}>Sign up</Button>
               <Popover
                 open={signUpOpen}
                 anchorEl={signUpAnchorEl}
@@ -96,6 +108,7 @@ export const MenuBar = (props) => {
           ) : (
             <div>
               <Button
+                id='dashboard_button'
                 onClick={() => {
                   props.history.push('/dashboard');
                 }}
@@ -104,21 +117,21 @@ export const MenuBar = (props) => {
                 Dashboard
               </Button>
               <Button
+                id='algo_manage_button'
                 onClick={() => {
-                  props.history.push('/algo/write');
+                  props.history.push('/algo/manage');
                 }}
                 className={classes.button}
               >
                 Manage algo
               </Button>
-              <Button onClick={() => {
+              <Button id='data_manage_button' onClick={() => {
               }} className={classes.button}>
                 Manage data
               </Button>
               <Button
-                onClick={() => {
-                  props.history.push('/');
-                }}
+                id='logout_button'
+                onClick={handleLogOut}
                 className={classes.button}
               >
                 Log out
