@@ -1,20 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { DashboardPage } from './dashboardPage';
-
-import { mount, shallow } from 'enzyme';
-
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { mount} from 'enzyme';
 import { Route, Switch } from 'react-router-dom';
 import { history } from '../reduxRelated';
 import { Provider } from 'react-redux';
 import { getMockStore } from '../test-utils/mocks';
-
-import * as actionCreators from '../store/actions/user';
 import { ConnectedRouter } from 'connected-react-router';
-import store from '../reduxRelated';
-
-import axios from 'axios';
 
 const stubInitialState = {
   userInfo: {

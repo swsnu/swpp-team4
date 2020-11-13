@@ -1,21 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import menuBar from './menuBar';
-
-import {mount, shallow} from 'enzyme';
-import {createMount, createShallow} from '@material-ui/core/test-utils';
-
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router';
+import {createMount} from '@material-ui/core/test-utils';
 import {Route, Switch} from "react-router-dom";
 import {history} from "../reduxRelated";
 import {Provider} from "react-redux";
 import {getMockStore} from "../test-utils/mocks";
-
-import * as actionCreators from '../store/actions/user';
 import {ConnectedRouter} from "connected-react-router";
-import store from "../reduxRelated";
-
-import axios from 'axios';
 
 const stubInitialState = {
   userInfo: {

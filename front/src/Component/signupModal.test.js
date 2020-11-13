@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import signupModal from './signupModal';
-
-import { mount, shallow } from 'enzyme';
-
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { mount} from 'enzyme';
 import { Route, Switch } from 'react-router-dom';
 import { history } from '../reduxRelated';
-
 import { Provider } from 'react-redux';
 import { getMockStore } from '../test-utils/mocks';
-
-import * as actionCreators from '../store/actions/user';
 import { ConnectedRouter } from 'connected-react-router';
-import store from '../reduxRelated';
 
 import axios from 'axios';
 
@@ -60,6 +52,7 @@ describe('signupModal', () => {
     wrapper4.simulate('change', { target: { value: password } });
     const wrapper3 = component.find('button#sign_up_button');
 
+    /*eslint-disable no-unused-vars*/
     jest.spyOn(axios, 'post').mockImplementation((url, data) => {
       return new Promise((resolve, reject) => {
         const result = {
@@ -72,6 +65,7 @@ describe('signupModal', () => {
     wrapper3.simulate('click');
     jest.clearAllMocks();
 
+    /*eslint-disable no-unused-vars*/
     jest.spyOn(axios, 'post').mockImplementation((url, data) => {
       return new Promise((resolve, reject) => {
         const result = {

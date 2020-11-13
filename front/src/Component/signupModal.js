@@ -25,7 +25,7 @@ export const SignupModal = props => {
 
   const handleSignUpSubmit = async () => {
     try {
-      const response = await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
+      await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
       window.alert('Signed up successfully');
       props.history.push('/');
     } catch(e) {
