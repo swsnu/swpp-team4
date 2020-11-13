@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import signupModal from './signupModal';
 
-import {mount, shallow} from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router';
-import {Route, Switch} from "react-router-dom";
-import {history} from "../reduxRelated";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
+import { history } from '../reduxRelated';
 
-import {Provider} from "react-redux";
-import {getMockStore} from "../test-utils/mocks";
+import { Provider } from 'react-redux';
+import { getMockStore } from '../test-utils/mocks';
 
 import * as actionCreators from '../store/actions/user';
-import {ConnectedRouter} from "connected-react-router";
-import store from "../reduxRelated";
+import { ConnectedRouter } from 'connected-react-router';
+import store from '../reduxRelated';
 
 import axios from 'axios';
 
@@ -22,8 +22,8 @@ const stubInitialState = {
     email: '',
     name: '',
   },
-  loggedIn: false
-}
+  loggedIn: false,
+};
 
 const mockStore = getMockStore(stubInitialState);
 
@@ -40,25 +40,48 @@ describe('signupModal', () => {
         </ConnectedRouter>
       </Provider>
     );
-  })
+  });
 
   it('should render without errors', () => {
     const component = mount(signup);
     const wrapper = component.find('.SignupModal');
     expect(wrapper.length).toBe(1);
-  })
+  });
 
   it('should set username correctly', () => {
     const username = '';
     const component = mount(signup);
     const wrapper = component.find('input#id_input');
-    wrapper.simulate('change', {target: {value: username}});
+    wrapper.simulate('change', { target: { value: username } });
     const password = '';
     const wrapper2 = component.find('input#password_input');
-    wrapper2.simulate('change', {target: {value: password}});
+    wrapper2.simulate('change', { target: { value: password } });
     const wrapper4 = component.find('input#email_input');
-    wrapper4.simulate('change', {target: {value: password}});
+    wrapper4.simulate('change', { target: { value: password } });
     const wrapper3 = component.find('button#sign_up_button');
+
+    jest.spyOn(axios, 'post').mockImplementation((url, data) => {
+      return new Promise((resolve, reject) => {
+        const result = {
+          status: 200,
+          data: { logged_in: false },
+        };
+        resolve(result);
+      });
+    });
     wrapper3.simulate('click');
-  })
-})
+    jest.clearAllMocks();
+
+    jest.spyOn(axios, 'post').mockImplementation((url, data) => {
+      return new Promise((resolve, reject) => {
+        const result = {
+          status: 404,
+          data: { logged_in: false },
+        };
+        resolve(result);
+      });
+    });
+    wrapper3.simulate('click');
+
+  });
+});
