@@ -58,7 +58,15 @@ describe('signupModal', () => {
         wrapper2.simulate('change', {target: {value: password}});
         const wrapper4 = component.find('input#email_input');
         wrapper4.simulate('change', {target: {value: password}});
+        axios.post = jest.fn(url => {
+            return Promise.resolve({status: 201, data: {}});
+        });
         const wrapper3 = component.find('button#sign_up_button');
         wrapper3.simulate('click');
+        axios.post = jest.fn(url => {
+            return Promise.reject(new Error('d'));
+        });
+        const wrapper5 = component.find('button#sign_up_button');
+        wrapper5.simulate('click');
     })
 })
