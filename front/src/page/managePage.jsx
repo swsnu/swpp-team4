@@ -137,6 +137,7 @@ export const ManagePage = props => {
         <div>
             <MenuBar/>
             <Button
+              id='new-algorithm'
                 style={{
                     marginLeft: 1050,
                 }}

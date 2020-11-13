@@ -1,5 +1,5 @@
 import React from 'react';
-import { ManagePage} from './managePage';
+import { Algo, LikedSnippet, ManagePage, SavedAlgo, Snippet } from './managePage';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -18,8 +18,7 @@ const mockStore = getMockStore({
 });
 
 describe('test managePage', () => {
-  let mount
-  let managePage;
+  let mount, managePage;
 
   beforeEach(() => {
     mount = createMount();
@@ -43,8 +42,100 @@ describe('test managePage', () => {
 
   it('should render ManagePage', () => {
     const component = mount(managePage);
-    // expect(component.find('input#snippet_name').length).toBe(1);
-    // expect(component.find('input#algorithm_name').length).toBe(1);
+    const wrapper = component.find('ManagePage');
+    expect(wrapper.length).toBe(1);
   });
 
+  it('should handle Click', () => {
+    const component = mount(managePage);
+    console.log(component.debug())
+    const newButton = component.find('button#new-algorithm');
+    newButton.simulate('click');
+  });
 });
+
+
+describe('test Algo', () => {
+  let mount, algo;
+
+  beforeEach(() => {
+    mount = createMount();
+    algo = <Algo/>;
+  });
+
+  it('should render Algo', () => {
+    const component = mount(algo);
+    const wrapper = component.find('Algo');
+    expect(wrapper.length).toBe(1);
+  });
+
+  it('should handle Click', () => {
+    const component = mount(algo);
+    const buttons = component.find('button');
+    expect(buttons.length).toBe(2);
+    buttons.at(0).simulate('click');
+  });
+});
+
+
+describe('test SavedAlgo', () => {
+  let mount, savedAlgo;
+
+  beforeEach(() => {
+    mount = createMount();
+    savedAlgo = <SavedAlgo/>;
+  });
+
+  it('should render SavedAlgo', () => {
+    const component = mount(savedAlgo);
+    const wrapper = component.find('SavedAlgo');
+    expect(wrapper.length).toBe(1);
+  });
+
+  it('should handle Click', () => {
+    const component = mount(savedAlgo);
+    const buttons = component.find('button');
+    expect(buttons.length).toBe(2);
+    buttons.at(0).simulate('click');
+  });
+});
+
+
+describe('test Snippet', () => {
+  let mount, snippet;
+
+  beforeEach(() => {
+    mount = createMount();
+    snippet = <Snippet/>;
+  });
+
+  it('should render Snippet', () => {
+    const component = mount(snippet);
+    const wrapper = component.find('Snippet');
+    expect(wrapper.length).toBe(1);
+  });
+
+  it('should handle Click', () => {
+    const component = mount(snippet);
+    const buttons = component.find('button');
+    expect(buttons.length).toBe(1);
+    buttons.at(0).simulate('click');
+  });
+});
+
+
+describe('test LikedSnippet ', () => {
+  let mount, likedSnippet;
+
+  beforeEach(() => {
+    mount = createMount();
+    likedSnippet = <LikedSnippet/>;
+  });
+
+  it('should render LikedSnippet', () => {
+    const component = mount(likedSnippet);
+    const wrapper = component.find('LikedSnippet');
+    expect(wrapper.length).toBe(1);
+  });
+});
+

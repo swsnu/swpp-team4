@@ -32,6 +32,8 @@ export const MenuBar = (props) => {
   const handleLogInClick = (event) => {
     setLogInAnchorEl(event.currentTarget);
   };
+
+  /* istanbul ignore next */
   const handleLogInClose = () => {
     setLogInAnchorEl(null);
   };
@@ -40,6 +42,8 @@ export const MenuBar = (props) => {
   const handleSignUpClick = (event) => {
     setSignUpAnchorEl(event.currentTarget);
   };
+
+  /* istanbul ignore next */
   const handleSignUpClose = () => {
     setSignUpAnchorEl(null);
   };
