@@ -48,7 +48,7 @@ export const BacktestDetailDialog = ({ id, transaction_log, daily_profit, open, 
         >
           <CartesianGrid strokeDasharray="3 3"/>
           <XAxis dataKey="date"/>
-          <YAxis interval={0} domain={[dataMin => Math.floor(dataMin - 5), dataMax => Math.ceil(dataMax + 5)]}/>
+          <YAxis interval={0} domain={[dataMin => Math.floor(dataMin - 2), dataMax => Math.ceil(dataMax + 2)]}/>
           <Tooltip/>
           <Legend/>
           <Line type="monotone" dataKey="profit" stroke="#82ca9d"/>
