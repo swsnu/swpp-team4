@@ -10,7 +10,7 @@ import { bigLogo, explain, getStarted } from '../static';
 
 export const LandingPage = () => {
   return (
-    <div>
+    <div className="LandingPage">
       <MenuBar />
       <img src={bigLogo} style={{ marginTop: 200, width: '40%' }} />
       <br />
