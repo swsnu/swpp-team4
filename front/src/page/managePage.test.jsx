@@ -44,6 +44,7 @@ describe('test managePage', () => {
     const component = mount(managePage);
     const wrapper = component.find('ManagePage');
     expect(wrapper.length).toBe(1);
+    component.find('button#tab-one').simulate('click');
   });
 
   it('should handle Click', () => {

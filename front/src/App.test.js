@@ -6,24 +6,32 @@ import { getMockStore } from './test-utils/mocks';
 import { initialState } from './store/reducers/user';
 import { history } from './reduxRelated';
 
-const mockStore = getMockStore(initialState);
-
 describe('renders App?', () => {
-  let app;
 
-  beforeEach(() => {
-    app = (
+  it('should render App.js', () => {
+    const mockStore = getMockStore(initialState);
+    const app = (
       <Provider store={mockStore}>
         <App history={history} id='testApp'/>
       </Provider>
     );
+    const component = mount(app);
+    expect(component.find('#testApp').length).toBe(1);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should render App.js', () => {
+  it('should render logged in App.js', () => {
+    const mockStore2 = getMockStore({
+      userInfo: {
+        email: '',
+        name: '',
+      },
+      loggedIn: true,
+    })
+    const app = (
+      <Provider store={mockStore2}>
+        <App history={history} id='testApp'/>
+      </Provider>
+    );
     const component = mount(app);
     expect(component.find('#testApp').length).toBe(1);
   });

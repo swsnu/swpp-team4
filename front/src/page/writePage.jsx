@@ -120,6 +120,7 @@ export const WritePage = () => {
     handleDraft(undefined);
   }, []);
 
+  /* istanbul ignore next */
   const handleDraft = (n) => {
     if (n !== undefined) {
       const draft = JSON.parse(localStorage.getItem(n));
@@ -128,6 +129,7 @@ export const WritePage = () => {
     }
   };
 
+  /* istanbul ignore next */
   const handleImport = () => {
     setImportModalOpen(true);
     // TODO: change content of modal
@@ -247,7 +249,9 @@ export const WritePage = () => {
                 lineNumbers: true,
                 readOnly: snippetSubmitted[TabValue]
               }}
-              onBeforeChange={(editor, data, value) => {
+              onBeforeChange={
+                /* istanbul ignore next */
+                (editor, data, value) => {
                 handleEditorValueChange(TabValue, value);
               }}
               // onChange={(editor, data, value) => {
@@ -350,7 +354,9 @@ export const WritePage = () => {
         fullWidth={true}
         maxWidth={'sm'}
         open={importModalOpen}
-        onClose={() => {
+        onClose={
+          /* istanbul ignore next */
+          () => {
           setImportModalOpen(false);
         }}
       >
