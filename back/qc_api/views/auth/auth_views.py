@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
 
 
 # Create your views here.
@@ -21,7 +20,6 @@ def sign_up(request):
 
 
 @csrf_exempt
-@api_view(['POST'])
 def sign_in(request):
     """ Handle sign in request """
     req_data = json.loads(request.body.decode())
