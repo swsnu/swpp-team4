@@ -50,25 +50,6 @@ def get_signed_in_client(username: str, password: str) -> Client:
     return client
 
 
-def get_signed_in_user(username: str, password: str) -> User:
-    """
-    Creates a user with given username and password, saves the user in database,
-    and returns a client which is logged-in as that user.
-    Parameters:
-        username: user mame string
-        password: password string
-    Returns:
-        Signed-in user object
-    """
-    user = get_signed_up_user(username, password)
-
-    client = Client()
-    client.post('/api/sign_in',
-                json.dumps({'username': username, 'password': password}),
-                content_type='application/json')
-    return user
-
-
 def get_mock_snippet(snippet_type: SnippetType) -> Snippet:
     """
     Given a snippet type, returns a snippet object
