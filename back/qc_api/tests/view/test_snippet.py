@@ -77,9 +77,9 @@ class SnippetTestCase(TestCase):
             'code': 'hello world!',
             'type': 'sell'
         }
-        types = ['scope', 'sell', 'buy', 'ammount']
-        for type in types:
-            data['type'] = type
+        types = ['scope', 'sell', 'buy', 'amount']
+        for snippet_type in types:
+            data['type'] = snippet_type
             self.client.post('/api/snippet', json.dumps(data), content_type='application/json')
         snippet_scopes = Snippet.objects.instance_of(SnippetScope)
         self.assertEqual(len(snippet_scopes), 1)
