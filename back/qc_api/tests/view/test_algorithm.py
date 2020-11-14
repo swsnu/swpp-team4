@@ -4,7 +4,6 @@ test_algorithm.py
 from django.test import TestCase, Client
 from ...models import Algorithm, Kospi
 from ..utils import get_mock_algo, get_mock_snippet, SnippetType
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 import json
 
@@ -73,8 +72,8 @@ class AlgorithmTestCase(TestCase):
                            d1_diff_rate=0.63)
         stub_kospi.save()
         response = self.client.post('/api/algo/backtest', json.dumps({
-            'start':'2020-10-9',
-            'end':'2020-10-11',
-            'budget':'1000000'
+            'start': '2020-10-9',
+            'end': '2020-10-11',
+            'budget': '1000000'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 200)
