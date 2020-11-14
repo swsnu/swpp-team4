@@ -1,11 +1,13 @@
 """
 test_snippet.py
 """
-from django.test import TestCase
-from ...models import Snippet, SnippetScope, SnippetSell, SnippetBuy, SnippetAmount
-from ..utils import get_mock_algo, get_mock_snippet, SnippetType
-from django.contrib.auth.models import User
 import json
+
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from ..utils import get_mock_snippet, SnippetType
+from ...models import Snippet, SnippetScope, SnippetSell, SnippetBuy, SnippetAmount
 
 
 class SnippetTestCase(TestCase):
@@ -76,8 +78,8 @@ class SnippetTestCase(TestCase):
             'type': 'sell'
         }
         types = ['scope', 'sell', 'buy', 'ammount']
-        for t in types:
-            data['type'] = t
+        for type in types:
+            data['type'] = type
             self.client.post('/api/snippet', json.dumps(data), content_type='application/json')
         snippet_scopes = Snippet.objects.instance_of(SnippetScope)
         self.assertEqual(len(snippet_scopes), 1)
@@ -87,4 +89,3 @@ class SnippetTestCase(TestCase):
         self.assertEqual(len(snippet_buys), 1)
         snippet_amounts = Snippet.objects.instance_of(SnippetAmount)
         self.assertEqual(len(snippet_amounts), 1)
-

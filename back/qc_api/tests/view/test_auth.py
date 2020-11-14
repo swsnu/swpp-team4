@@ -1,11 +1,12 @@
 """
 test_auth.py
 """
-from django.test import TestCase, Client
-from ...models import Algorithm, Kospi
-from ..utils import get_mock_algo, get_mock_snippet, SnippetType, get_signed_in_client
-from django.contrib.auth.models import User
 import json
+
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from ..utils import get_signed_in_client
 
 
 class AlgorithmTestCase(TestCase):
@@ -35,7 +36,7 @@ class AlgorithmTestCase(TestCase):
         """test signin with signing up"""
         client = get_signed_in_client(username='test', password='test')
         response = client.post('/api/sign_in', json.dumps({'username': 'test', 'password': 'test'})
-                                    , content_type='application/json')
+                               , content_type='application/json')
         self.assertEqual(response.status_code, 204)
 
     def test_logout(self):

@@ -1,11 +1,13 @@
 """
 test_algorithm.py
 """
-from django.test import TestCase, Client
-from ...models import Algorithm, Kospi
-from ..utils import get_mock_algo, get_mock_snippet, SnippetType
-from django.contrib.auth.models import User
 import json
+
+from django.contrib.auth.models import User
+from django.test import TestCase, Client
+
+from ..utils import get_mock_algo, get_mock_snippet, SnippetType
+from ...models import Algorithm, Kospi
 
 
 class AlgorithmTestCase(TestCase):
