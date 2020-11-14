@@ -1,4 +1,4 @@
-[![BuildStatus](https://travis-ci.com/swsnu/swpp2020-team4.svg?branch=master)](https://travis-ci.com/swsnu/swpp2020-team4)
+[![BuildStatus](https://travis-ci.org/swsnu/swpp2020-team4.svg?branch=master)](https://travis-ci.org/swsnu/swpp2020-team4)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=swsnu_swpp2020-team4&metric=alert_status)](https://sonarcloud.io/dashboard?id=swsnu_swpp2020-team4)
 [![Coverage Status](https://coveralls.io/repos/github/swsnu/swpp2020-team4/badge.svg)](https://coveralls.io/github/swsnu/swpp2020-team4)
 
