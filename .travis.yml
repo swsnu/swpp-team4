@@ -1,51 +1,45 @@
 # CI environment
 #os: linux
 #dist: bionic
-
 matrix:
   include:
-    - language: node_js
-      node_js: "12"
-      addon:
+    -
+      addons:
         sonarcloud:
-          organization: "swsnu"
+          organization: swsnu
           token:
             secure: "J2FxGfat/KP8QN7lYp+7ViPSXI/g1N/432yCqYDLYpY4cRAmwlUJShmqPX4NF72EngS5iLB6lhxzI2hqyklYLKTqRZQxZMrvR2kaNzM4z5AZrrJI0DKXR21mycynSqgpGchRKRPUYzFR6MKZpKpW+yaVFsb/DAOOt/qrZtDq3MH3nerOsfn7cV+OLhMip3HWJnSoMX7ljuyS4Ry/EfoAZhbH/zsZCYZDoQHFDr9fHOSL3ExL6EmsQ4SkiHOTJKlE6WEYlL6KWOFDXTxOEeNGC0DpIC1A4YF9K+mWRrYsK7Ba9b0eZfMuNSAAy8E9PRXab1nzrpHgV/xY5VSC0oZ+WPeg/jkl/MDz691L9gSvjhVTFFESqLBHluMWCtbPqSX1IVyULolVhyhfkYjK4jPHGTYiW+8wMJhpfuEeqb4YLIiI9XMpOgxbneG2MSfYrG3iYXR3LODtj5xmwfh3WReOiO4US3obyjIXBB06Aj3uLryhWSbvK8Sd4Vr9cGHo+V1VtzfzFhPaYmAZ3dGC9Lp8iBlSwZqaYOEBIrxoPfDlzBtlDLpYXCk9e5aX1k+aJkIvoGCk3oV/pPt9KIbujEMD7ySOL09rERDiQjLm9gjp435VIBFBp5K/YSWeQvBuysWc97dgdJwR428H3TpXR/irypqJDuHmxqCVswB+aLpWBeU="
-      cache:
-        - yarn: true
-      before_install:
-        - cd front
-      install:
-        - yarn install
-        - yarn add coveralls
-      script:
-        - ./node_modules/.bin/eslint src/
-        - yarn test --coverage --watchAll=false
-        - cd .. && sonar-scanner
       after_success:
-        - cd front
-        - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-    - language: python
-      python: "3.7"
-      addon:
-        sonarcloud:
-          organization: "swsnu"
-          token:
-            secure: "J2FxGfat/KP8QN7lYp+7ViPSXI/g1N/432yCqYDLYpY4cRAmwlUJShmqPX4NF72EngS5iLB6lhxzI2hqyklYLKTqRZQxZMrvR2kaNzM4z5AZrrJI0DKXR21mycynSqgpGchRKRPUYzFR6MKZpKpW+yaVFsb/DAOOt/qrZtDq3MH3nerOsfn7cV+OLhMip3HWJnSoMX7ljuyS4Ry/EfoAZhbH/zsZCYZDoQHFDr9fHOSL3ExL6EmsQ4SkiHOTJKlE6WEYlL6KWOFDXTxOEeNGC0DpIC1A4YF9K+mWRrYsK7Ba9b0eZfMuNSAAy8E9PRXab1nzrpHgV/xY5VSC0oZ+WPeg/jkl/MDz691L9gSvjhVTFFESqLBHluMWCtbPqSX1IVyULolVhyhfkYjK4jPHGTYiW+8wMJhpfuEeqb4YLIiI9XMpOgxbneG2MSfYrG3iYXR3LODtj5xmwfh3WReOiO4US3obyjIXBB06Aj3uLryhWSbvK8Sd4Vr9cGHo+V1VtzfzFhPaYmAZ3dGC9Lp8iBlSwZqaYOEBIrxoPfDlzBtlDLpYXCk9e5aX1k+aJkIvoGCk3oV/pPt9KIbujEMD7ySOL09rERDiQjLm9gjp435VIBFBp5K/YSWeQvBuysWc97dgdJwR428H3TpXR/irypqJDuHmxqCVswB+aLpWBeU="
-      cache:
-        - pip: true
-      before_install:
+        - sonar-scanner
         - cd back
-      install:
-        - pip install -r requirements.txt
+        - coveralls --merge=../front/coverage/coverage.json
       before_script:
         - python manage.py makemigrations
         - python manage.py migrate
+      cache:
+        - yarn: true
+        - pip: true
+      dist: bionic
+      install:
+        - cd front
+        - yarn install
+        - yarn add coveralls
+        - cd ../back
+        - source ~/virtualenv/python3.7/bin/activate
+        - pip install -r requirements.txt
+        - pip install coverage pyyaml coveralls
+        - gem install coveralls-lcov
+      language: node_js
+      node_js: 12
+      python: 3.7
       script:
+        - cd ../front
+        - ./node_modules/.bin/eslint src/
+        - yarn test --coverage --watchAll=false
+        - coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json
+        - cd ../back
         - pylint **/*.py --load-plugins pylint_django
         - coverage run --source='./qc_api' manage.py test
-        - coverage xml
-        - cd .. && sonar-scanner
-      after_success:
-        - coveralls
+        - coverage report -m && coverage xml
+        - cd ..
+
