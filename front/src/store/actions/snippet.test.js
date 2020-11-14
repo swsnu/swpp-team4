@@ -1,11 +1,10 @@
-import React from 'react';
 import * as actionCreators from './snippet';
 import axios from 'axios';
 import {store} from '../../reduxRelated';
 
 describe('snippet actions', () => {
     it ('should submit snippet', async () => {
-        axios.post = jest.fn(url => {
+        axios.post = jest.fn(() => {
             return Promise.resolve({status: 201, data: {}});
         });
 
@@ -13,7 +12,7 @@ describe('snippet actions', () => {
     })
 
     it ('should catch submit snippet error', async () => {
-        axios.post = jest.fn(url => {
+        axios.post = jest.fn(() => {
             return Promise.resolve({status: 400, data: {}});
         });
 

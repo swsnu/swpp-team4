@@ -1,4 +1,3 @@
-import React from 'react';
 import algoReducer from './algo';
 
 describe ('algo reducer', () => {

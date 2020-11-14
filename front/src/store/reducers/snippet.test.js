@@ -1,4 +1,3 @@
-import React from 'react';
 import snippetReducer from './snippet';
 
 describe ('snippet reducer', () => {

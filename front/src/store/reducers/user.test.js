@@ -1,4 +1,3 @@
-import React from 'react';
 import userReducer from './user';
 import * as actionTypes from '../actions/actionTypes';
 
