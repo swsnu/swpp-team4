@@ -149,7 +149,7 @@ export const ManagePage = props => {
             <Tabs onChange={handleTabChange}
                   value={value}
                   indicatorColor="primary">
-                <Tab value="one" label="My Algos"/>
+                <Tab id='tab-one' value="one" label="My Algos"/>
                 <Tab value="two" label="My Snippets"/>
                 <Tab value="three" label="Liked Snippets"/>
                 <Tab value="four" label="Saved Algos"/>
