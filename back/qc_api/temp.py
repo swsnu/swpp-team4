@@ -1,3 +1,4 @@
+""" Temporary file. Will be removed """
 # pylint: disable=C0413
 import os
 import django
