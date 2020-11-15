@@ -12,6 +12,7 @@ import {withRouter} from "react-router-dom";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 
+
 const useStyles = makeStyles(() => ({
     grow: {
         flexGrow: 1,
@@ -43,6 +44,7 @@ export const TabPanel = (props) => {
         </div>
     );
 }
+
 
 
 TabPanel.propTypes = {
@@ -118,6 +120,7 @@ export const Snippet = props => {
 }
 
 
+
 export const LikedSnippet = props => {
     const classes = useStyles();
 
@@ -134,6 +137,7 @@ export const LikedSnippet = props => {
 }
 
 export const ManagePage = props => {
+
     const [value, setValue] = React.useState('one');
 
     const handleTabChange = (event, newValue) => {
@@ -149,7 +153,9 @@ export const ManagePage = props => {
                     marginLeft: 1050,
                 }}
                 onClick={() => {
+
                 props.history.push('/algo/write');
+
             }} variant="contained" color="primary">
                 New Algorithm
             </Button>
@@ -202,4 +208,6 @@ export const ManagePage = props => {
     );
 }
 
+
 export default withRouter(ManagePage);
+

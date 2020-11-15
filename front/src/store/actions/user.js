@@ -21,6 +21,7 @@ export const sign_in = (username, password) => {
         userInfo: userInfo,
         loggedIn: true
       });
+
     } catch(error) {
       alert('email or password is wrong');
       // TODO
