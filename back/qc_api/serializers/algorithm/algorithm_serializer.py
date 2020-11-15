@@ -1,10 +1,11 @@
+# pylint: disable=R0201
 """ Serialization utils for algorithm """
 from typing import Dict, Any
 
 from rest_framework import serializers
 
 from qc_api.models import Algorithm
-from qc_api.serializers import SnippetScopeSerializer, SnippetBuySerializer,\
+from qc_api.serializers import SnippetScopeSerializer, SnippetBuySerializer, \
     SnippetSellSerializer, SnippetAmountSerializer
 
 

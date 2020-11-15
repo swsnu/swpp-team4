@@ -25,7 +25,7 @@ export const SignupModal = props => {
 
   const handleSignUpSubmit = async () => {
     try {
-      const response = await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
+      await axios.post('/api/sign_up', {username: Username, password: Password, email: Email});
       window.alert('Signed up successfully');
       props.history.push('/');
     } catch(e) {
@@ -34,21 +34,21 @@ export const SignupModal = props => {
   }
 
   return (
-    <div>
+    <div className='SignupModal'>
       <Paper elevation={3} style={{ padding: 10 }}>
         Username
         <br/>
-        <TextField onChange={handleUsernameChange} variant="outlined" size='small'/>
+        <TextField id='id_input' onChange={handleUsernameChange} variant="outlined" size='small'/>
         <br/>
         email
         <br/>
-        <TextField onChange={handleEmailChange} variant="outlined" size='small'/>
+        <TextField id='email_input' onChange={handleEmailChange} variant="outlined" size='small'/>
         <br/>
         Password
         <br/>
-        <TextField onChange={handlePasswordChange} variant="outlined" size='small'/>
+        <TextField id='password_input' onChange={handlePasswordChange} variant="outlined" size='small'/>
         <br/>
-        <Button onClick={handleSignUpSubmit} fullWidth style={{ marginTop: 10 }}>
+        <Button id='sign_up_button' onClick={handleSignUpSubmit} fullWidth style={{ marginTop: 10 }}>
           Sign up
         </Button>
       </Paper>

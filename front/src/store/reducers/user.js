@@ -1,7 +1,7 @@
 import * as actionTypes from "../actions/actionTypes";
 import { submitSnippet } from "../actions/snippet";
 
-const initialState = {
+export const initialState = {
   userInfo: {
     email: "",
     name: ""

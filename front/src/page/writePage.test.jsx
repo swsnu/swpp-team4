@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { getMockStore } from '../test-utils/mocks';
 import { history } from '../reduxRelated';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import Container from '@material-ui/core/Container';
 
 jest.mock('react-codemirror2');
@@ -62,7 +62,6 @@ describe('test WritePage', () => {
     component.find('button#submit_snippet').simulate('click');
     jest.spyOn(Math, 'random').mockImplementation(() => 0);
     component.find('button#submit_snippet').simulate('click');
-    console.log(component.find('span#status_message').props().value);
     expect(component.find('span#status_message').text()).toEqual('Status: Submitted');
   });
 
@@ -73,6 +72,7 @@ describe('test WritePage', () => {
     component.find('button#submit_algorithm').simulate('click');
 
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
+    component.find('input#snippet_descr').simulate('change', { target: { value: 'content' } });
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
@@ -104,6 +104,8 @@ describe('test WritePage', () => {
   });
 
   it('import draft', () => {
+    const component = mount(writePage);
+    component.find('button#import_algorithm').simulate('click');
   });
 
 

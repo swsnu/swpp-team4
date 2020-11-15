@@ -11,7 +11,7 @@ export const sign_in = (username, password) => {
       password: password
     };
     try {
-      const response = await axios.post("/api/sign_in", data);
+      await axios.post('/api/sign_in', data);
       const userInfo = {
         username: username,
         password: password
@@ -21,8 +21,8 @@ export const sign_in = (username, password) => {
         userInfo: userInfo,
         loggedIn: true
       });
-    } catch (error) {
-      alert("email or password is wrong");
+    } catch(error) {
+      alert('email or password is wrong');
       // TODO
     }
   };
@@ -30,7 +30,7 @@ export const sign_in = (username, password) => {
 
 export const sign_out = () => {
   return async dispatch => {
-    const response = await axios.get("/api/sign_out");
-    dispatch({ type: actionTypes.SIGN_OUT, loggedIn: false });
-  };
-};
+    await axios.get('/api/sign_out');
+    dispatch({type: 'SIGN_OUT', loggedIn: false});
+  }
+}

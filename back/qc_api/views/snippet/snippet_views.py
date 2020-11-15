@@ -18,7 +18,7 @@ from ...util.decorator import catch_bad_request
 def type_extract(data) -> (str, Dict[str, Any]):
     """get request data and extract type"""
     try:
-        snippet_type = data.get("type")
+        snippet_type = data["type"]
         return snippet_type, data
     except KeyError:
         raise KeyError

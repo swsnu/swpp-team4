@@ -126,6 +126,7 @@ else:
     handleDraft(undefined);
   }, []);
 
+  /* istanbul ignore next */
   const handleDraft = (n) => {
     if (n !== undefined) {
       const draft = JSON.parse(localStorage.getItem(n));
@@ -134,6 +135,7 @@ else:
     }
   };
 
+  /* istanbul ignore next */
   const handleImport = () => {
     setImportModalOpen(true);
     // TODO: change content of modal
@@ -249,7 +251,9 @@ else:
                 lineNumbers: true,
                 readOnly: (snippetSubmitStore[TabValue] !== false)
               }}
-              onBeforeChange={(editor, data, value) => {
+              onBeforeChange={
+                /* istanbul ignore next */
+                (editor, data, value) => {
                 handleEditorValueChange(TabValue, value);
               }}
               // onChange={(editor, data, value) => {
@@ -383,7 +387,9 @@ else:
         fullWidth={true}
         maxWidth={"sm"}
         open={importModalOpen}
-        onClose={() => {
+        onClose={
+          /* istanbul ignore next */
+          () => {
           setImportModalOpen(false);
         }}
       >
