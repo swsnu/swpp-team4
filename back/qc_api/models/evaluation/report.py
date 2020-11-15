@@ -52,5 +52,5 @@ class Report(models.Model):
         default=BackTestStatus.PENDING,
     )
 
-    def __str__(self):  # dummy
-        return "report"
+    class Meta:
+        db_table = 'report'
