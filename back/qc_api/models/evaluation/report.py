@@ -52,5 +52,3 @@ class Report(models.Model):
         default=BackTestStatus.PENDING,
     )
 
-    class Meta:
-        db_table = 'report'
