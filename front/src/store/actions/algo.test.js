@@ -1,6 +1,5 @@
 import * as actionCreators from './algo';
 import axios from 'axios';
-import moxios from 'moxios';
 import {store} from '../../reduxRelated';
 
 describe('algo actions', () => {
