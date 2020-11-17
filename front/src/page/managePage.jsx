@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import MenuBar from "../Component/menuBar";
+import PropTypes from 'prop-types';
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from "@material-ui/core/Box";
@@ -9,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {withRouter} from "react-router-dom";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+
 
 const useStyles = makeStyles(() => ({
     grow: {
@@ -35,14 +38,20 @@ export const TabPanel = (props) => {
         >
             {value === index && (
                 <Box p={3}>
-                    <div>
-                      {children}
-                    </div>
+                    <Typography>{children}</Typography>
                 </Box>
             )}
         </div>
     );
 }
+
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
+
 
 export const Algo = props => {
     const classes = useStyles();
@@ -110,6 +119,7 @@ export const Snippet = props => {
     );
 }
 
+
 export const LikedSnippet = props => {
     const classes = useStyles();
 
@@ -142,7 +152,7 @@ export const ManagePage = props => {
                     marginLeft: 1050,
                 }}
                 onClick={() => {
-                window.location.replace('/algo/write')
+                props.history.push('/algo/write');
             }} variant="contained" color="primary">
                 New Algorithm
             </Button>

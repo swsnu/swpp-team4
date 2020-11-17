@@ -41,7 +41,8 @@ class Report(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
-    transaction_log = models.TextField(default=None, blank=True, null=True)
+    daily_profit = models.TextField()
+    transaction_log = models.TextField()
     initial_budget = models.IntegerField()
 
     # status
@@ -51,5 +52,3 @@ class Report(models.Model):
         default=BackTestStatus.PENDING,
     )
 
-    class Meta:
-        db_table = 'report'

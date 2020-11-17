@@ -18,10 +18,10 @@ class AlgorithmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Algorithm
-        fields = ['name', 'description', 'author', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
+        fields = ['id', 'name', 'description', 'author', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
                   'snippet_amount', 'create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
                   'snippet_buy_data', 'snippet_amount_data']
-        read_only_fields = ('create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
+        read_only_fields = ('id','create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
                             'snippet_buy_data', 'snippet_amount_data')
 
     def get_snippet_scope_data(self, obj: Algorithm) -> Dict[str, Any]:
@@ -38,4 +38,4 @@ class AlgorithmSerializer(serializers.ModelSerializer):
 
     def get_snippet_amount_data(self, obj: Algorithm) -> Dict[str, Any]:
         """relational representation for snippet_amount"""
-        return SnippetAmountSerializer(obj.snippet_scope).data
+        return SnippetAmountSerializer(obj.snippet_amount).data

@@ -1,49 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 
-import { Provider } from 'react-redux';
-
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
-
-import userReducer from './store/reducers/user';
-
-export const history = createBrowserHistory();
-export const rootReducer = combineReducers({
-  user: userReducer,
-  router: connectRouter(history),
-});
-
-const logger = (store) => {
-  return (next) => {
-    return (action) => {
-      console.log('[Middleware] Dispatching', action);
-      const result = next(action);
-      console.log('[Middleware] Next State', store.getState());
-      return result;
-    };
-  };
-};
-
-export const middlewares = [logger, thunk, routerMiddleware(history)];
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-export const store = createStore(
-  rootReducer,
-  composeEnhancers(applyMiddleware(...middlewares)),
-);
+import { Provider } from "react-redux";
+import { history, store } from "./reduxRelated";
 
 ReactDOM.render(
   <Provider store={store}>
     <App history={history}/>
   </Provider>,
-  document.getElementById('root'),
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
