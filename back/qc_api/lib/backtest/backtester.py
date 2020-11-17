@@ -153,7 +153,7 @@ class BackTester:
             exec(self.snippet_amount, scope, exec_dict)
             self.sell_amount_list = sell_amount_list
 
-    def make_daily_report(self):
+    def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""
         profit = self.wallet.get_profit()
         self.report.get("transaction_log").append(self.wallet.get_transaction_log(self.today))
