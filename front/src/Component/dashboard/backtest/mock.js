@@ -1,4 +1,6 @@
-export const createData = (name, calories, fat, carbs, protein) => {
+/* istanbul ignore file */
+
+export const createData = (name, calories, fat, carbs) => {
   return {name, calories, fat, carbs};
 }
 

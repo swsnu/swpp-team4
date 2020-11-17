@@ -250,6 +250,7 @@ export const DashboardPage = () => {
       console.log(response);
       setTableData(response.data);
     } catch (e) {
+      console.log(e);
       setTableData([]);
     }
 
@@ -261,6 +262,7 @@ export const DashboardPage = () => {
     // }
   };
 
+  /* istanbul ignore next */
   const getAlgorithmEvaluation = (id) => {
     // TODO: get Backtesting and Performance(daily test) data of certain algorithm
   };
@@ -279,6 +281,7 @@ export const DashboardPage = () => {
                 {ownedAlgorithmListStore.map(e =>
                   <ListItem
                     divider button
+                    className={`myAlgo-${e.id}`}
                     selected={selectedAlgorithmId === e.id}
                     onClick={async () => {
                       await selectAlgorithm(e.id);
@@ -302,8 +305,8 @@ export const DashboardPage = () => {
                 indicatorColor="primary"
                 textColor="primary"
               >
-                <Tab label="Backtest"/>
-                <Tab label="Simulation"/>
+                <Tab id='tab-backtest' label="Backtest"/>
+                <Tab id='tab-simulation' label="Simulation"/>
               </Tabs>
               <div style={{ display: tab === 0 ? 'block' : 'none', height: 400, marginTop: 16 }}>
                 <Typography variant="h6" gutterBottom component="div">
@@ -330,12 +333,14 @@ export const DashboardPage = () => {
                       {tableData.map((row) =>
                         <BacktestRow
                           data={row}
+                          className={`BacktestRow-${row.id}`}
                           onOpenLog={() => {
                             setBacktestDetailDialogData({
                               id: row.id,
                               transaction_log: JSON.parse(row.transaction_log.replaceAll(`'`, `"`)),
                               daily_profit: JSON.parse(row.daily_profit.replaceAll(`'`, `"`)),
                             });
+                            /* istanbul ignore next */
                             setDialogOpen(true);
                           }}
                         />,
@@ -348,11 +353,16 @@ export const DashboardPage = () => {
                   transaction_log={backtestDetailDialogData.transaction_log}
                   daily_profit={backtestDetailDialogData.daily_profit}
                   open={dialogOpen}
-                  handleClose={() => setDialogOpen(false)}
+                  handleClose={
+                    /* istanbul ignore next */
+                    () => setDialogOpen(false)
+                  }
                 />
-                <NewBackTestForm onSubmit={(d) => {
-                  console.log(d);
-                }}/>
+                <NewBackTestForm
+                  onSubmit={(d) => {
+                    console.log(d);
+                  }}
+                />
               </div>
               <div style={{ display: tab === 1 ? 'block' : 'none', height: 400, marginTop: 16 }}>
                 <Typography variant="h6" gutterBottom component="div">

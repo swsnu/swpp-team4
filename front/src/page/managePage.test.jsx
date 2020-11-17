@@ -2,11 +2,11 @@ import React from 'react';
 import { Algo, LikedSnippet, ManagePage, SavedAlgo, Snippet } from './managePage';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
-import { Route, Redirect, Switch } from 'react-router-dom';
 import { getMockStore } from '../test-utils/mocks';
 import { history } from '../reduxRelated';
 import Container from '@material-ui/core/Container';
 import { createMount } from '@material-ui/core/test-utils';
+import { createMemoryHistory } from 'history';
 
 
 const mockStore = getMockStore({
@@ -27,13 +27,7 @@ describe('test managePage', () => {
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Container maxWidth="lg">
-            <Switch>
-              <Route
-                path='/'
-                exact
-                render={() => <ManagePage/>}
-              />
-            </Switch>
+            <ManagePage history={createMemoryHistory()}/>
           </Container>
         </ConnectedRouter>
       </Provider>
@@ -47,10 +41,9 @@ describe('test managePage', () => {
     component.find('button#tab-one').simulate('click');
   });
 
-  it('should handle Click', () => {
+  it('should handle new-algorithm', () => {
     const component = mount(managePage);
-    const newButton = component.find('button#new-algorithm');
-    newButton.simulate('click');
+    component.find('button#new-algorithm').simulate('click');
   });
 });
 

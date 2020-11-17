@@ -5,8 +5,11 @@ import { Provider } from 'react-redux';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { getMockStore } from '../test-utils/mocks';
 import { history } from '../reduxRelated';
-import { mount } from 'enzyme';
 import Container from '@material-ui/core/Container';
+import { createMount } from '@material-ui/core/test-utils';
+import * as snippetActions from '../store/actions/snippet';
+import * as algoActions from '../store/actions/algo';
+import { createMemoryHistory } from 'history';
 
 jest.mock('react-codemirror2');
 
@@ -16,22 +19,48 @@ const mockStore = getMockStore({
     name: 'tester',
   },
   loggedIn: true,
+  snippetSubmit: {
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+  },
+  algorithmSubmit: false,
+});
+
+const mockStore2 = getMockStore({
+  userInfo: {
+    email: 'test@test.com',
+    name: 'tester',
+  },
+  loggedIn: true,
+  snippetSubmit: {
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+  },
+  algorithmSubmit: false,
 });
 
 describe('test WritePage', () => {
-  let writePage;
+  let writePage, writePage2;
   beforeEach(() => {
     writePage = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Container maxWidth="lg">
-            <Switch>
-              <Route
-                path='/'
-                exact
-                render={() => <WritePage/>}
-              />
-            </Switch>
+            <WritePage history={createMemoryHistory()}/>
+          </Container>
+        </ConnectedRouter>
+      </Provider>
+    );
+
+    writePage2 = (
+      <Provider store={mockStore2}>
+        <ConnectedRouter history={history}>
+          <Container maxWidth="lg">
+            <WritePage history={createMemoryHistory()}/>
           </Container>
         </ConnectedRouter>
       </Provider>
@@ -39,37 +68,50 @@ describe('test WritePage', () => {
   });
 
   it('should render WritePage', () => {
-    const component = mount(writePage);
+    const component = createMount()(writePage);
     expect(component.find('input#snippet_name').length).toBe(1);
     expect(component.find('input#algorithm_name').length).toBe(1);
+    component.find('button#go_back').simulate('click');
   });
 
   it('should validate and Submit snippet', () => {
-    const component = mount(writePage);
-    const alertMock = jest.spyOn(window, 'alert')
+    const component = createMount()(writePage);
+    jest.spyOn(window, 'alert')
       .mockImplementation(() => {
       });
-    jest.spyOn(Math, 'random')
-      .mockImplementation(() => 0);
+    jest.spyOn(snippetActions, 'submitSnippet')
+      .mockImplementation(() => async (dispatch) => {
+        dispatch({
+          type: 'NO_ACTION',
+        });
+      });
+    component.find('button#submit_snippet').simulate('click');
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    // component.find('button#snippet_validate').simulate('click');
-    // expect(alertMock).toHaveBeenCalledTimes(1);
-    jest.spyOn(Math, 'random').mockImplementation(() => 1);
-    // component.find('button#snippet_validate').simulate('click');
-    jest.spyOn(Math, 'random').mockImplementation(() => 0);
+    component.find('input#snippet_descr').simulate('change', { target: { value: 'content' } });
+
     component.find('button#submit_snippet').simulate('click');
-    jest.spyOn(Math, 'random').mockImplementation(() => 1);
-    component.find('button#submit_snippet').simulate('click');
-    jest.spyOn(Math, 'random').mockImplementation(() => 0);
-    component.find('button#submit_snippet').simulate('click');
-    expect(component.find('span#status_message').text()).toEqual('Status: Submitted');
+    // expect(component.find('span#status_message').text()).toEqual('Status: Submitted');
   });
 
   it('submit Algorithm', () => {
-    jest.spyOn(Math, 'random').mockImplementation(() => 1);
-    const component = mount(writePage);
+    jest.spyOn(window, 'alert')
+      .mockImplementation(() => {
+      });
+    jest.spyOn(snippetActions, 'submitSnippet')
+      .mockImplementation(() => async (dispatch) => {
+        dispatch({
+          type: 'NO_ACTION',
+        });
+      });
+    jest.spyOn(algoActions, 'submitAlgo')
+      .mockImplementation(() => async (dispatch) => {
+        dispatch({
+          type: 'CHANGE_LOADING',
+          data: false,
+        })
+      });
+    const component = createMount()(writePage2);
     component.find('input#algorithm_name').simulate('change', { target: { value: 'content' } });
-    component.find('button#submit_algorithm').simulate('click');
 
     component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
     component.find('input#snippet_descr').simulate('change', { target: { value: 'content' } });
@@ -91,22 +133,18 @@ describe('test WritePage', () => {
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
-    // TODO
-    jest.spyOn(Math, 'random').mockImplementation(() => 0);
     component.find('button#submit_algorithm').simulate('click');
-    jest.spyOn(Math, 'random').mockImplementation(() => 1);
+    component.find('input#algorithm_descr').simulate('change', { target: { value: 'content' } });
     component.find('button#submit_algorithm').simulate('click');
   });
 
   it('save draft', () => {
-    const component = mount(writePage);
+    const component = createMount()(writePage);
     component.find('button#save_algorithm').simulate('click');
   });
 
   it('import draft', () => {
-    const component = mount(writePage);
+    const component = createMount()(writePage);
     component.find('button#import_algorithm').simulate('click');
   });
-
-
 });

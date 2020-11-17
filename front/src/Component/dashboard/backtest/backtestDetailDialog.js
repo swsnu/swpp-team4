@@ -10,7 +10,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import React from 'react';
 import { RowByDateWithLogTable } from './rowByDateWithLogTable';
-import { rows } from './mock';
 import {
   CartesianGrid,
   Legend,
@@ -87,9 +86,8 @@ export const BacktestDetailDialog = ({ id, transaction_log, daily_profit, open, 
           </TableHead>
           <TableBody>
             {daily_profit.map((e, i) => {
-                console.log(e);
-                console.log(i);
                 return <RowByDateWithLogTable
+                  key={i}
                   transaction_log={transaction_log[i]}
                   daily_profit={daily_profit[i]}
                 />;
