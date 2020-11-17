@@ -18,7 +18,7 @@ export const RowByDateWithLogTable = ({ transaction_log, daily_profit }) => {
   return <>
     <TableRow key={daily_profit.date}>
       <TableCell component="th" scope="row">
-        <IconButton size='small' onClick={() => {
+        <IconButton className='toggle-expand' size='small' onClick={() => {
           setRowExpanded(!rowExpanded);
         }}>
           {rowExpanded ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}

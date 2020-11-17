@@ -1,11 +1,11 @@
 import React from 'react';
 import { DashboardPage } from './dashboardPage';
-import { mount} from 'enzyme';
 import { Route, Switch } from 'react-router-dom';
 import { history } from '../reduxRelated';
 import { Provider } from 'react-redux';
 import { getMockStore } from '../test-utils/mocks';
 import { ConnectedRouter } from 'connected-react-router';
+import { createMount } from '@material-ui/core/test-utils';
 
 const stubInitialState = {
   userInfo: {
@@ -19,8 +19,9 @@ const mockStore = getMockStore(stubInitialState);
 
 describe('DashboardPage', () => {
 
-  let dashboard;
+  let dashboard, mount;
   beforeEach(() => {
+    mount = createMount();
     dashboard = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
