@@ -1,5 +1,4 @@
 import * as actionTypes from "../actions/actionTypes";
-import { submitSnippet } from "../actions/snippet";
 
 export const initialState = {
   userInfo: {
