@@ -71,24 +71,15 @@ class Wallet:
         if possessed_amount < amount:
             return False
         if possessed_amount == amount:
-            self.budget += stock.get_price() * amount
-            stock_coin.sell_coin(time, amount)
             self.stock_id_list.remove(stock_id)
-            self.transaction_log.get("sell").append({
-                "name": stock.get_name(),
-                "price": stock.get_price(),
-                "amount": amount
-            })
-            print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
-        else:
-            self.budget += stock.get_price() * amount
-            stock_coin.sell_coin(time, amount)
-            self.transaction_log.get("sell").append({
-                "name": stock.get_name(),
-                "price": stock.get_price(),
-                "amount": amount
-            })
-            print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
+        self.budget += stock.get_price() * amount
+        stock_coin.sell_coin(time, amount)
+        self.transaction_log.get("sell").append({
+            "name": stock.get_name(),
+            "price": stock.get_price(),
+            "amount": amount
+        })
+        print(f'Sold {amount} {stock.get_name()} at price of {stock.get_price()}')
         return True
 
     def purchase_coin(self,
