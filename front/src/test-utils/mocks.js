@@ -13,10 +13,11 @@ const getMockTodoReducer = jest.fn(
   },
 );
 
-export const getMockStore = (initialState) => {
-  const mockTodoReducer = getMockTodoReducer(initialState);
+export const getMockStore = (initialStateUser, initialStateAlgo={}, initialStateSnippet={}) => {
   const rootReducer = combineReducers({
-    user: mockTodoReducer,
+    user: getMockTodoReducer(initialStateUser),
+    algo: getMockTodoReducer(initialStateAlgo),
+    snippet: getMockTodoReducer(initialStateSnippet),
     router: connectRouter(history),
   });
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

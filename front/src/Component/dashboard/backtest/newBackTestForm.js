@@ -3,13 +3,11 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import React, {useState} from "react";
 
-
 export const NewBackTestForm = ({onSubmit}) => {
 
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [startingBudget, setStartingBudget] = useState(2000)
-
 
   return <>
     <Typography variant="h6" component="div" style={{marginTop: 24}}>
@@ -56,6 +54,7 @@ export const NewBackTestForm = ({onSubmit}) => {
         }}
       />
       <Button
+        id="newBacktest-submit"
         onClick={() => {
           onSubmit({
             startDate,

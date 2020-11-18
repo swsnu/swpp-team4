@@ -18,4 +18,12 @@ describe('snippet actions', () => {
 
         await store.dispatch(actionCreators.submitSnippet());
     })
+
+    it ('should catch submit snippet error', async () => {
+        axios.post = jest.fn(() => {
+            return Promise.reject(new Error(''));
+        });
+
+        await store.dispatch(actionCreators.submitSnippet());
+    })
 })

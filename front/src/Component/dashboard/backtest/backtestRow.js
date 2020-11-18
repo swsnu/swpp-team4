@@ -13,7 +13,7 @@ export const BacktestRow = ({ data, onOpenLog }) => {
   return <>
     <TableRow key={data.id}>
       <TableCell component="th" scope="row">
-        <IconButton size='small' onClick={() => {
+        <IconButton size='small' id='toggle-expand' onClick={() => {
           setRowExpanded(!rowExpanded);
         }}>
           {rowExpanded ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}

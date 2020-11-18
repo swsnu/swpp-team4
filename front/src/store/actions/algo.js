@@ -1,4 +1,3 @@
-import * as actionTypes from "./actionTypes";
 import axios from "axios";
 import {history} from "../../reduxRelated";
 
@@ -232,6 +231,7 @@ const mockAllMyAlgorithm = [
         }
     }
 ];
+console.log(mockAllMyAlgorithm)
 
 export const getAllMyAlgorithm = () => {
     // GET all algorithms and put it to algo.ownedAlgorithmList
