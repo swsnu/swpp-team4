@@ -266,7 +266,7 @@ else:
                 size={'small'}
                 disabled={snippetSubmitStore[TabValue] !== false}
                 onClick={() => {
-                  handleImport(TabValue);
+                  handleImport();
                 }}
               >
                 Import
