@@ -1,6 +1,6 @@
 from django.test import TestCase
 from datetime import datetime
-from qc_api.lib import Stock, StockCoin
+from qc_api.lib import Stock, StockCoin, Wallet
 
 
 class StockTestCase(TestCase):
@@ -85,3 +85,10 @@ class StockCoinTestCase(TestCase):
     def test_string_representation(self):
         string_repr = self.coin.__str__()
         self.assertIn("'name': 'CreamCheeseCompany'", string_repr)
+
+
+class WalletTestCase(TestCase):
+    def setUp(self):
+        return
+
+    def test_create_empty_wallet(self):
