@@ -63,8 +63,6 @@ class StockCoin(Stock):
                  sell_log: List[Tuple[datetime.datetime, float, int]],
                  avg_purchase_price: float):
         """
-        TODO: Make all fields in StockCoin private and manage access.
-        TODO: purchase log must be not empty if the amount is positive.
         Parameters:
             name: name of the stock
             stock_id: id of the stock
@@ -87,18 +85,33 @@ class StockCoin(Stock):
         return self.__amount
 
     def get_purchase_log(self) -> List[Tuple[datetime, float, int]]:
+        """ Get purchase log """
         return self.__purchase_log
 
     def get_sell_log(self) -> List[Tuple[datetime, float, int]]:
+        """ Get sell log """
         return self.__sell_log
 
     def get_avg_purchase_price(self) -> float:
+        """ Get average purchase price """
         return self.__avg_purchase_price
 
     def __update_purchase_log(self, date: datetime, amount: int) -> None:
+        """
+        Update purchase log
+        Parameters:
+            date: transaction timestamp
+            amount: transaction amount
+        """
         self.__purchase_log.append((date, self.get_price(), amount))
 
     def __update_sell_log(self, date: datetime, amount: int) -> None:
+        """
+        Update sell log
+        Parameters:
+            date: transaction timestamp
+            amount: transaction amount
+        """
         self.__sell_log.append((date, self.get_price(), amount))
 
     def __fix_avg_purchase_price(self, new_amount: int) -> None:
@@ -109,16 +122,30 @@ class StockCoin(Stock):
                                      self.get_price() * new_amount) / (self.__amount + new_amount)
 
     def sell_coin(self, date_time: datetime, amount: int) -> bool:
+        """
+        Sell coin
+        Parameters:
+            date_time: transaction datetime
+            amount: transaction amount
+        Returns:
+            True if successful
+        """
         if not self.check_consistency() or self.__amount < amount:
             return False
         self.__amount -= amount
         self.__update_sell_log(date_time, amount)
         return True
 
-    def purchase_coin(self,
-                      date_time: datetime,
-                      amount: int) -> bool:
-        """Budget checking must be done before calling this method"""
+    def purchase_coin(self, date_time: datetime, amount: int) -> bool:
+        """
+        Purchase coin.
+        Budget checking must be done before calling this method
+        Parameters:
+            date_time: transaction datetime
+            amount: transaction amount
+        Returns:
+            True if successful.
+        """
         if not self.check_consistency():
             return False
         self.__fix_avg_purchase_price(amount)
@@ -134,6 +161,7 @@ class StockCoin(Stock):
         return self.__amount == checker
 
     def __str__(self):
+        """ String representation of StockCoin"""
         stock_to_dict = dict()
         # stock_to_dict.update(dict(str(super())))
         stock_to_dict.update({'name': self.get_name(),
