@@ -57,23 +57,22 @@ class StockCoinTestCase(TestCase):
         self.assertEqual(self.coin.get_amount(), 5)
 
     def test_sell_stock(self):
-        transaction = (datetime(year=2020, month=2, day=1), 1)
-        self.coin.sell_coin(date_time=transaction[0], amount=transaction[1])
+        transaction = (datetime(year=2020, month=2, day=1), self.coin.get_price(), 1)
+        self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 4)
-        self.assertIn(transaction, self.coin.sell_log)
+        self.assertIn(transaction, self.coin.get_sell_log())
 
     def test_purchase_stock(self):
-        transaction = (datetime(year=2020, month=3, day=1), 2)
-        self.coin.purchase_coin(date_time=transaction[0], amount=transaction[1])
+        transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 2)
+        self.coin.purchase_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 7)
-        self.assertIn(transaction, self.coin.purchase_log)
+        self.assertIn(transaction, self.coin.get_purchase_log())
 
     def test_fix_avg_purchase_price(self):
         transaction = (datetime(year=2020, month=3, day=1), 2)
         self.coin.set_price(650)
-        self.coin.fix_avg_purchase_price(650, transaction[1])
         self.coin.purchase_coin(date_time=transaction[0], amount=transaction[1])
-        self.assertEqual(self.coin.avg_purchase_price, 900)
+        self.assertEqual(self.coin.get_avg_purchase_price(), 900)
 
     def test_checking_consistency(self):
         sell_tx = (datetime(year=2020, month=2, day=1), 1)

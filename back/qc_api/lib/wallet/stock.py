@@ -161,7 +161,7 @@ class StockCoin(Stock):
         return self.__amount == checker
 
     def __str__(self):
-        """ String representation of StockCoin"""
+        """ String representation of StockCoin """
         stock_to_dict = dict()
         # stock_to_dict.update(dict(str(super())))
         stock_to_dict.update({'name': self.get_name(),
