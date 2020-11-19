@@ -22,4 +22,4 @@ class SandBoxTestCase(TestCase):
                            d1_diff_rate=0.63)
         stub_kospi.save()
         sandbox = SandBox(1000, parse_date('2020-10-9'), parse_date('2020-10-11'), 0)
-        self.assertEqual(sandbox.budget, 1000)
+        self.assertEqual(sandbox.__budget, 1000)

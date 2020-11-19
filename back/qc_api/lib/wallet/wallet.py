@@ -1,7 +1,6 @@
 """
 Wallet library to handle stocks possessed by the user.
 """
-from copy import copy
 from datetime import datetime
 from typing import Optional, Dict, List, Any
 

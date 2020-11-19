@@ -1,20 +1,12 @@
 """ Mocking functions for tests. """
 import json
-from enum import Enum
 
 from django.contrib.auth.models import User
 from django.test import Client
 
 from qc_api.models import Algorithm
 from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
-
-
-class SnippetType(Enum):
-    """ Enum for Snippet Type """
-    SCOPE = 1
-    SELL = 2
-    BUY = 3
-    AMOUNT = 4
+from qc_api.util.utility import SnippetType
 
 
 def get_signed_up_user(username: str, password: str) -> User:

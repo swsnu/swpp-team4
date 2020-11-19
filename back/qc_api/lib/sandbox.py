@@ -30,29 +30,29 @@ class SandBox:
                 start and end.
             report: Initially none. This will be replaced by the report returned by backtester.report_result() at the
                 end of the backtest.
+            back_tester: backtester object.
         """
-        self.budget = budget
-        self.start = start
-        self.end = end
+        self.__budget = budget
+        self.__start = start
+        self.__end = end
         self.algorithm = algorithm
         self.date_rows = self.get_trading_dates()
         self.report = None
-        self.run()
+        back_tester = self.prepare()
+        self.run(back_tester)
 
-    def run(self) -> None:
+    def prepare(self) -> BackTester:
+        """ Prepare for backtest. """
+        return BackTester(algorithm=self.algorithm, budget=self.__budget)
+
+    def run(self, back_tester: BackTester) -> None:
         """
-        Initializes backtester instance and runs it.
-        When backtest completes, it updates self.report.
+        Executes backtest.
         """
-        back_tester = BackTester(algorithm=self.algorithm, budget=self.budget)
-        for index, date in enumerate(self.date_rows):
-            back_tester.set_date(date)
-            back_tester.set_universe()
-            back_tester.update_wallet()
-            back_tester.make_sell_order()
-            back_tester.make_buy_order()
-            back_tester.make_scope()
-            back_tester.make_daily_report()
+        back_tester.run()
+        self.clean_up(back_tester)
+
+    def clean_up(self, back_tester: BackTester) -> None:
         self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1])
 
     def get_trading_dates(self) -> List[datetime.date]:
@@ -60,5 +60,5 @@ class SandBox:
         Get dates used for trading.
         """
         return [
-            kospi.date for kospi in Kospi.objects.filter(date__range=[self.start, self.end]).order_by('date')
+            kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
         ]
