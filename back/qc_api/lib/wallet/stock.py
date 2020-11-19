@@ -59,8 +59,8 @@ class StockCoin(Stock):
                  stock_id: int,
                  price: float,
                  amount: int,
-                 purchase_log: List[Tuple[datetime.datetime, int]],
-                 sell_log: List[Tuple[datetime.datetime, int]],
+                 purchase_log: List[Tuple[datetime.datetime, float, int]],
+                 sell_log: List[Tuple[datetime.datetime, float, int]],
                  avg_purchase_price: float):
         """
         TODO: Make all fields in StockCoin private and manage access.
@@ -70,49 +70,67 @@ class StockCoin(Stock):
             stock_id: id of the stock
             price: price of the stock
             amount: the amount of the stock the user has, must be non-negative
-            purchase_log: purchase history in the form of (dateTime, amount)
+            purchase_log: purchase history in the form of (dateTime, price, amount)
             sell_log: sell history
             avg_purchase_price: average purchase price
         """
+        if amount > 0 and len(purchase_log) == 0:
+            raise ValueError("Purchase log must not be empty if the amount is positive.")
         super().__init__(name, stock_id, price)
         self.__amount = amount
-        self.purchase_log = purchase_log
-        self.sell_log = sell_log
-        self.avg_purchase_price = avg_purchase_price
+        self.__purchase_log = purchase_log
+        self.__sell_log = sell_log
+        self.__avg_purchase_price = avg_purchase_price
 
     def get_amount(self) -> int:
         """Get possessed amount of the stock"""
         return self.__amount
 
-    def sell_coin(self,
-                  date_time: datetime,
-                  amount: int) -> None:
-        """Amount checking must be done before calling this method"""
+    def get_purchase_log(self) -> List[Tuple[datetime, float, int]]:
+        return self.__purchase_log
+
+    def get_sell_log(self) -> List[Tuple[datetime, float, int]]:
+        return self.__sell_log
+
+    def get_avg_purchase_price(self) -> float:
+        return self.__avg_purchase_price
+
+    def __update_purchase_log(self, date: datetime, amount: int) -> None:
+        self.__purchase_log.append((date, self.get_price(), amount))
+
+    def __update_sell_log(self, date: datetime, amount: int) -> None:
+        self.__sell_log.append((date, self.get_price(), amount))
+
+    def __fix_avg_purchase_price(self, new_amount: int) -> None:
+        """
+        Update avg_purchase_rate
+        """
+        self.__avg_purchase_price = (self.__avg_purchase_price * self.__amount +
+                                     self.get_price() * new_amount) / (self.__amount + new_amount)
+
+    def sell_coin(self, date_time: datetime, amount: int) -> bool:
+        if not self.check_consistency() or self.__amount < amount:
+            return False
         self.__amount -= amount
-        self.sell_log.append((date_time, amount))
+        self.__update_sell_log(date_time, amount)
+        return True
 
     def purchase_coin(self,
                       date_time: datetime,
-                      amount: int) -> None:
+                      amount: int) -> bool:
         """Budget checking must be done before calling this method"""
+        if not self.check_consistency():
+            return False
+        self.__fix_avg_purchase_price(amount)
         self.__amount += amount
-        self.purchase_log.append((date_time, amount))
-
-    def fix_avg_purchase_price(self, bought_at: float, new_amount: int) -> None:
-        """
-        Update avg_purchase_rate
-        must be called 'before' purchase_coin.
-        TODO: Hide the dependency between purchase_coin() and fix_avg_purchase_price().
-        This function must be called in purchase_coin()
-        """
-        self.avg_purchase_price = (self.avg_purchase_price * self.__amount + bought_at * new_amount) / (
-                self.__amount + new_amount)
+        self.__update_purchase_log(date_time, amount)
+        return True
 
     def check_consistency(self) -> bool:
         """
         Check if the current log is correct.
         """
-        checker = sum(x[1] for x in self.purchase_log) - sum(x[1] for x in self.sell_log)
+        checker = sum(x[1] for x in self.__purchase_log) - sum(x[1] for x in self.__sell_log)
         return self.__amount == checker
 
     def __str__(self):
@@ -121,7 +139,7 @@ class StockCoin(Stock):
         stock_to_dict.update({'name': self.get_name(),
                               'id': self.get_id(),
                               'amount': self.__amount,
-                              'purchase_log': self.purchase_log,
-                              'sell_log': self.sell_log,
+                              'purchase_log': self.__purchase_log,
+                              'sell_log': self.__sell_log,
                               'price': self.get_price()})
         return str(stock_to_dict)

@@ -2,7 +2,6 @@
 Wallet library to handle stocks possessed by the user.
 """
 import datetime
-from functools import reduce
 from typing import Optional, Dict, List, Any
 
 from .stock import Stock
@@ -130,11 +129,11 @@ class Wallet:
             (self.__id_to_coin[index].get_name(), self.__id_to_coin[index].get_amount())
             for index in self.__stock_id_list
         ]
-        total_profit = sum([self.__id_to_coin[index].avg_purchase_price *
+        total_profit = sum([self.__id_to_coin[index].__avg_purchase_price *
                             self.__id_to_coin[index].get_amount() for index in self.__stock_id_list],
                            self.get_budget())
         total_profit = ((total_profit / self.__initial_asset) - 1) * 100
-        stock_profit = sum([self.__id_to_coin[index].avg_purchase_price *
+        stock_profit = sum([self.__id_to_coin[index].__avg_purchase_price *
                             self.__id_to_coin[index].get_amount() for index in self.__stock_id_list], 0)
         summaries = {}
         summaries.update({"cash": self.get_budget()})
