@@ -9,15 +9,18 @@ import Collapse from '@material-ui/core/Collapse';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 
 
 export const MarketTableRow = (
   {
-    rank,
+    id,
     name,
     author,
     liked,
     onLikedChange,
+    description,
+    code,
   },
 ) => {
   const [rowExpanded, setRowExpanded] = useState(false);
@@ -25,7 +28,7 @@ export const MarketTableRow = (
   return <>
     <TableRow>
       <TableCell align="left">
-        {rank}
+        {id}
       </TableCell>
       <TableCell align="left">
         {name}
@@ -53,8 +56,25 @@ export const MarketTableRow = (
         <Collapse in={rowExpanded} timeout="auto" unmountOnExit>
           <Box margin={1}>
             <Typography variant="h6" gutterBottom component="div">
-              Info
+              Description
             </Typography>
+            <div style={{ marginLeft: 15 }}>
+              {description}
+            </div>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginTop: 20 }}>
+              Code
+            </Typography>
+            <div style={{ marginLeft: 15 }}>
+              <CodeMirror
+                value={code}
+                options={{
+                  mode: 'python',
+                  theme: 'material',
+                  lineNumbers: true,
+                  readOnly: true,
+                }}
+              />
+            </div>
           </Box>
         </Collapse>
       </TableCell>
