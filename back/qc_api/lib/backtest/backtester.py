@@ -1,6 +1,6 @@
 """backtester.py"""
 from copy import copy
-from datetime import date
+from datetime import date, datetime
 from typing import List, Dict, Any
 
 # pylint: disable=W0122, R0902
@@ -85,6 +85,7 @@ class BackTester:
         self.__wallet.update_coins(universe_today=self.__universe)
 
     def make_sell_order(self) -> None:
+        print("\n\nsell")
         """
         Executes 'snippet_sell' and 'snippet_amount'.
         Execution result of snippet_sell:
@@ -95,17 +96,23 @@ class BackTester:
         such as budget and possessed_items (used for calculation of daily profit, daily portfolio.
         """
         sell_candidates = self.__wallet.get_coins()
+        scope = copy(self.__scope)
+        chosen_stocks = []
+        universe = copy(self.__universe)
+        locals_cp = copy(locals())
+        globals_cp = copy(globals())
         if len(sell_candidates) == 0:
             return
-        exec_dict = {}
-        accessible_vars = {'scope': copy(self.__scope), 'chosen_stocks': []}
-        accessible_vars.update(locals())
-        exec(self.__snippet_sell, accessible_vars, exec_dict)
-        self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_dict.get("chosen_stocks"))
+        exec(self.__snippet_sell, globals_cp, locals_cp)
+        print(locals_cp)
+        #assert locals().keys() == locals_cp.keys()
+        #assert globals().keys() == globals_cp.keys()
+        self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=locals_cp.get("chosen_stocks"))
         for stock_tuple in self.__sell_amount_list:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
 
     def make_buy_order(self) -> None:
+        print("\n\nbuy")
         """
         Executes 'snippet_buy' and 'snippet_amount'.
         Execution result of snippet_buy:
@@ -121,11 +128,15 @@ class BackTester:
         """
         if len(self.__scope) == 0:
             return
-        accessible_vars = {'scope': copy(self.__scope), 'chosen_stocks': []}
-        accessible_vars.update(locals())
-        exec_dict = {}
-        exec(self.__snippet_buy, accessible_vars, exec_dict)
-        self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_dict.get('chosen_stocks'))
+        scope = copy(self.__scope)
+        chosen_stocks = []
+        locals_cp = copy(locals())
+        globals_cp = copy(globals())
+        exec(self.__snippet_buy, globals_cp, locals_cp)
+        print(locals_cp)
+        #assert locals().keys() == locals_cp.keys()
+        #assert globals().keys() == globals_cp.keys()
+        self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=locals_cp.get('chosen_stocks'))
         for stock_tuple in self.__buy_amount_list:
             try:
                 self.__wallet.purchase_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
@@ -133,22 +144,32 @@ class BackTester:
                 pass
 
     def make_scope(self) -> None:
+        print("\n\nscope")
         """
         Executes snippet_scope and updates 'self.scope' that will be fed to snippet_buy and sell tomorrow.
         """
-        universe = self.__universe
-        exec_dict = {}
-        exec(self.__snippet_scope, locals(), exec_dict)
-        self.__scope = exec_dict.get("scope")
+        universe = copy(self.__universe)
+        locals_cp = copy(locals())
+        globals_cp = copy(globals())
+        exec(self.__snippet_scope, globals_cp, locals_cp)
+        print(locals_cp)
+        #assert locals().keys() == locals_cp.keys()
+        #assert globals().keys() == globals_cp.keys()
+        self.__scope = locals_cp.get("scope")
 
     def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
+        print("\n\namount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
         """
         buy_amount_list = []
         sell_amount_list = []
-        exec_dict = {}
-        exec(self.__snippet_amount, locals(), exec_dict)
+        locals_cp = copy(locals())
+        globals_cp = copy(globals())
+        exec(self.__snippet_amount, globals_cp, locals_cp)
+        print(locals_cp)
+        #assert locals().keys() == locals_cp.keys()
+        #assert globals().keys() == globals_cp.keys()
         if opt == SnippetType.BUY:
             self.__buy_amount_list = buy_amount_list
         elif opt == SnippetType.SELL:
@@ -232,6 +253,8 @@ class BackTester:
         risk of the algorithm.
         """
         max_min_list = self.__max_min_dict.get("list")
+        if len(max_min_list) <= 1:
+            return 0
         max_diff = max_min_list[-2] - max_min_list[-1]
         min_element = max_min_list[-1]
         for i in range(1, len(max_min_list) + 1):
@@ -253,6 +276,7 @@ class BackTester:
 
     def run(self, trading_dates: List[date]) -> None:
         for day in trading_dates:
+            print(f"\n\n\n{day}")
             self.set_date(day)
             self.set_universe()
             self.update_wallet()

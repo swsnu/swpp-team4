@@ -27,7 +27,7 @@ mock_algo_ser_data = {
     },
     'snippet_sell_data': {
         'code': "for candidate in sell_candidates:"
-                "\n\tif (universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])"
+                "\n\tif (universe.loc[universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])"
                 "/candidate.get_avg_purchase_price()-1>0.05:"
                 "\n\t\tchosen_stocks.append(candidate) "
     },
@@ -56,8 +56,5 @@ class SandBoxTestCase(TestCase):
 
     def test_sandbox_backtest(self) -> None:
         """ Test sandbox backtest """
-        print(len(Kospi.objects.all()))
-        print(Kosdaq.objects.all())
-        print(StockData.objects.all())
-        sandbox = SandBox(1000, parse_date('2020-7-7'), parse_date('2020-7-9'), mock_algo_ser_data)
-        self.assertEqual(sandbox.get_budget(), 1000)
+        sandbox = SandBox(100000, parse_date('2020-7-7'), parse_date('2020-7-9'), mock_algo_ser_data)
+        self.assertEqual(sandbox.get_budget(), 100000)

@@ -68,7 +68,6 @@ class SandBox:
         """
         Get dates used for trading.
         """
-        print(Kospi.objects.all())
         return [
             kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
         ]

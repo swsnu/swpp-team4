@@ -97,6 +97,7 @@ class Wallet:
     def purchase_coin(self, stock: Stock, amount: int, time: datetime) -> bool:
         """ Purchase stocks """
         stock_id = stock.get_id()
+        print(stock, amount)
         if self.__budget < stock.get_price() * amount or amount <= 0:
             print("cannot buy")
             return False
