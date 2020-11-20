@@ -18,9 +18,7 @@ mock_algo_ser_data = {
                 "universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy())) "
     },
     'snippet_buy_data': {
-        'code': "print(scope, chosen_stocks)\n"
-                "for index, candidate in enumerate(scope):"
-                "\n\tprint(candidate)"
+        'code': "for index, candidate in enumerate(scope):"
                 "\n\tif index==0:"
                 "\n\t\tchosen_stocks.append(candidate)"
                 "\n\t\tbreak "

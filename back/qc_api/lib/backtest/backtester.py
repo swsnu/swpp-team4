@@ -13,6 +13,51 @@ from ...serializers import AlgorithmSerializer
 from ...util.utility import stock_data_columns
 
 
+class DefensiveCodeExecutor:
+    def __init__(self):
+        return
+
+    @classmethod
+    def pre_validate(cls, code: str):
+        """
+        Test invalid string occurrences
+        """
+        assert "import" not in code
+        assert "exec" not in code
+        #assert "print" not in code
+        assert "raise" not in code
+        assert "try" not in code
+        assert "except" not in code
+
+    @classmethod
+    def run(cls, code: str, accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
+        before_exec = copy(accessible_vars)
+        try:
+            exec(code, {}, accessible_vars)
+        except Exception as e:
+            print(f"exception occurred. {e}")
+        print(accessible_vars.keys())
+        can_return = DefensiveCodeExecutor.post_validate(before=before_exec, after=accessible_vars)
+        if can_return:
+            return accessible_vars
+        else:
+            return before_exec
+
+    @classmethod
+    def post_validate(cls, before: Dict[str, Any], after: Dict[str, Any]) -> bool:
+        before_keys = before.keys()
+        after_keys = after.keys()
+
+        # code execution must not erase the existing keys
+        if not set(before_keys).issubset(set(after_keys)):
+            return False
+        # variable type checking
+        for elm in before_keys:
+            if not isinstance(after[elm], type(before[elm])):
+                return False
+        # are there any other checking methods?
+        return True
+
 class BackTester:
     """The BackTester Class in which all backtesting functions are defined"""
 
@@ -97,18 +142,20 @@ class BackTester:
         """
         sell_candidates = self.__wallet.get_coins()
         scope = copy(self.__scope)
-        chosen_stocks = []
         universe = copy(self.__universe)
-        locals_cp = copy(locals())
-        globals_cp = copy(globals())
+        accessible_vars = {"sell_candidates": sell_candidates,
+                           "scope": scope,
+                           "chosen_stocks": [],
+                           "universe": universe}
+        # locals_cp = copy(locals())
+        # globals_cp = copy(globals())
         if len(sell_candidates) == 0:
             return
-        exec(self.__snippet_sell, globals_cp, locals_cp)
-        print(f"locals: {locals_cp.keys()}")
-        print(f"globals: {globals_cp.keys()}")
-        #assert locals().keys() == locals_cp.keys()
-        #assert globals().keys() == globals_cp.keys()
-        self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=locals_cp.get("chosen_stocks"))
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_sell, accessible_vars)
+        # exec(self.__snippet_sell, globals_cp, locals_cp)
+        # print(f"locals: {locals_cp.keys()}")
+        # print(f"globals: {globals_cp.keys()}")
+        self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_result.get("chosen_stocks"))
         for stock_tuple in self.__sell_amount_list:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
 
@@ -131,14 +178,19 @@ class BackTester:
             return
         scope = copy(self.__scope)
         chosen_stocks = []
-        locals_cp = copy(locals())
-        globals_cp = copy(globals())
-        exec(self.__snippet_buy, globals_cp, locals_cp)
-        print(f"locals: {locals_cp.keys()}")
-        print(f"globals: {globals_cp.keys()}")
-        #assert locals().keys() == locals_cp.keys()
-        #assert globals().keys() == globals_cp.keys()
-        self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=locals_cp.get('chosen_stocks'))
+        accessible_vars = {
+            "scope": scope,
+            "chosen_stocks": []
+        }
+        #locals_cp = copy(locals())
+        #globals_cp = copy(globals())
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_buy, accessible_vars)
+        #exec(self.__snippet_buy, globals_cp, locals_cp)
+        #print(f"locals: {locals_cp.keys()}")
+        #print(f"globals: {globals_cp.keys()}")
+        # assert locals().keys() == locals_cp.keys()
+        # assert globals().keys() == globals_cp.keys()
+        self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_result.get('chosen_stocks'))
         for stock_tuple in self.__buy_amount_list:
             try:
                 self.__wallet.purchase_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
@@ -150,34 +202,37 @@ class BackTester:
         """
         Executes snippet_scope and updates 'self.scope' that will be fed to snippet_buy and sell tomorrow.
         """
+        scope = copy(self.__scope)
         universe = copy(self.__universe)
-        locals_cp = copy(locals())
-        globals_cp = copy(globals())
-        exec(self.__snippet_scope, globals_cp, locals_cp)
-        print(f"locals: {locals_cp.keys()}")
-        print(f"globals: {globals_cp.keys()}")
-        #assert locals().keys() == locals_cp.keys()
-        #assert globals().keys() == globals_cp.keys()
-        self.__scope = locals_cp.get("scope")
+        accessible_vars = {
+            'Stock': Stock,
+            'scope': scope,
+            'universe': universe
+        }
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_scope, accessible_vars)
+        # assert locals().keys() == locals_cp.keys()
+        # assert globals().keys() == globals_cp.keys()
+        self.__scope = exec_result.get("scope")
 
     def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
         print("\n\namount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
         """
-        buy_amount_list = []
-        sell_amount_list = []
-        locals_cp = copy(locals())
-        globals_cp = copy(globals())
-        exec(self.__snippet_amount, globals_cp, locals_cp)
-        print(f"locals: {locals_cp.keys()}")
-        print(f"globals: {globals_cp.keys()}")
-        #assert locals().keys() == locals_cp.keys()
-        #assert globals().keys() == globals_cp.keys()
+        accessible_vars = {
+            'opt': SnippetType,
+            'chosen_stocks': chosen_stocks,
+            'buy_amount_list': [],
+            'sell_amount_list': [],
+        }
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_amount, accessible_vars)
+        # assert locals().keys() == locals_cp.keys()
+        # assert globals().keys() == globals_cp.keys()
         if opt == SnippetType.BUY:
-            self.__buy_amount_list = buy_amount_list
+            self.__buy_amount_list = exec_result['buy_amount_list']
         elif opt == SnippetType.SELL:
-            self.__sell_amount_list = sell_amount_list
+            self.__sell_amount_list = exec_result['sell_amount_list']
+
 
     def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""
@@ -277,6 +332,17 @@ class BackTester:
         """
         kospi_profit = Kospi.objects.get(date=end).close / Kospi.objects.get(date=start).close
         return self.__report.get("profit") / float(kospi_profit)
+
+    def validate(self) -> bool:
+        try:
+            DefensiveCodeExecutor.pre_validate(self.__snippet_scope)
+            DefensiveCodeExecutor.pre_validate(self.__snippet_sell)
+            DefensiveCodeExecutor.pre_validate(self.__snippet_buy)
+            DefensiveCodeExecutor.pre_validate(self.__snippet_amount)
+        except AssertionError as e:
+            print(e)
+            return False
+        return True
 
     def run(self, trading_dates: List[date]) -> None:
         for day in trading_dates:

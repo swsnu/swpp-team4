@@ -7,7 +7,7 @@ from datetime import datetime
 from ..models.default_dataset.kospi import Kospi
 from ..serializers import AlgorithmSerializer
 from .backtest.backtester import BackTester
-from typing import List
+from typing import List, Optional
 
 
 class SandBox:
@@ -50,16 +50,23 @@ class SandBox:
     def get_end_date(self) -> datetime:
         return self.__end
 
-    def prepare(self) -> BackTester:
+    def prepare(self) -> Optional[BackTester]:
         """ Prepare for backtest. """
-        return BackTester(algorithm=self.algorithm, budget=self.__budget)
+        back_tester = BackTester(algorithm=self.algorithm, budget=self.__budget)
 
-    def run(self, back_tester: BackTester) -> None:
+        if back_tester.validate():
+            return back_tester
+        else:
+            print("validation process failed, the code will be not executed.")
+            return None
+
+    def run(self, back_tester: Optional[BackTester]) -> None:
         """
         Executes backtest.
         """
-        back_tester.run(self.get_trading_dates())
-        self.clean_up(back_tester)
+        if back_tester is not None:
+            back_tester.run(self.get_trading_dates())
+            self.clean_up(back_tester)
 
     def clean_up(self, back_tester: BackTester) -> None:
         self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1])
