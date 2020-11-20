@@ -21,7 +21,7 @@ class SandBox:
 
         params:
             budget: initial budget set by the api request.
-            start, end: datetime objects that defines the beginning and the end of backtest.
+            start, end: datetime objects that defines the beginning and the end of backtest. TODO.Exclusive? Inclusive?
             algorithm: Serialized algorithm data that contains code strings for each snippet.
         attributes:
             budget: the budget that will be used to initilaize backtester.
@@ -41,6 +41,15 @@ class SandBox:
         back_tester = self.prepare()
         self.run(back_tester)
 
+    def get_budget(self) -> float:
+        return self.__budget
+
+    def get_start_date(self) -> datetime:
+        return self.__start
+
+    def get_end_date(self) -> datetime:
+        return self.__end
+
     def prepare(self) -> BackTester:
         """ Prepare for backtest. """
         return BackTester(algorithm=self.algorithm, budget=self.__budget)
@@ -49,7 +58,7 @@ class SandBox:
         """
         Executes backtest.
         """
-        back_tester.run()
+        back_tester.run(self.get_trading_dates())
         self.clean_up(back_tester)
 
     def clean_up(self, back_tester: BackTester) -> None:
@@ -59,6 +68,7 @@ class SandBox:
         """
         Get dates used for trading.
         """
+        print(Kospi.objects.all())
         return [
             kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
         ]

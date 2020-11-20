@@ -1,8 +1,7 @@
 """
 Stock library to manage single stock data.
 """
-from functools import reduce
-import datetime
+from datetime import datetime
 
 from typing import List, Tuple
 
@@ -59,8 +58,8 @@ class StockCoin(Stock):
                  stock_id: int,
                  price: float,
                  amount: int,
-                 purchase_log: List[Tuple[datetime.datetime, float, int]],
-                 sell_log: List[Tuple[datetime.datetime, float, int]],
+                 purchase_log: List[Tuple[datetime, float, int]],
+                 sell_log: List[Tuple[datetime, float, int]],
                  avg_purchase_price: float):
         """
         Parameters:
