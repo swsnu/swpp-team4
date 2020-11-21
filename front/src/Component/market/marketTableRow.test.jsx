@@ -1,7 +1,6 @@
-import { MarketTableRow } from './marketTableRow';
-import axios from 'axios';
-import { createMount } from '@material-ui/core/test-utils';
 import React from 'react';
+import { MarketTableRow } from './marketTableRow';
+import { createMount } from '@material-ui/core/test-utils';
 
 describe('test MarketTableRow', () => {
 
@@ -31,7 +30,6 @@ describe('test MarketTableRow', () => {
 
   it('renders MarketTableRow and expand.', () => {
     const component = createMount()(marketTableRow);
-    component.find('button.toggle-expand').simulate('click');
     component.find('button.toggle-expand').simulate('click');
   });
 

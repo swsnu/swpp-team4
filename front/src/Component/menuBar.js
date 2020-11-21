@@ -121,7 +121,7 @@ export const MenuBar = (props) => {
                 Dashboard
               </Button>
               <Button
-                id='dashboard_button'
+                id='market_button'
                 onClick={() => {
                   props.history.push('/market');
                 }}

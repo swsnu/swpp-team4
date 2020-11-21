@@ -83,5 +83,4 @@ describe('menuBar', () => {
     wrapper7.simulate('close');
     wrapper8.simulate('click');
   })
-
 })
