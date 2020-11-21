@@ -14,7 +14,7 @@ class SnippetSerializer(serializers.ModelSerializer):
         model = Snippet
         fields = ['id', 'code', 'name', 'description', 'author', 'author_name', 'is_shared', 'type', 'liker_list',
                   'create_at', 'update_at']
-        read_only_fields = ('id', 'author_name', 'liker', 'create_at', 'update_at')
+        read_only_fields = ('id', 'author_name', 'create_at', 'update_at')
 
     def get_author_name(self, obj: Snippet) -> str:
         """relational representation for author_name"""
@@ -22,7 +22,7 @@ class SnippetSerializer(serializers.ModelSerializer):
 
     def get_liker_list(self, obj: Snippet):
         """relational representation for author_name"""
-        return []
+        return [{'id': liker.id, 'username': liker.username} for liker in obj.liker.all()]
 
 
 class SnippetScopeSerializer(serializers.ModelSerializer):

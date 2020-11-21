@@ -8,6 +8,7 @@ urlpatterns = [
     path('sign_out', views.sign_out, name='sign_out'),
     path('snippet', views.get_put_post_snippets, name='snippet'),
     path('snippet/me', views.get_my_snippets, name='my_snippets'),
+    path('like/snippet', views.get_or_post_liked_snippets, name='liked_snippets'),
     path('algo', views.get_or_post_algorithms, name='algo'),
     path('algo/backtest', views.run_backtest, name='backtest'),
     path('algo/<int:algo_id>/report', views.get_reports_by_algo, name='report'),

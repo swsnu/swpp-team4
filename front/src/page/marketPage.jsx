@@ -18,6 +18,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import { MarketTableRow } from '../Component/market/marketTableRow';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 export const MarketPage = props => {
 
@@ -25,29 +26,16 @@ export const MarketPage = props => {
   const [searchType, setSearchType] = useState('all'); // all, buy, sell, scope ...
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState([]);
-  // TODO: id, rank, name, author, liked
+  // id, rank, name, author, liked
+  const userInfo = useSelector(s => s.user.userInfo);
 
-  // TODO: delete, this is for leaderboard backend testing
-  useEffect(async () => {
-    const res = await axios.get('/api/snippet', { params: { 'type': 'buy', name: 'qwe' } });
-    console.log(res.data);
+  const handleSearchByChange = (e) => setSearchBy(e.target.value);
+  const handleSearchTypeChange = (e) => setSearchType(e.target.value);
 
-  }, []);
-
-  const handleSearchByChange = (e) => {
-    setSearchBy(e.target.value);
-  };
-
-  const handleSearchTypeChange = (e) => {
-    setSearchType(e.target.value);
-  };
-
-  const onSearch = async (s) => { // TODO: s is the condition
+  const onSearch = async (s) => {
     try {
-      // const response =  axios.post(???)
-      // TODO: id, rank, name, author, liked, description, code,
       if (s === 'rank') {
-        // TODO: search buy rank.
+        // TODO: search by rank.
         // const res = await axios.get('/api/snippet', ???? );
         // setSearchResult(res.data);
       } else {
@@ -71,6 +59,7 @@ export const MarketPage = props => {
         // is_shared: false
         // name: "qwe"
         // type: "buy"
+        // liker_list: [{id: 1, username: "test"}]
         console.log(res.data);
         setSearchResult(res.data);
       }
@@ -81,23 +70,18 @@ export const MarketPage = props => {
     }
   };
 
-  const onToggleLiked = (id, value) => {
+  const onToggleLiked = async (id, value) => {
     try {
-      // const response =  axios.post(???)
-      // TODO: id, value
-      setSearchResult(searchResult.map(e => {
-        if (e.id === id) {
-          return { ...e, liked: value };
-        } else {
-          return e;
-        }
-      }));
+      const changed_snippet = await axios.post('/api/like/snippet', { id, value });
+      setSearchResult(searchResult.map(e => e.id === changed_snippet.data.id
+        ? changed_snippet.data
+        : e,
+      ));
     } catch (e) {
       console.log(e);
       window.alert('Failed!');
     }
   };
-
 
   useEffect(() => {
     onSearch('rank');
@@ -187,11 +171,12 @@ export const MarketPage = props => {
           </TableHead>
           <TableBody>
             {searchResult.map(e => <MarketTableRow
+              key={e.id}
               id={e.id}
               name={e.name}
               author={e.author_name}
               type={e.type}
-              liked={false} // TODO
+              liked={e.liker_list.map(z => z.username).includes(userInfo.username)}
               onLikedChange={(v) => {
                 console.log(v);
                 onToggleLiked(e.id, v);

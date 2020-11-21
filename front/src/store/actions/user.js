@@ -14,7 +14,7 @@ export const sign_in = (username, password) => {
       await axios.post('/api/sign_in', data);
       const userInfo = {
         username: username,
-        password: password
+        // password: password
       };
       dispatch({
         type: actionTypes.SIGN_IN,

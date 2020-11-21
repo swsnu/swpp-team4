@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-
+from django.contrib.auth.models import User
 from qc_api.models import Snippet
 from qc_api.serializers import SnippetSerializer, SnippetScopeSerializer, \
     SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
@@ -41,7 +41,7 @@ def check_type_and_serialize_request(snippet_type: str, data: dict) -> ModelSeri
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 @catch_bad_request
-def get_or_post_snippets(request: Request) -> Response:
+def get_put_post_snippets(request: Request) -> Response:
     """api endpoint for snippet lists"""
     if request.method == 'POST':
         snippet_type, checked_data = type_extract(request.data)
@@ -58,6 +58,9 @@ def get_or_post_snippets(request: Request) -> Response:
         snippets = Snippet.objects.filter(**params)
         response = SnippetSerializer(snippets, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
+    else:
+        # TODO: change shared state of owned algorithm
+        return Response('lol', status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -69,5 +72,25 @@ def get_my_snippets(request: Request) -> Response:
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
+@api_view(['GET', 'POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+@catch_bad_request
+def get_or_post_liked_snippets(request: Request) -> Response:
+    """api endpoint for (un)liking snippet"""
+    if request.method == 'POST':
+        snippet_id = request.data.get('id')
+        value = request.data.get('value')
+        snippet = Snippet.objects.get(id=snippet_id)
+        if value is True:
+            snippet.liker.add(request.user.id)
+        else:
+            snippet.liker.remove(request.user.id)
+        snippet.save()
+        serializer = SnippetSerializer(snippet, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        # TODO: get all snippets that I liked
+        print(User.objects.get(id=request.user.id).liked_snippets.all())
+        # User.objects.get(id=request.user).liked_snippets.all()
+        return Response(True, status=status.HTTP_200_OK)
