@@ -31,7 +31,7 @@ mock_algo_ser_data = {
     },
     'snippet_amount_data': {
         'code': "if opt == SnippetType.BUY:\n\tfor stock in chosen_stocks:\n\t\tbuy_amount_list.append((stock, 1))" +
-                "\nelse:\n\tfor stock in chosen_stocks:\n\t\tsell_amount_list.append((stock, stock.get_amount()))"
+                "\nelse:\n\tfor stock in chosen_stocks:\n\t\tsell_amount_list.append((stock, 1))"
     }
 }
 

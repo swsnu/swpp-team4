@@ -7,6 +7,7 @@ from typing import List, Dict, Any
 import pandas as pd
 
 from qc_api.util.utility import SnippetType
+from ..wallet.stock import StockCoin
 from ..wallet.wallet import Wallet, Stock
 from ...models import Kospi, StockData
 from ...serializers import AlgorithmSerializer
@@ -24,16 +25,16 @@ class DefensiveCodeExecutor:
         """
         assert "import" not in code
         assert "exec" not in code
-        #assert "print" not in code
+        # assert "print" not in code
         assert "raise" not in code
         assert "try" not in code
         assert "except" not in code
 
     @classmethod
-    def run(cls, code: str, accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
+    def run(cls, code: str, accessible_src: Dict[str, Any], accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
         before_exec = copy(accessible_vars)
         try:
-            exec(code, {}, accessible_vars)
+            exec(code, accessible_src, accessible_vars)
         except Exception as e:
             print(f"exception occurred. {e}")
         print(accessible_vars.keys())
@@ -151,7 +152,7 @@ class BackTester:
         # globals_cp = copy(globals())
         if len(sell_candidates) == 0:
             return
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_sell, accessible_vars)
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_sell, accessible_src={}, accessible_vars=accessible_vars)
         # exec(self.__snippet_sell, globals_cp, locals_cp)
         # print(f"locals: {locals_cp.keys()}")
         # print(f"globals: {globals_cp.keys()}")
@@ -184,7 +185,7 @@ class BackTester:
         }
         #locals_cp = copy(locals())
         #globals_cp = copy(globals())
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_buy, accessible_vars)
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_buy, {}, accessible_vars)
         #exec(self.__snippet_buy, globals_cp, locals_cp)
         #print(f"locals: {locals_cp.keys()}")
         #print(f"globals: {globals_cp.keys()}")
@@ -209,12 +210,14 @@ class BackTester:
             'scope': scope,
             'universe': universe
         }
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_scope, accessible_vars)
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         # assert locals().keys() == locals_cp.keys()
         # assert globals().keys() == globals_cp.keys()
         self.__scope = exec_result.get("scope")
 
     def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
+        # TODO: Stock class does not have any amount field. If we want users to access the amount of their possessed
+        # TODO: stocks in their code, we must think of how to feed the information in here.
         print("\n\namount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
@@ -225,7 +228,7 @@ class BackTester:
             'buy_amount_list': [],
             'sell_amount_list': [],
         }
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_amount, accessible_vars)
+        exec_result = DefensiveCodeExecutor.run(self.__snippet_amount, {'SnippetType': SnippetType}, accessible_vars)
         # assert locals().keys() == locals_cp.keys()
         # assert globals().keys() == globals_cp.keys()
         if opt == SnippetType.BUY:
