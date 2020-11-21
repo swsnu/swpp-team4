@@ -24,7 +24,7 @@ function App(props) {
         <Container maxWidth="lg">
           {reduxStore.user.loggedIn === true ? (
             <Switch>
-              {/*<Route path="/market" exact component={MarketPage} />*/}
+              <Route path="/market" exact component={MarketPage} />
               <Route path="/algo/write" exact component={WritePage}/>
               <Route path="/algo/manage" exact component={ManagePage}/>
               <Redirect exact from="/login" to="/dashboard"/>
@@ -33,8 +33,7 @@ function App(props) {
             </Switch>
           ) : (
             <Switch>
-              {/*TODO: delete*/}
-              <Route path="/" component={MarketPage}/>
+              {/*<Route path="/" component={MarketPage}/>*/}
               <Route path="/" exact component={LandingPage}/>
               <Redirect to="/"/>
             </Switch>

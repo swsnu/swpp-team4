@@ -52,8 +52,10 @@ def get_or_post_snippets(request: Request) -> Response:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        snippets = Snippet.objects.filter(**request.query_params.dict())
+    elif request.method == 'GET':
+        params = {key if key != 'author_name' else 'author__username': val for key, val in
+                  request.query_params.dict().items()}
+        snippets = Snippet.objects.filter(**params)
         response = SnippetSerializer(snippets, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
 
@@ -65,3 +67,7 @@ def get_my_snippets(request: Request) -> Response:
     snippets = Snippet.objects.filter(**request.query_params.dict(), author=request.user.id)
     serializer = SnippetSerializer(snippets, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+

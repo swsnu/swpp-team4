@@ -17,6 +17,7 @@ export const MarketTableRow = (
     id,
     name,
     author,
+    type,
     liked,
     onLikedChange,
     description,
@@ -37,6 +38,9 @@ export const MarketTableRow = (
         {author}
       </TableCell>
       <TableCell align="left">
+        {type}
+      </TableCell>
+      <TableCell align="left">
         <IconButton className='toggle-like' size='small' onClick={() => {
           onLikedChange(!liked);
         }}>
@@ -52,7 +56,7 @@ export const MarketTableRow = (
       </TableCell>
     </TableRow>
     <TableRow>
-      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
         <Collapse in={rowExpanded} timeout="auto" unmountOnExit>
           <Box margin={1}>
             <Typography variant="h6" gutterBottom component="div">
@@ -64,7 +68,7 @@ export const MarketTableRow = (
             <Typography variant="h6" gutterBottom component="div" style={{ marginTop: 20 }}>
               Code
             </Typography>
-            <div style={{ marginLeft: 15 }}>
+            <div style={{ marginLeft: 15, width:900, maxWidth:900 }}>
               <CodeMirror
                 value={code}
                 options={{

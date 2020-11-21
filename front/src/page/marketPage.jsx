@@ -17,23 +17,63 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import { MarketTableRow } from '../Component/market/marketTableRow';
+import axios from 'axios';
 
 export const MarketPage = props => {
 
-  const [searchBy, setSearchBy] = React.useState('name');
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [searchResult, setSearchResult] = React.useState([]);
+  const [searchBy, setSearchBy] = useState('name'); // name, description, author
+  const [searchType, setSearchType] = useState('all'); // all, buy, sell, scope ...
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
   // TODO: id, rank, name, author, liked
+
+  // TODO: delete, this is for leaderboard backend testing
+  useEffect(async () => {
+    const res = await axios.get('/api/snippet', { params: { 'type': 'buy', name: 'qwe' } });
+    console.log(res.data);
+
+  }, []);
 
   const handleSearchByChange = (e) => {
     setSearchBy(e.target.value);
   };
 
-  const onSearch = (s) => { // TODO: s is the condition
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
+  };
+
+  const onSearch = async (s) => { // TODO: s is the condition
     try {
       // const response =  axios.post(???)
       // TODO: id, rank, name, author, liked, description, code,
-      // setSearchResult()
+      if (s === 'rank') {
+        // TODO: search buy rank.
+        // const res = await axios.get('/api/snippet', ???? );
+        // setSearchResult(res.data);
+      } else {
+        let param = {};
+        if (s !== 'all') {
+          param.type = s;
+        }
+        if (searchBy === 'name') {
+          param.name = searchQuery;
+        } else if (searchBy === 'description') {
+          param.description = searchQuery;
+        } else if (searchBy === 'author') {
+          param.author_name = searchQuery;
+        }
+        console.log(param);
+        const res = await axios.get('/api/snippet', { params: param });
+        // author: 1
+        // id: 11
+        // code: "k"
+        // description: "erf"
+        // is_shared: false
+        // name: "qwe"
+        // type: "buy"
+        console.log(res.data);
+        setSearchResult(res.data);
+      }
     } catch (e) {
       console.log(e);
       window.alert('Failed to search snippet!');
@@ -87,7 +127,7 @@ export const MarketPage = props => {
           <Button
             id="search-snippet"
             onClick={() => {
-              onSearch(searchBy);
+              onSearch(searchType);
             }}
             variant='contained'
             color='primary'
@@ -101,16 +141,23 @@ export const MarketPage = props => {
       </Grid>
 
       <FormControl component="fieldset" style={{ marginBottom: 20 }}>
-        <FormLabel component="legend">
-          Search By
-        </FormLabel>
         <RadioGroup id="search-by-radio" value={searchBy} onChange={handleSearchByChange} row>
+          <FormLabel component="legend" style={{ marginTop: 15, marginRight: 10 }}>
+            Search By:
+          </FormLabel>
           <FormControlLabel value="name" control={<Radio/>} label="Name"/>
           <FormControlLabel value="author" control={<Radio/>} label="Author"/>
-          <FormControlLabel value="snippet1" control={<Radio/>} label="Snippet1"/>
-          <FormControlLabel value="snippet2" control={<Radio/>} label="Snippet2"/>
-          <FormControlLabel value="snippet3" control={<Radio/>} label="Snippet3"/>
-          <FormControlLabel value="snippet4" control={<Radio/>} label="Snippet4"/>
+          <FormControlLabel value="description" control={<Radio/>} label="Description"/>
+        </RadioGroup>
+        <RadioGroup id="search-type-radio" value={searchType} onChange={handleSearchTypeChange} row>
+          <FormLabel component="legend" style={{ marginTop: 15, marginRight: 10 }}>
+            Search Type:
+          </FormLabel>
+          <FormControlLabel value="all" control={<Radio/>} label="All"/>
+          <FormControlLabel value="scope" control={<Radio/>} label="Scope"/>
+          <FormControlLabel value="buy" control={<Radio/>} label="Buy"/>
+          <FormControlLabel value="sell" control={<Radio/>} label="Sell"/>
+          <FormControlLabel value="amount" control={<Radio/>} label="Amount"/>
         </RadioGroup>
       </FormControl>
 
@@ -128,6 +175,9 @@ export const MarketPage = props => {
                 Author
               </TableCell>
               <TableCell align="left">
+                Type
+              </TableCell>
+              <TableCell align="left">
                 Liked
               </TableCell>
               <TableCell align="right">
@@ -136,37 +186,18 @@ export const MarketPage = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/*TODO: delete below*/}
-            <MarketTableRow
-              id={1}
-              name={'test Name'}
-              author={'chingis'}
-              liked={false}
-              onLikedChange={(v) => {
-                console.log(v);
-                onToggleLiked(0, v);
-              }}
-              description={'This is Snippet whatever lorem epsum dorlorwdalaw fqw df asdcx cc cqw'}
-              code={`for index, candidate in enumerate(scope):
-            if index==0:
-                chosen_stocks.append(candidate)
-                break`}
-            />
-
             {searchResult.map(e => <MarketTableRow
-              id={1}
-              name={'test Name'}
-              author={'chingis'}
-              liked={false}
+              id={e.id}
+              name={e.name}
+              author={e.author_name}
+              type={e.type}
+              liked={false} // TODO
               onLikedChange={(v) => {
                 console.log(v);
-                onToggleLiked(0, v);
+                onToggleLiked(e.id, v);
               }}
-              description={'This is Snippet whatever lorem epsum dorlorwdalaw fqw df asdcx cc cqw'}
-              code={`for index, candidate in enumerate(scope):
-            if index==0:
-                chosen_stocks.append(candidate)
-                break`}
+              description={e.description}
+              code={e.code}
             />)
             }
           </TableBody>

@@ -5,10 +5,24 @@ from ...models import Snippet, SnippetScope, SnippetAmount, SnippetBuy, SnippetS
 
 class SnippetSerializer(serializers.ModelSerializer):
     """Serializer class for generic snippet class"""
+    author_name = serializers.SerializerMethodField()
+    liker_list = serializers.SerializerMethodField()
+
+    # liker = TagSerializer(read_only=True, many=True)
+
     class Meta:
         model = Snippet
-        fields = ['id', 'code', 'name', 'description', 'author', 'is_shared', 'type', 'create_at', 'update_at']
-        read_only_fields = ('id', 'create_at', 'update_at')
+        fields = ['id', 'code', 'name', 'description', 'author', 'author_name', 'is_shared', 'type', 'liker_list',
+                  'create_at', 'update_at']
+        read_only_fields = ('id', 'author_name', 'liker', 'create_at', 'update_at')
+
+    def get_author_name(self, obj: Snippet) -> str:
+        """relational representation for author_name"""
+        return obj.author.username
+
+    def get_liker_list(self, obj: Snippet):
+        """relational representation for author_name"""
+        return []
 
 
 class SnippetScopeSerializer(serializers.ModelSerializer):
