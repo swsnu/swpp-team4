@@ -139,3 +139,18 @@ class WalletTestCase(TestCase):
         self.wallet.sell_coin(self.stock, 5, datetime(year=2020, month=2, day=1))
         self.assertEqual(self.wallet.get_coins_simple(), [])
         self.assertEqual(self.wallet.get_budget(), before_budget + 5000)
+
+    def test_get_summaries(self):
+        self.assertIn("cash", self.wallet.get_summaries().keys())
+
+    def test_get_profit(self):
+        self.assertEqual(self.wallet.get_profit(), 150.0)
+
+    def test_get_tx_log(self):
+        date = datetime(year=2020, month=1, day=1)
+        tx_log = self.wallet.get_transaction_log(date)
+        self.assertEqual(tx_log['date'], date)
+
+    def test_string_representation(self):
+        string_repr = self.wallet.__str__()
+        self.assertEqual(string_repr, f'{self.wallet.__repr__()}')

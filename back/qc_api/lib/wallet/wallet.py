@@ -166,6 +166,9 @@ class Wallet:
         }
         return rv
 
+    def __repr__(self):
+        return [str(coin) for coin in self.get_coins()]
+
     def __str__(self):
         """ String representation of wallet. """
-        return str(self.get_coins())
+        return f'{self.__repr__()}'
