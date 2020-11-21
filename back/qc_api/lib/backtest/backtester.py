@@ -35,6 +35,7 @@ class DefensiveCodeExecutor:
         assert "except" not in code
         assert "class " not in code
         assert "assert " not in code
+        assert "__dict__()" not in code
 
     @classmethod
     def run(cls, code: str, accessible_src: Dict[str, Any], accessible_vars: Dict[str, Any]) -> Dict[str, Any]:

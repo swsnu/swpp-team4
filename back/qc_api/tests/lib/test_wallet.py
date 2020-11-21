@@ -39,28 +39,26 @@ class StockTestCase(TestCase):
 class StockCoinTestCase(TestCase):
     def setUp(self):
         self.coin = StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
-                              purchase_log=[(datetime(year=2020, month=1, day=1), 5)],
+                              purchase_log=[(datetime(year=2020, month=1, day=1), 1000, 5)],
                               sell_log=[], avg_purchase_price=1000)
 
-    def test_coin_creation(self):
-        coin_fields = self.coin.__dict__.keys()
-        print(coin_fields)
-        self.assertIn('_Stock__name', coin_fields)
-        self.assertIn('_Stock__stock_id', coin_fields)
-        self.assertIn('_Stock__price', coin_fields)
-        self.assertIn('_StockCoin__amount', coin_fields)
-        self.assertIn('purchase_log', coin_fields)
-        self.assertIn('sell_log', coin_fields)
-        self.assertIn('avg_purchase_price', coin_fields)
+    def test_create_invalid_coin(self):
+        with self.assertRaises(ValueError):
+            StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
+                      purchase_log=[], sell_log=[], avg_purchase_price=1000)
+
+    def test_create_valid_coin(self):
+        self.assertEqual(self.coin.get_id(), 0)
+        self.assertEqual(self.coin.get_name(), "CreamCheeseCompany")
 
     def test_get_amount(self):
         self.assertEqual(self.coin.get_amount(), 5)
 
     def test_sell_stock(self):
         transaction = (datetime(year=2020, month=2, day=1), self.coin.get_price(), 1)
-        self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
+        result = self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 4)
-        self.assertIn(transaction, self.coin.get_sell_log())
+        self.assertEqual(result, True)
 
     def test_purchase_stock(self):
         transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 2)
@@ -88,6 +86,56 @@ class StockCoinTestCase(TestCase):
 
 class WalletTestCase(TestCase):
     def setUp(self):
+        self.stock = Stock(name="CreamCheeseCompany", stock_id=0, price=1000)
+        self.coin = StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
+                              purchase_log=[(datetime(year=2020, month=1, day=1), 1000, 5)],
+                              sell_log=[], avg_purchase_price=1000)
+        self.wallet = Wallet(budget=10000, stock_id_to_coin={0: self.coin})
         return
 
     def test_create_empty_wallet(self):
+        empty_wallet = Wallet(budget=10000)
+        wallet_fields = empty_wallet.__dict__.keys()
+        self.assertIn('_Wallet__budget', wallet_fields)
+        self.assertEqual(empty_wallet.get_coins(), list())
+
+    def test_create_filled_wallet(self):
+        self.assertEqual(self.wallet.get_coins(), [self.coin])
+
+    def test_get_budget(self):
+        self.assertEqual(self.wallet.get_budget(), 10000)
+
+    def test_get_initial_asset(self):
+        self.assertEqual(self.wallet.get_initial_asset(), 10000)
+
+    def test_get_coins_simple(self):
+        self.assertEqual(self.wallet.get_coins_simple(), [0])
+
+    def test_get_coins(self):
+        self.assertEqual(self.wallet.get_coins(), [self.coin])
+
+    def test_handle_new_coin(self):
+        new_coin = StockCoin(name="MonsterCookie", stock_id=1, price=500, amount=1,
+                             purchase_log=[(datetime(year=2020, month=1, day=1), 500, 1)],
+                             sell_log=[], avg_purchase_price=500)
+        self.wallet._Wallet__handle_new_coin(new_coin)
+        self.assertIn(new_coin, self.wallet.get_coins())
+
+    def test_handle_deleted_coin(self):
+        self.wallet._Wallet__handle_deleted_coin(0)
+        self.assertEqual(self.wallet.get_coins(), [])
+
+    def test_sell_coin_exceedingly(self):
+        result = self.wallet.sell_coin(self.stock, 6, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, False)
+
+    def test_sell_nonexisting_coin(self):
+        stock = Stock(name="MonsterCookie", stock_id=1, price=500)
+        result = self.wallet.sell_coin(stock, 1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, False)
+
+    def test_sell_all_coins(self):
+        before_budget = self.wallet.get_budget()
+        self.wallet.sell_coin(self.stock, 5, datetime(year=2020, month=2, day=1))
+        self.assertEqual(self.wallet.get_coins_simple(), [])
+        self.assertEqual(self.wallet.get_budget(), before_budget + 5000)

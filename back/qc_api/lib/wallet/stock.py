@@ -71,13 +71,14 @@ class StockCoin(Stock):
             sell_log: sell history
             avg_purchase_price: average purchase price
         """
-        if amount > 0 and len(purchase_log) == 0:
-            raise ValueError("Purchase log must not be empty if the amount is positive.")
         super().__init__(name, stock_id, price)
         self.__amount = amount
         self.__purchase_log = purchase_log
         self.__sell_log = sell_log
         self.__avg_purchase_price = avg_purchase_price
+
+        if not self.check_consistency():
+            raise ValueError("Consistency failed. Please check the transaction log.")
 
     def get_amount(self) -> int:
         """Get possessed amount of the stock"""
@@ -156,7 +157,7 @@ class StockCoin(Stock):
         """
         Check if the current log is correct.
         """
-        checker = sum(x[1] for x in self.__purchase_log) - sum(x[1] for x in self.__sell_log)
+        checker = sum(x[2] for x in self.__purchase_log) - sum(x[2] for x in self.__sell_log)
         return self.__amount == checker
 
     def __str__(self):
