@@ -1,51 +1,73 @@
 """backtester.py"""
+# pylint: disable=W0122, R0902, W0511, W0703
 from copy import copy
 from datetime import date, datetime
 from typing import List, Dict, Any
-
-# pylint: disable=W0122, R0902
 import pandas as pd
 
-from qc_api.util.utility import SnippetType
-from ..wallet.stock import StockCoin
 from ..wallet.wallet import Wallet, Stock
 from ...models import Kospi, StockData
 from ...serializers import AlgorithmSerializer
-from ...util.utility import stock_data_columns
+from ...util.utility import SnippetType, stock_data_columns
 
 
 class DefensiveCodeExecutor:
+    """
+    An executor for executing user code. All its methods are static because it needs not to be instantiated.
+    """
     def __init__(self):
+        """ init function"""
         return
 
     @classmethod
-    def pre_validate(cls, code: str):
+    def pre_validate(cls, code: str) -> None:
         """
-        Test invalid string occurrences
+        Test invalid string occurrences before executing user code.
+        Parameters:
+            code: code in a string format
+        Invalid keywords: import, exec, raise
         """
         assert "import" not in code
-        assert "exec" not in code
+        assert "exec(" not in code
         # assert "print" not in code
         assert "raise" not in code
         assert "try" not in code
         assert "except" not in code
+        assert "class " not in code
+        assert "assert " not in code
 
     @classmethod
     def run(cls, code: str, accessible_src: Dict[str, Any], accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Run pre-validated user code.
+        Parameters:
+            code: user code in a string format.
+            accessible_src: source modules, classes, and functions which user code can have access to.
+            accessible_vars: variables which user code can have access to.
+        Returns:
+            An updated accessible_vars. If post-validation fails, then returns un-updated accessible_vars.
+        """
         before_exec = copy(accessible_vars)
         try:
             exec(code, accessible_src, accessible_vars)
-        except Exception as e:
-            print(f"exception occurred. {e}")
+        except Exception as exception:
+            print(f"exception occurred. {exception}")
         print(accessible_vars.keys())
         can_return = DefensiveCodeExecutor.post_validate(before=before_exec, after=accessible_vars)
         if can_return:
             return accessible_vars
-        else:
-            return before_exec
+        return before_exec
 
     @classmethod
     def post_validate(cls, before: Dict[str, Any], after: Dict[str, Any]) -> bool:
+        """
+        Checks the changes done by the user code.
+        Parameters:
+            before: information about shared variables before executing user code.
+            after: information about shared variables after executing user code.
+        Returns:
+            True if the test passes.
+        """
         before_keys = before.keys()
         after_keys = after.keys()
 
@@ -53,11 +75,16 @@ class DefensiveCodeExecutor:
         if not set(before_keys).issubset(set(after_keys)):
             return False
         # variable type checking
-        for elm in before_keys:
-            if not isinstance(after[elm], type(before[elm])):
+        for key in before_keys:
+            if not isinstance(after[key], type(before[key])):
                 return False
+            if isinstance(after[key], type(list)) and len(after[key]) > 0:
+                first_elm = after[key][0]
+                if not all(isinstance(elm, type(first_elm)) for elm in after[key]):
+                    return False
         # are there any other checking methods?
         return True
+
 
 class BackTester:
     """The BackTester Class in which all backtesting functions are defined"""
@@ -131,7 +158,6 @@ class BackTester:
         self.__wallet.update_coins(universe_today=self.__universe)
 
     def make_sell_order(self) -> None:
-        print("\n\nsell")
         """
         Executes 'snippet_sell' and 'snippet_amount'.
         Execution result of snippet_sell:
@@ -148,20 +174,14 @@ class BackTester:
                            "scope": scope,
                            "chosen_stocks": [],
                            "universe": universe}
-        # locals_cp = copy(locals())
-        # globals_cp = copy(globals())
         if len(sell_candidates) == 0:
             return
         exec_result = DefensiveCodeExecutor.run(self.__snippet_sell, accessible_src={}, accessible_vars=accessible_vars)
-        # exec(self.__snippet_sell, globals_cp, locals_cp)
-        # print(f"locals: {locals_cp.keys()}")
-        # print(f"globals: {globals_cp.keys()}")
         self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_result.get("chosen_stocks"))
         for stock_tuple in self.__sell_amount_list:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
 
     def make_buy_order(self) -> None:
-        print("\n\nbuy")
         """
         Executes 'snippet_buy' and 'snippet_amount'.
         Execution result of snippet_buy:
@@ -178,19 +198,11 @@ class BackTester:
         if len(self.__scope) == 0:
             return
         scope = copy(self.__scope)
-        chosen_stocks = []
         accessible_vars = {
             "scope": scope,
             "chosen_stocks": []
         }
-        #locals_cp = copy(locals())
-        #globals_cp = copy(globals())
         exec_result = DefensiveCodeExecutor.run(self.__snippet_buy, {}, accessible_vars)
-        #exec(self.__snippet_buy, globals_cp, locals_cp)
-        #print(f"locals: {locals_cp.keys()}")
-        #print(f"globals: {globals_cp.keys()}")
-        # assert locals().keys() == locals_cp.keys()
-        # assert globals().keys() == globals_cp.keys()
         self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_result.get('chosen_stocks'))
         for stock_tuple in self.__buy_amount_list:
             try:
@@ -199,7 +211,6 @@ class BackTester:
                 pass
 
     def make_scope(self) -> None:
-        print("\n\nscope")
         """
         Executes snippet_scope and updates 'self.scope' that will be fed to snippet_buy and sell tomorrow.
         """
@@ -211,16 +222,13 @@ class BackTester:
             'universe': universe
         }
         exec_result = DefensiveCodeExecutor.run(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
-        # assert locals().keys() == locals_cp.keys()
-        # assert globals().keys() == globals_cp.keys()
         self.__scope = exec_result.get("scope")
 
     def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
-        # TODO: Stock class does not have any amount field. If we want users to access the amount of their possessed
-        # TODO: stocks in their code, we must think of how to feed the information in here.
-        print("\n\namount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
+        TODO: Stock class does not have any amount field. If we want users to access the amount of their possessed
+        TODO: stocks in their code, we must think of how to feed the information in here.
         """
         accessible_vars = {
             'opt': SnippetType,
@@ -229,13 +237,10 @@ class BackTester:
             'sell_amount_list': [],
         }
         exec_result = DefensiveCodeExecutor.run(self.__snippet_amount, {'SnippetType': SnippetType}, accessible_vars)
-        # assert locals().keys() == locals_cp.keys()
-        # assert globals().keys() == globals_cp.keys()
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
         elif opt == SnippetType.SELL:
             self.__sell_amount_list = exec_result['sell_amount_list']
-
 
     def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""
@@ -274,7 +279,7 @@ class BackTester:
                 pass
         elif yesterday_mode == 'gt':
             if profit < yesterday_profit:
-                """local maxima"""
+                # local maxima
                 self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
                 self.__max_min_dict.get("regi")[1] = 'lt'
             elif profit > yesterday_profit:
@@ -285,7 +290,7 @@ class BackTester:
             if profit < yesterday_profit:
                 self.__max_min_dict.get("regi")[1] = 'lt'
             elif profit > yesterday_profit:
-                """local minima"""
+                # local minima
                 self.__max_min_dict.get("regi")[1] = 'gt'
                 self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
             else:
@@ -337,17 +342,25 @@ class BackTester:
         return self.__report.get("profit") / float(kospi_profit)
 
     def validate(self) -> bool:
+        """
+        Validates user code before execution.
+        """
         try:
             DefensiveCodeExecutor.pre_validate(self.__snippet_scope)
             DefensiveCodeExecutor.pre_validate(self.__snippet_sell)
             DefensiveCodeExecutor.pre_validate(self.__snippet_buy)
             DefensiveCodeExecutor.pre_validate(self.__snippet_amount)
-        except AssertionError as e:
-            print(e)
+        except AssertionError as error:
+            print(error)
             return False
         return True
 
     def run(self, trading_dates: List[date]) -> None:
+        """
+        Run backtest.
+        Parameters:
+            trading_dates: dates to execute backtest.
+        """
         for day in trading_dates:
             print(f"\n\n\n{day}")
             self.set_date(day)
