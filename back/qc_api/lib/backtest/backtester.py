@@ -2,7 +2,8 @@
 # pylint: disable=W0122, R0902, W0511, W0703
 from copy import copy
 from datetime import date, datetime
-from typing import List, Dict, Any
+from traceback import print_exc
+from typing import List, Dict, Any, Union
 import pandas as pd
 
 from ..wallet.stock import Stock, StockCoin
@@ -54,6 +55,7 @@ class DefensiveCodeExecutor:
             exec(code, accessible_src, accessible_vars)
         except Exception as exception:
             print(f"exception occurred. {exception}")
+            print_exc()
         can_return = DefensiveCodeExecutor.post_validate(before=before_exec, after=accessible_vars)
         if can_return:
             return accessible_vars
@@ -159,6 +161,7 @@ class BackTester:
         self.__wallet.update_coins(universe_today=self.__universe)
 
     def make_sell_order(self) -> None:
+        print("sell")
         """
         Executes 'snippet_sell' and 'snippet_amount'.
         Execution result of snippet_sell:
@@ -179,11 +182,12 @@ class BackTester:
             return
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_sell, accessible_src={},
                                                     accessible_vars=accessible_vars)
-        self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_result.get("chosen_stocks"))
-        for stock_tuple in self.__sell_amount_list:
+        sell_list = self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_result.get("chosen_stocks"))
+        for stock_tuple in sell_list:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
 
     def make_buy_order(self) -> None:
+        print("buy")
         """
         Executes 'snippet_buy' and 'snippet_amount'.
         Execution result of snippet_buy:
@@ -205,14 +209,16 @@ class BackTester:
             "chosen_stocks": []
         }
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_buy, {'Stock': StockCoin}, accessible_vars)
-        self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_result.get('chosen_stocks'))
-        for stock_tuple in self.__buy_amount_list:
+        print(exec_result)
+        buy_list = self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_result.get('chosen_stocks'))
+        for stock_tuple in buy_list:
             try:
                 self.__wallet.purchase_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
             except IndexError:
                 pass
 
     def make_scope(self) -> None:
+        print("scope")
         """
         Executes snippet_scope and updates 'self.scope' that will be fed to snippet_buy and sell tomorrow.
         """
@@ -225,25 +231,35 @@ class BackTester:
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         self.__scope = exec_result.get("scope")
 
-    def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
+    def make_amount_list(self, opt: SnippetType,
+                         chosen_stocks: List[Union[Stock, StockCoin]]) -> List[Union[Stock, StockCoin]]:
+        print("amount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
         TODO: Stock class does not have any amount field. If we want users to access the amount of their possessed
         TODO: stocks in their code, we must think of how to feed the information in here.
         """
+        accessible_src = {
+            'SnippetType': SnippetType,
+            'Stock': Stock,
+            'StockCoin': StockCoin
+        }
         accessible_vars = {
-            'opt': SnippetType,
+            'opt': opt,
             'chosen_stocks': chosen_stocks,
             'buy_amount_list': [],
             'sell_amount_list': [],
         }
         exec_result = DefensiveCodeExecutor.execute(code=self.__snippet_amount,
-                                                    accessible_src={'SnippetType': SnippetType},
+                                                    accessible_src=accessible_src,
                                                     accessible_vars=accessible_vars)
+        print(opt)
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
+            return exec_result['buy_amount_list']
         elif opt == SnippetType.SELL:
             self.__sell_amount_list = exec_result['sell_amount_list']
+            return exec_result['sell_amount_list']
 
     def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""

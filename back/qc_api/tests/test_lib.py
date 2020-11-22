@@ -6,16 +6,13 @@ import os
 from django.test import TestCase
 
 from ..lib import SandBox
-from ..models import Kospi
-from ..models.default_dataset.kosdaq import Kosdaq
-from ..models.default_dataset.stock_data import StockData
 from ..util.utility import parse_date
 import default_dataset_seeder
 
 mock_algo_ser_data = {
     "snippet_scope_data": {
         'code': "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), "
-                "universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy())) "
+                "universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))"
     },
     'snippet_buy_data': {
         'code': "for index, candidate in enumerate(scope):"
@@ -30,8 +27,12 @@ mock_algo_ser_data = {
                 "\n\t\tchosen_stocks.append(candidate) "
     },
     'snippet_amount_data': {
-        'code': "if opt == SnippetType.BUY:\n\tfor stock in chosen_stocks:\n\t\tbuy_amount_list.append((stock, 1))" +
-                "\nelse:\n\tfor stock in chosen_stocks:\n\t\tsell_amount_list.append((stock, 1))"
+        'code': "if opt == SnippetType.BUY:"
+                "\n\tfor stock in chosen_stocks:"
+                "\n\t\tbuy_amount_list.append((stock, 1))" +
+                "\nelse:"
+                "\n\tfor stock in chosen_stocks:"
+                "\n\t\tsell_amount_list.append((stock, stock.get_amount()))"
     }
 }
 
