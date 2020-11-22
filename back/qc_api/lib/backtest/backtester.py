@@ -5,7 +5,8 @@ from datetime import date, datetime
 from typing import List, Dict, Any
 import pandas as pd
 
-from ..wallet.wallet import Wallet, Stock
+from ..wallet.stock import Stock, StockCoin
+from ..wallet.wallet import Wallet
 from ...models import Kospi, StockData
 from ...serializers import AlgorithmSerializer
 from ...util.utility import SnippetType, stock_data_columns
@@ -38,7 +39,7 @@ class DefensiveCodeExecutor:
         assert "__dict__()" not in code
 
     @classmethod
-    def run(cls, code: str, accessible_src: Dict[str, Any], accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(cls, code: str, accessible_src: Dict[str, Any], accessible_vars: Dict[str, Any]) -> Dict[str, Any]:
         """
         Run pre-validated user code.
         Parameters:
@@ -53,7 +54,6 @@ class DefensiveCodeExecutor:
             exec(code, accessible_src, accessible_vars)
         except Exception as exception:
             print(f"exception occurred. {exception}")
-        print(accessible_vars.keys())
         can_return = DefensiveCodeExecutor.post_validate(before=before_exec, after=accessible_vars)
         if can_return:
             return accessible_vars
@@ -79,7 +79,7 @@ class DefensiveCodeExecutor:
         for key in before_keys:
             if not isinstance(after[key], type(before[key])):
                 return False
-            if isinstance(after[key], type(list)) and len(after[key]) > 0:
+            if isinstance(after[key], list) and len(after[key]) > 0:
                 first_elm = after[key][0]
                 if not all(isinstance(elm, type(first_elm)) for elm in after[key]):
                     return False
@@ -177,7 +177,8 @@ class BackTester:
                            "universe": universe}
         if len(sell_candidates) == 0:
             return
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_sell, accessible_src={}, accessible_vars=accessible_vars)
+        exec_result = DefensiveCodeExecutor.execute(self.__snippet_sell, accessible_src={},
+                                                    accessible_vars=accessible_vars)
         self.make_amount_list(opt=SnippetType.SELL, chosen_stocks=exec_result.get("chosen_stocks"))
         for stock_tuple in self.__sell_amount_list:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
@@ -203,7 +204,7 @@ class BackTester:
             "scope": scope,
             "chosen_stocks": []
         }
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_buy, {}, accessible_vars)
+        exec_result = DefensiveCodeExecutor.execute(self.__snippet_buy, {'Stock': StockCoin}, accessible_vars)
         self.make_amount_list(opt=SnippetType.BUY, chosen_stocks=exec_result.get('chosen_stocks'))
         for stock_tuple in self.__buy_amount_list:
             try:
@@ -218,11 +219,10 @@ class BackTester:
         scope = copy(self.__scope)
         universe = copy(self.__universe)
         accessible_vars = {
-            'Stock': Stock,
             'scope': scope,
             'universe': universe
         }
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
+        exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         self.__scope = exec_result.get("scope")
 
     def make_amount_list(self, opt: SnippetType, chosen_stocks: List[Stock]) -> None:
@@ -237,7 +237,9 @@ class BackTester:
             'buy_amount_list': [],
             'sell_amount_list': [],
         }
-        exec_result = DefensiveCodeExecutor.run(self.__snippet_amount, {'SnippetType': SnippetType}, accessible_vars)
+        exec_result = DefensiveCodeExecutor.execute(code=self.__snippet_amount,
+                                                    accessible_src={'SnippetType': SnippetType},
+                                                    accessible_vars=accessible_vars)
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
         elif opt == SnippetType.SELL:
