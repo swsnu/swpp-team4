@@ -37,6 +37,7 @@ def kospi_to_db(chunk):
     Kospi.objects.bulk_create(bulk_list)
     return bulk_list
 
+
 def kosdaq_to_db(chunk):
     """
     Helper function to inject kosdaq data to database
@@ -131,11 +132,11 @@ def seed_kospi_or_kosdaq(name, type, chunk_size, start=None, end=None):
 
         chunk_as_mat = chunk.to_numpy()
         print(chunk_as_mat[-1][0], chunk_as_mat[0][0])
-        #TODO. convert timestamp to datetime
-        #if start is not None and chunk_as_mat[-1][0] < start:
-        #    continue
-        #if end is not None and chunk_as_mat[0][0] > end:
-        #    break
+        # TODO. convert timestamp to datetime
+        #  if start is not None and chunk_as_mat[-1][0] < start:
+        #      continue
+        #  if end is not None and chunk_as_mat[0][0] > end:
+        #      break
 
         if type == 'kospi':
             print(chunk.to_numpy())
@@ -146,7 +147,7 @@ def seed_kospi_or_kosdaq(name, type, chunk_size, start=None, end=None):
     return objects
 
 
-def seed_other_dataset(name, chunk_size, start=None, end=None):
+def seed_other_dataset(name: str, chunk_size: int, start=None, end=None):
     objects = []
     for chunk in pd.read_csv(name, chunksize=chunk_size, header=1):
         chunk_as_mat = chunk.to_numpy()
@@ -156,16 +157,20 @@ def seed_other_dataset(name, chunk_size, start=None, end=None):
             continue
         if end is not None and end < chunk_start:
             break
-        #print(chunk.to_numpy())
+        # print(chunk.to_numpy())
         objects += insert_into_sql(chunk.to_numpy())
     return objects
 
 
-def run(chunk_size, path: str, name: str, start=None, end=None):
+def run(chunk_size: int, path: str, name: str, start=None, end=None):
     """
     Insert stock data into the database
     Parameters:
-        chunk_size
+        chunk_size: size to process at once.
+        path: path to the file.
+        name: identifier of the file. For now, it supports 'kospi', and 'kosdaq'
+        start: Beginning date of the queried result. If None, it starts from the beginning of the file.
+        end: Ending date of the queired result. If None, it processes until the end of the file.
     """
     # _input = str(input("enter the file name from which the data will be fetched: ")) -> path
     # _to = str(input("enter the db table name to which the fetched data will be injected: ")) -> name
