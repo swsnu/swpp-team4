@@ -159,7 +159,7 @@ class Wallet:
         """
         rv = dict()
         rv.update(self.__transaction_log)
-        rv['date'] = date
+        rv['date'] = str(date)
         self.__transaction_log = {
             "sell": [],
             "buy": []
