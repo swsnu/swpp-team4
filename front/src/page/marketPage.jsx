@@ -18,9 +18,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import { MarketTableRow } from '../Component/market/marketTableRow';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-export const MarketPage = props => {
+export const MarketPage = () => {
 
   const [searchBy, setSearchBy] = useState('name'); // name, description, author
   const [searchType, setSearchType] = useState('all'); // all, buy, sell, scope ...
@@ -29,12 +29,19 @@ export const MarketPage = props => {
   // id, rank, name, author, liked
   const userInfo = useSelector(s => s.user.userInfo);
 
-  const handleSearchByChange = (e) => setSearchBy(e.target.value);
-  const handleSearchTypeChange = (e) => setSearchType(e.target.value);
+  const handleSearchByChange = (e) => {
+    console.log(e.target.value);
+    setSearchBy(e.target.value);
+  };
+  const handleSearchTypeChange = (e) => {
+    console.log(e.target.value);
+    setSearchType(e.target.value);
+  };
 
   const onSearch = async (s) => {
     try {
       if (s === 'rank') {
+        console.log('rank search')
         // TODO: search by rank.
         // const res = await axios.get('/api/snippet', ???? );
         // setSearchResult(res.data);
@@ -47,7 +54,7 @@ export const MarketPage = props => {
           param.name = searchQuery;
         } else if (searchBy === 'description') {
           param.description = searchQuery;
-        } else if (searchBy === 'author') {
+        } else {  // searchBy === 'author'
           param.author_name = searchQuery;
         }
         console.log(param);
@@ -129,19 +136,19 @@ export const MarketPage = props => {
           <FormLabel component="legend" style={{ marginTop: 15, marginRight: 10 }}>
             Search By:
           </FormLabel>
-          <FormControlLabel value="name" control={<Radio/>} label="Name"/>
-          <FormControlLabel value="author" control={<Radio/>} label="Author"/>
-          <FormControlLabel value="description" control={<Radio/>} label="Description"/>
+          <FormControlLabel value="name" control={<Radio/>} label="Name" id="search-by-name"/>
+          <FormControlLabel value="author" control={<Radio/>} label="Author" id="search-by-author"/>
+          <FormControlLabel value="description" control={<Radio/>} label="Description" id="search-by-description"/>
         </RadioGroup>
         <RadioGroup id="search-type-radio" value={searchType} onChange={handleSearchTypeChange} row>
           <FormLabel component="legend" style={{ marginTop: 15, marginRight: 10 }}>
             Search Type:
           </FormLabel>
-          <FormControlLabel value="all" control={<Radio/>} label="All"/>
-          <FormControlLabel value="scope" control={<Radio/>} label="Scope"/>
-          <FormControlLabel value="buy" control={<Radio/>} label="Buy"/>
-          <FormControlLabel value="sell" control={<Radio/>} label="Sell"/>
-          <FormControlLabel value="amount" control={<Radio/>} label="Amount"/>
+          <FormControlLabel value="all" control={<Radio/>} label="All" id="search-type-all"/>
+          <FormControlLabel value="scope" control={<Radio/>} label="Scope" id="search-type-scope"/>
+          <FormControlLabel value="buy" control={<Radio/>} label="Buy" id="search-type-buy"/>
+          <FormControlLabel value="sell" control={<Radio/>} label="Sell" id="search-type-sell"/>
+          <FormControlLabel value="amount" control={<Radio/>} label="Amount" id="search-type-amount"/>
         </RadioGroup>
       </FormControl>
 
