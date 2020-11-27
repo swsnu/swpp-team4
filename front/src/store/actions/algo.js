@@ -249,3 +249,42 @@ export const getAllMyAlgorithm = () => {
         }
     };
 };
+
+export const deleteAlgo = id => {
+    return async dispatch => {
+        try {
+            const response = await axios.delete(`/api/algo/${id}`);
+            dispatch({
+                type: "DELETE_ALGORITHM",
+                data: id
+            })
+        } catch (e) {
+
+        }
+    }
+}
+
+export const shareAlgo = (id, share) => {
+    return async (dispatch) => {
+        try {
+            const response = await axios.put('/api/algo/' + id, {public: share});
+            if (response.status === 200) {
+                if (share) {
+                    dispatch({
+                        type: 'ADD_SHARED_ALGORITHM',
+                        data: response.data,
+                    })
+                } else {
+                    dispatch({
+                        type: 'DELETE_SHARED_ALGORITHM',
+                        data: response.data,
+                    })
+                }
+            } else {
+
+            }
+        } catch (e) {
+
+        }
+    }
+}

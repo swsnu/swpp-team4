@@ -26,6 +26,8 @@ const mockStore = getMockStore({
     4: false,
   },
   algorithmSubmit: false,
+}, {}, {}, {
+  loadedDraftName: ''
 });
 
 const mockStore2 = getMockStore({
@@ -41,11 +43,13 @@ const mockStore2 = getMockStore({
     4: true,
   },
   algorithmSubmit: false,
-});
+},  {}, {}, {
+  loadedDraftName: 'test'});
 
 describe('test WritePage', () => {
   let writePage, writePage2;
   beforeEach(() => {
+    global.localStorage.setItem('test', JSON.stringify({code: '', name: ['', '', '', '']}));
     writePage = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>

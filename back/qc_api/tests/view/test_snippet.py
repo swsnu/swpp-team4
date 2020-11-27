@@ -4,7 +4,7 @@ test_snippet.py
 import json
 
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, Client
 
 from ..utils import get_mock_snippet, SnippetType
 from ...models import Snippet, SnippetScope, SnippetSell, SnippetBuy, SnippetAmount
@@ -89,3 +89,30 @@ class SnippetTestCase(TestCase):
         self.assertEqual(len(snippet_buys), 1)
         snippet_amounts = Snippet.objects.instance_of(SnippetAmount)
         self.assertEqual(len(snippet_amounts), 1)
+
+    def test_get_my_snippets(self):
+        stub_snippet = get_mock_snippet(SnippetType.SCOPE)
+        stub_snippet.save()
+        response = self.client.get('/api/snippet/me')
+        self.assertEqual(response.status_code, 200)
+
+    def test_like_and_get_liked_snippets(self):
+        stub_snippet = get_mock_snippet(SnippetType.SCOPE)
+        stub_snippet.save()
+        response = self.client.put('/api/like/snippet/1', json.dumps({'like': 'true'}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.put('/api/like/snippet/1', json.dumps({'like': 'false'}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/api/like/snippet')
+        self.assertEqual(response.status_code, 200)
+
+    def test_share_snippet(self):
+        stub_snippet = get_mock_snippet(SnippetType.SCOPE)
+        stub_snippet.save()
+        response = self.client.put('/api/snippet/1', json.dumps({'public': 'true'}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.put('/api/snippet/1', json.dumps({'public': 'false'}))
+        self.assertEqual(response.status_code, 200)
+        client = Client()
+        response = client.put('/api/snippet/1', json.dumps({'public': 'true'}))
+        self.assertEqual(response.status_code, 403)

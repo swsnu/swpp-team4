@@ -79,3 +79,26 @@ class AlgorithmTestCase(TestCase):
             'budget': '1000000'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+
+    def test_share_or_delete_algorithm(self):
+        stub_algo = get_mock_algo(name='')
+        stub_algo.save()
+        response = self.client.put('/api/algo/1', json.dumps({'public': 'true'}))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.put('/api/algo/1', json.dumps({'public': 'false'}))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.delete('/api/algo/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_share_or_delete_algorithm_not_logged_in(self):
+        client = Client()
+        stub_algo = get_mock_algo(name='')
+        stub_algo.save()
+        response = client.put('/api/algo/1', json.dumps({'public': 'true'}))
+        self.assertEqual(response.status_code, 403)
+        response = client.put('/api/algo/1', json.dumps({'public': 'false'}))
+        self.assertEqual(response.status_code, 403)
+
+        response = client.delete('/api/algo/1')
+        self.assertEqual(response.status_code, 403)
