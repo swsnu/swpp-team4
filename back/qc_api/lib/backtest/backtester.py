@@ -232,7 +232,7 @@ class BackTester:
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         self.__scope = exec_result.get("scope")
 
-    def make_amount_list(self, opt: Union[SnippetType.BUY, SnippetType.SELL],
+    def make_amount_list(self, opt: SnippetType,
                          chosen_stocks: List[Union[Stock, StockCoin]]) -> List[Union[Stock, StockCoin]]:
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
@@ -258,8 +258,10 @@ class BackTester:
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
             return exec_result['buy_amount_list']
-        self.__sell_amount_list = exec_result['sell_amount_list']
-        return exec_result['sell_amount_list']
+        elif opt == SnippetType.SELL:
+            self.__sell_amount_list = exec_result['sell_amount_list']
+            return exec_result['sell_amount_list']
+        return []
 
     def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""

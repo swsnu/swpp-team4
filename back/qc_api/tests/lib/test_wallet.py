@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from datetime import datetime
 from qc_api.lib import Stock, StockCoin, Wallet
@@ -59,12 +61,27 @@ class StockCoinTestCase(TestCase):
         result = self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 4)
         self.assertEqual(result, True)
+        self.assertIn(transaction, self.coin.get_sell_log())
+
+    def test_sell_invalid_stock(self):
+        transaction = (datetime(year=2020, month=2, day=1), self.coin.get_price(), 6)
+        result = self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
+        self.assertEqual(self.coin.get_amount(), 5)
+        self.assertEqual(result, False)
+        self.assertNotIn(transaction, self.coin.get_sell_log())
 
     def test_purchase_stock(self):
         transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 2)
         self.coin.purchase_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 7)
         self.assertIn(transaction, self.coin.get_purchase_log())
+
+    @patch('qc_api.lib.StockCoin.check_consistency')
+    def test_purchase_invalid_stock(self, mock_check_consistency):
+        mock_check_consistency.return_value = False
+        transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 0)
+        result = self.coin.purchase_coin(date_time=transaction[0], amount=transaction[2])
+        self.assertEqual(result, False)
 
     def test_fix_avg_purchase_price(self):
         transaction = (datetime(year=2020, month=3, day=1), 2)
