@@ -149,7 +149,7 @@ class WalletTestCase(TestCase):
     def test_get_tx_log(self):
         date = datetime(year=2020, month=1, day=1)
         tx_log = self.wallet.get_transaction_log(date)
-        self.assertEqual(tx_log['date'], date)
+        self.assertEqual(datetime.strptime(tx_log['date'], "%Y-%m-%d %H:%M:%S"), date)
 
     def test_string_representation(self):
         string_repr = self.wallet.__str__()

@@ -8,7 +8,7 @@ import pandas as pd
 
 from ..wallet.stock import Stock, StockCoin
 from ..wallet.wallet import Wallet
-from ...models import Kospi, StockData
+from ...models import Kospi, StockData, Report
 from ...serializers import AlgorithmSerializer
 from ...util.utility import SnippetType, stock_data_columns
 
@@ -132,6 +132,7 @@ class BackTester:
         self.__sell_amount_list = []
         self.__today = date(1985, 1, 1)
         self.__report = {
+            "status": Report.BackTestStatus.PENDING,
             "alpha": 0.0,
             "profit": 0.0,
             "MDD": 0.0,
@@ -161,7 +162,6 @@ class BackTester:
         self.__wallet.update_coins(universe_today=self.__universe)
 
     def make_sell_order(self) -> None:
-        print("sell")
         """
         Executes 'snippet_sell' and 'snippet_amount'.
         Execution result of snippet_sell:
@@ -171,6 +171,7 @@ class BackTester:
         After above sequence of snippet executions, it calls 'wallet.sell_coin', which eventually updates wallet status
         such as budget and possessed_items (used for calculation of daily profit, daily portfolio.
         """
+        print("sell")
         sell_candidates = self.__wallet.get_coins()
         scope = copy(self.__scope)
         universe = copy(self.__universe)
@@ -187,7 +188,6 @@ class BackTester:
             self.__wallet.sell_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
 
     def make_buy_order(self) -> None:
-        print("buy")
         """
         Executes 'snippet_buy' and 'snippet_amount'.
         Execution result of snippet_buy:
@@ -201,6 +201,7 @@ class BackTester:
             When a stock that was present in 'scope' yesterday disappears, pass buy-action of that specific
             stock as it no longer exists in the stock market.
         """
+        print("buy")
         if len(self.__scope) == 0:
             return
         scope = copy(self.__scope)
@@ -218,10 +219,10 @@ class BackTester:
                 pass
 
     def make_scope(self) -> None:
-        print("scope")
         """
         Executes snippet_scope and updates 'self.scope' that will be fed to snippet_buy and sell tomorrow.
         """
+        print("scope")
         scope = copy(self.__scope)
         universe = copy(self.__universe)
         accessible_vars = {
@@ -231,14 +232,14 @@ class BackTester:
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         self.__scope = exec_result.get("scope")
 
-    def make_amount_list(self, opt: SnippetType,
+    def make_amount_list(self, opt: Union[SnippetType.BUY, SnippetType.SELL],
                          chosen_stocks: List[Union[Stock, StockCoin]]) -> List[Union[Stock, StockCoin]]:
-        print("amount")
         """
         Executes snippet_amount and updates buy_amount_list and sell_amount_list, depending on where it was called.
         TODO: Stock class does not have any amount field. If we want users to access the amount of their possessed
         TODO: stocks in their code, we must think of how to feed the information in here.
         """
+        print("amount")
         accessible_src = {
             'SnippetType': SnippetType,
             'Stock': Stock,
@@ -257,9 +258,8 @@ class BackTester:
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
             return exec_result['buy_amount_list']
-        elif opt == SnippetType.SELL:
-            self.__sell_amount_list = exec_result['sell_amount_list']
-            return exec_result['sell_amount_list']
+        self.__sell_amount_list = exec_result['sell_amount_list']
+        return exec_result['sell_amount_list']
 
     def make_daily_report(self) -> None:
         """updates self.report's transaction_log and daily_profit."""
@@ -356,6 +356,8 @@ class BackTester:
         Calculate and return alpha value for the finished backtest.
         In order to get corresponding KOSPI data for each day, it queries KOSPI table with the 'start' and 'end' value
         of backtest.
+        Returns:
+            alpha value.
         """
         kospi_profit = Kospi.objects.get(date=end).close / Kospi.objects.get(date=start).close
         return self.__report.get("profit") / float(kospi_profit)
@@ -363,6 +365,8 @@ class BackTester:
     def validate(self) -> bool:
         """
         Validates user code before execution.
+        Returns:
+            true if it is safe to run backtest witht the given code.
         """
         try:
             DefensiveCodeExecutor.pre_validate(self.__snippet_scope)
@@ -374,18 +378,30 @@ class BackTester:
             return False
         return True
 
-    def run(self, trading_dates: List[date]) -> None:
+    def run(self, trading_dates: List[date]) -> Dict[str, Any]:
         """
         Run backtest.
         Parameters:
             trading_dates: dates to execute backtest.
+        Returns:
+            backtest report dictionary.
         """
-        for day in trading_dates:
-            print(f"\n\n\n{day}")
-            self.set_date(day)
-            self.set_universe()
-            self.update_wallet()
-            self.make_sell_order()
-            self.make_buy_order()
-            self.make_scope()
-            self.make_daily_report()
+        self.__report["status"] = Report.BackTestStatus.EXECUTING
+        try:
+            for day in trading_dates:
+                print(f"\n\n\n{day}")
+                self.set_date(day)
+                self.set_universe()
+                self.update_wallet()
+                self.make_sell_order()
+                self.make_buy_order()
+                self.make_scope()
+                self.make_daily_report()
+        except Exception:
+            # Early termination
+            # TODO: Need to specify cancel request from internal failures
+            self.__report["status"] = Report.BackTestStatus.FAILED
+            return self.report_result(start=trading_dates[0], end=trading_dates[-1])
+
+        self.__report["status"] = Report.BackTestStatus.DONE
+        return self.report_result(start=trading_dates[0], end=trading_dates[-1])
