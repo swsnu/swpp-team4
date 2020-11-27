@@ -155,6 +155,20 @@ class WalletTestCase(TestCase):
         result = self.wallet.sell_coin(stock, 1, datetime(year=2020, month=2, day=1))
         self.assertEqual(result, False)
 
+    def test_purchase_new_coin(self):
+        stock = Stock(name="MonsterCookie", stock_id=1, price=500)
+        result = self.wallet.purchase_coin(stock, 1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
+    def test_purchase_new_coin_negative_amount(self):
+        stock = Stock(name="MonsterCookie", stock_id=1, price=500)
+        result = self.wallet.purchase_coin(stock, -1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, False)
+
+    def test_purchase_existing_coin(self):
+        result = self.wallet.purchase_coin(self.stock, 1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
     @patch('qc_api.lib.Wallet._Wallet__handle_deleted_coin')
     def test_sell_all_coins(self, mock_delete):
         before_budget = self.wallet.get_budget()
