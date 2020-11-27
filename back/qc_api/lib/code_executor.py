@@ -46,7 +46,8 @@ class DefensiveCodeExecutor:
             exec(code, accessible_src, accessible_vars)
         except Exception as exception:
             print(f"exception occurred. {exception}")
-            print_exc()
+            return before_exec
+            # print_exc()
         can_return = DefensiveCodeExecutor.post_validate(before=before_exec, after=accessible_vars)
         if can_return:
             return accessible_vars
