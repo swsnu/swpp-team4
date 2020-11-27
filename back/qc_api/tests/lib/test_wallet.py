@@ -142,6 +142,10 @@ class WalletTestCase(TestCase):
         self.wallet._Wallet__handle_deleted_coin(0)
         self.assertEqual(self.wallet.get_coins(), [])
 
+    def test_sell_coin(self):
+        result = self.wallet.sell_coin(self.stock, 3, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
     def test_sell_coin_exceedingly(self):
         result = self.wallet.sell_coin(self.stock, 6, datetime(year=2020, month=2, day=1))
         self.assertEqual(result, False)
@@ -151,11 +155,12 @@ class WalletTestCase(TestCase):
         result = self.wallet.sell_coin(stock, 1, datetime(year=2020, month=2, day=1))
         self.assertEqual(result, False)
 
-    def test_sell_all_coins(self):
+    @patch('qc_api.lib.Wallet._Wallet__handle_deleted_coin')
+    def test_sell_all_coins(self, mock_delete):
         before_budget = self.wallet.get_budget()
         self.wallet.sell_coin(self.stock, 5, datetime(year=2020, month=2, day=1))
-        self.assertEqual(self.wallet.get_coins_simple(), [])
         self.assertEqual(self.wallet.get_budget(), before_budget + 5000)
+        self.assertTrue(mock_delete.called)
 
     def test_get_summaries(self):
         self.assertIn("cash", self.wallet.get_summaries().keys())
