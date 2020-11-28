@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from datetime import datetime
 from qc_api.lib import Stock, StockCoin, Wallet
@@ -59,12 +61,27 @@ class StockCoinTestCase(TestCase):
         result = self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 4)
         self.assertEqual(result, True)
+        self.assertIn(transaction, self.coin.get_sell_log())
+
+    def test_sell_invalid_stock(self):
+        transaction = (datetime(year=2020, month=2, day=1), self.coin.get_price(), 6)
+        result = self.coin.sell_coin(date_time=transaction[0], amount=transaction[2])
+        self.assertEqual(self.coin.get_amount(), 5)
+        self.assertEqual(result, False)
+        self.assertNotIn(transaction, self.coin.get_sell_log())
 
     def test_purchase_stock(self):
         transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 2)
         self.coin.purchase_coin(date_time=transaction[0], amount=transaction[2])
         self.assertEqual(self.coin.get_amount(), 7)
         self.assertIn(transaction, self.coin.get_purchase_log())
+
+    @patch('qc_api.lib.StockCoin.check_consistency')
+    def test_purchase_invalid_stock(self, mock_check_consistency):
+        mock_check_consistency.return_value = False
+        transaction = (datetime(year=2020, month=3, day=1), self.coin.get_price(), 0)
+        result = self.coin.purchase_coin(date_time=transaction[0], amount=transaction[2])
+        self.assertEqual(result, False)
 
     def test_fix_avg_purchase_price(self):
         transaction = (datetime(year=2020, month=3, day=1), 2)
@@ -125,6 +142,10 @@ class WalletTestCase(TestCase):
         self.wallet._Wallet__handle_deleted_coin(0)
         self.assertEqual(self.wallet.get_coins(), [])
 
+    def test_sell_coin(self):
+        result = self.wallet.sell_coin(self.stock, 3, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
     def test_sell_coin_exceedingly(self):
         result = self.wallet.sell_coin(self.stock, 6, datetime(year=2020, month=2, day=1))
         self.assertEqual(result, False)
@@ -134,11 +155,26 @@ class WalletTestCase(TestCase):
         result = self.wallet.sell_coin(stock, 1, datetime(year=2020, month=2, day=1))
         self.assertEqual(result, False)
 
-    def test_sell_all_coins(self):
+    def test_purchase_new_coin(self):
+        stock = Stock(name="MonsterCookie", stock_id=1, price=500)
+        result = self.wallet.purchase_coin(stock, 1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
+    def test_purchase_new_coin_negative_amount(self):
+        stock = Stock(name="MonsterCookie", stock_id=1, price=500)
+        result = self.wallet.purchase_coin(stock, -1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, False)
+
+    def test_purchase_existing_coin(self):
+        result = self.wallet.purchase_coin(self.stock, 1, datetime(year=2020, month=2, day=1))
+        self.assertEqual(result, True)
+
+    @patch('qc_api.lib.Wallet._Wallet__handle_deleted_coin')
+    def test_sell_all_coins(self, mock_delete):
         before_budget = self.wallet.get_budget()
         self.wallet.sell_coin(self.stock, 5, datetime(year=2020, month=2, day=1))
-        self.assertEqual(self.wallet.get_coins_simple(), [])
         self.assertEqual(self.wallet.get_budget(), before_budget + 5000)
+        self.assertTrue(mock_delete.called)
 
     def test_get_summaries(self):
         self.assertIn("cash", self.wallet.get_summaries().keys())
@@ -149,7 +185,7 @@ class WalletTestCase(TestCase):
     def test_get_tx_log(self):
         date = datetime(year=2020, month=1, day=1)
         tx_log = self.wallet.get_transaction_log(date)
-        self.assertEqual(tx_log['date'], date)
+        self.assertEqual(datetime.strptime(tx_log['date'], "%Y-%m-%d %H:%M:%S"), date)
 
     def test_string_representation(self):
         string_repr = self.wallet.__str__()
