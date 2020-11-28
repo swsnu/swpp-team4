@@ -4,6 +4,8 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import userReducer from "./store/reducers/user";
 import algoReducer from "./store/reducers/algo";
+import snippetReducer from "./store/reducers/snippet";
+import editorReducer from "./store/reducers/editor"
 
 export const history = createBrowserHistory();
 
@@ -23,6 +25,8 @@ export const middlewares = [logger, thunk, routerMiddleware(history)];
 const rootReducer = combineReducers({
   user: userReducer,
   algo: algoReducer,
+  snippet: snippetReducer,
+  editor: editorReducer,
   router: connectRouter(history)
 });
 

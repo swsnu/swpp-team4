@@ -1,6 +1,6 @@
 
 const initialState = {
-  ownedAlgorithmList: []
+  ownedAlgorithmList: [],
 };
 
 const algoReducer = (state = initialState, action) => {
@@ -10,6 +10,9 @@ const algoReducer = (state = initialState, action) => {
       return initialState;
     case "GET_OWNED_ALGORITHM":
       return { ...state, ownedAlgorithmList: action.data };
+    case "DELETE_ALGORITHM":
+      const deletedAlgorithmList = state.ownedAlgorithmList.filter(algo => algo.id !== action.data);
+      return {...state, ownedAlgorithmList: deletedAlgorithmList};
     default:
       break;
   }

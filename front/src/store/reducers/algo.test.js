@@ -9,4 +9,8 @@ describe ('algo reducer', () => {
         const action = { type: '', data: {} };
         algoReducer(undefined, action);
     })
+    it ('should delete an algorithm', () => {
+        const action = { type: 'DELETE_ALGORITHM', data: 0 };
+        algoReducer({ownedAlgorithmList: [{id: 0}]}, action);
+    })
 })

@@ -64,6 +64,44 @@ describe('algo actions', () => {
         })
 
         await store.dispatch(actionCreators.submitAlgo(name, descr, snippets));
+    })
 
+    it ('should delete an algorithm', async () => {
+        axios.delete = jest.fn(() => {
+            return Promise.resolve({status: 204})
+        })
+        await store.dispatch(actionCreators.deleteAlgo(0));
+        axios.delete = jest.fn(() => {
+            return Promise.reject(new Error(''));
+        })
+        await store.dispatch(actionCreators.deleteAlgo(0));
+    })
+
+    it ('should share an algorithm', async () => {
+        axios.put = jest.fn((url, data) => {
+            return Promise.resolve({status: 200, data: {}})
+        })
+        await store.dispatch(actionCreators.shareAlgo(0, true))
+    })
+
+    it ('should not share an algorithm', async () => {
+        axios.put = jest.fn((url, data) => {
+            return Promise.resolve({status: 200, data: {}})
+        })
+        await store.dispatch(actionCreators.shareAlgo(0, false));
+    })
+
+    it ('should fail to share an algorithm', async () => {
+        axios.put = jest.fn(() => {
+            return Promise.reject(new Error(''));
+        })
+        await store.dispatch(actionCreators.shareAlgo(0, true))
+    })
+
+    it ('should share algorithm but get bad response', async () => {
+        axios.put = jest.fn(() => {
+            return Promise.resolve({status: 400, data: {}});
+        })
+        await store.dispatch(actionCreators.shareAlgo(0, true))
     })
 })
