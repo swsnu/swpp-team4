@@ -12,7 +12,9 @@ from qc_api.lib import SandBox
 from qc_api.models import Algorithm, Report
 from qc_api.serializers import AlgorithmSerializer, ReportSerializer
 from qc_api.util.decorator import catch_bad_request
-from ...util.utility import parse_date
+from celery import shared_task
+from django.contrib.auth.models import User
+from webpush import send_user_notification
 import json
 
 
@@ -47,6 +49,17 @@ def get_or_post_algorithms(request: Request) -> Response:
         return Response(response.data, status=status.HTTP_200_OK)
 
 
+@shared_task
+def run_helper(budget, algo_id, start, end, user_id):
+    algorithm = Algorithm.objects.get(pk=algo_id)
+    algorithm_data = AlgorithmSerializer(algorithm).data
+    algorithm_data["id"] = algorithm.id
+    SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
+    user = User.objects.get(pk=user_id)
+    payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
+    send_user_notification(user=user, payload=payload, ttl=100)
+
+
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
@@ -57,25 +70,62 @@ def run_backtest(request: Request) -> Response:
         HttpResponse: with status 200.
     """
     budget = request.data.get("budget")
-    algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
-    algorithm_data = AlgorithmSerializer(algorithm).data
-    start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    sandbox = SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
-    report_data = sandbox.report
-    report_data["transaction_log"] = str(report_data["transaction_log"])
-    report_data["daily_profit"] = str(report_data["daily_profit"])
-    report_data.update({
-        "algorithm": algorithm.id,
-        "optional_stat": "N/A",
-        "start_date": start,
-        "end_date": end,
-        "initial_budget": budget
-    })
-    serializer = ReportSerializer(data=report_data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    algo_id = request.data.get("algo_id")
+    # algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
+    # algorithm_data = AlgorithmSerializer(algorithm).data
+    # algorithm_data["id"] = algorithm.id
+    #start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
+    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id)
+    #SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
+
+    # report_data = sandbox.report
+    # report_data["transaction_log"] = str(report_data["transaction_log"])
+    # report_data["daily_profit"] = str(report_data["daily_profit"])
+    # report_data.update({
+    #     "algorithm": algorithm.id,
+    #     "optional_stat": "N/A",
+    #     "start_date": start,
+    #     "end_date": end,
+    #     "initial_budget": budget,
+    #     "status": Report.BackTestStatus.DONE
+    # })
+    # serializer = ReportSerializer(data=report_data)
+    # if serializer.is_valid():
+    #     serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response("successfully running backtest", status=status.HTTP_200_OK)
+
+
+# @shared_task
+# def add_one_to_trillion():
+#     array = []
+#     for i in range(0, 100000000):
+#         array.append(i)
+#     sum_result = 0
+#     for elm in array:
+#         sum_result = sum_result+elm
+#     print(sum_result)
+#     user = User(username=sum_result, password=1234)
+#     user.save()
+#     return sum_result
+
+
+# @api_view(['GET'])
+# def sample_celery(request):
+#     res = add_one_to_trillion.delay()
+#     return Response(res.id, status=status.HTTP_200_OK)
+
+
+# @api_view(['POST'])
+# def webpush_example(request):
+#     user = User.objects.get(pk=request.user.id)
+#     print(user)
+#     print(request.data)
+#     payload = {'head': "fuck yeah", 'body': 'test sucksexfull!!!!!'}
+#     send_user_notification(user=user, payload=payload, ttl=1000)
+#     return Response("notification sent!", status=status.HTTP_200_OK)
+
 
 
 @api_view(['PUT', 'DELETE'])

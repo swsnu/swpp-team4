@@ -2,20 +2,20 @@
 Sandbox class
 """
 # pylint: disable=R0903
-from copy import copy
-from datetime import datetime
-from traceback import print_exc
+from datetime import datetime, date
 
 from ..models.default_dataset.kospi import Kospi
-from ..serializers import AlgorithmSerializer
+from ..models.evaluation.report import Report
+from ..serializers import AlgorithmSerializer, ReportSerializer
 from .backtest.backtester import BackTester
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
+from ..util.utility import parse_date
 
 
 class SandBox:
     """Sandbox class for Backtesting and Simulating registered algorithms"""
 
-    def __init__(self, budget: float, start: datetime, end: datetime, algorithm: AlgorithmSerializer.data) -> None:
+    def __init__(self, budget: float, start, end, algorithm: AlgorithmSerializer.data) -> None:
         """
         Runs backtest with settings defined by the '/algo/backtest' request.
         When backtest is complete, Sandbox updates 'report' attribute, which will be fetched by the view for
@@ -39,16 +39,17 @@ class SandBox:
         self.__end = end
         self.algorithm = algorithm
         self.date_rows = self.get_trading_dates()
+        self.report = None
         back_tester = self.prepare()
-        self.report = self.run(back_tester)
+        self.run(back_tester)
 
     def get_budget(self) -> float:
         return self.__budget
 
-    def get_start_date(self) -> datetime:
+    def get_start_date(self) -> date:
         return self.__start
 
-    def get_end_date(self) -> datetime:
+    def get_end_date(self) -> date:
         return self.__end
 
     def prepare(self) -> Optional[BackTester]:
@@ -61,13 +62,33 @@ class SandBox:
             print("validation process failed, the code will be not executed.")
             return None
 
-    def run(self, back_tester: Optional[BackTester]) -> Dict[str, Any]:
+    def run(self, back_tester: Optional[BackTester]) -> None:
         """
         Executes backtest.
         """
         if back_tester is not None:
-            report = back_tester.run(self.get_trading_dates())
-            return report
+            back_tester.run(self.get_trading_dates())
+            self.clean_up(back_tester)
+
+    def clean_up(self, back_tester: BackTester) -> None:
+        self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1])
+        self.report["transaction_log"] = str(self.report["transaction_log"])
+        self.report["daily_profit"] = str(self.report["daily_profit"])
+        self.report.update({
+            "algorithm": self.algorithm.get("id"),
+            "optional_stat": "N/A",
+            "start_date": parse_date(self.__start),
+            "end_date": parse_date(self.__end),
+            "initial_budget": self.__budget,
+            "status": Report.BackTestStatus.DONE
+        })
+        print(self.report)
+        serializer = ReportSerializer(data=self.report)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print(serializer.errors)
+        # TODO: ERROR HANDLING (CH)
 
     def get_trading_dates(self) -> List[datetime.date]:
         """
