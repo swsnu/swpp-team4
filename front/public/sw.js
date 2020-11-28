@@ -1,19 +1,24 @@
 function receivePushNotification(event) {
     console.log("[Service Worker] Push Received.");
+    console.log("[Service Worker] fuck");
+    const eventInfo = event.data.text();
+    const data = JSON.parse(eventInfo);
+    const head = data.head || 'New Notification 🕺🕺';
+    const body = data.body || 'This is default content. Your notification didn\'t have one 🙄🙄';
 
-    const { image, tag, url, title, text } = event.data.json();
-
+    console.log("[Service Worker]",event.data.json())
+    console.log("hi")
     const options = {
-        data: url,
-        body: text,
-        icon: image,
+        //data: url,
+        body: body,
+        //icon: image,
         vibrate: [200, 100, 200],
-        tag: tag,
-        image: image,
+        //tag: tag,
+        //image: image,
         badge: "https://spyna.it/icons/favicon.ico",
         actions: [{ action: "Detail", title: "View", icon: "https://via.placeholder.com/128/ff0000" }]
     };
-    event.waitUntil(self.registration.showNotification(title, options));
+    event.waitUntil(self.registration.showNotification(head, options));
 }
 
 function openPushNotification(event) {
@@ -25,3 +30,4 @@ function openPushNotification(event) {
 
 self.addEventListener("push", receivePushNotification);
 self.addEventListener("notificationclick", openPushNotification);
+console.log("hello fucking world!");
