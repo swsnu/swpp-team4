@@ -70,6 +70,7 @@ def run_backtest(request: Request) -> Response:
         HttpResponse: with status 200.
     """
     budget = request.data.get("budget")
+
     algo_id = request.data.get("algo_id")
     # algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
     # algorithm_data = AlgorithmSerializer(algorithm).data
@@ -126,6 +127,7 @@ def run_backtest(request: Request) -> Response:
 #     return Response("notification sent!", status=status.HTTP_200_OK)
 
 
+
 @api_view(['PUT', 'DELETE'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
@@ -145,4 +147,3 @@ def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
         algo = Algorithm.objects.get(id=algo_id)
         algo.delete()
         return Response(status.HTTP_204_NO_CONTENT)
-

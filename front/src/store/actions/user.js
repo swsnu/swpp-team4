@@ -1,3 +1,4 @@
+
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 import {
@@ -29,6 +30,7 @@ export const sign_in = (username, password) => {
         userInfo: userInfo,
         loggedIn: true,
       });
+
 
       const pushNotificationSuported = isPushNotificationSupported();
 

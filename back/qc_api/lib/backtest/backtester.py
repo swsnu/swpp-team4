@@ -304,7 +304,7 @@ class BackTester:
             return False
         return True
 
-    def run(self, trading_dates: List[date]) -> None:
+    def run(self, trading_dates: List[date]) -> Dict[str, Any]:
         """
         Run backtest.
         Parameters:
@@ -312,12 +312,22 @@ class BackTester:
         Returns:
             backtest report dictionary.
         """
-        for day in trading_dates:
-            print(f"\n\n\n{day}")
-            self.set_date(day)
-            self.set_universe()
-            self.update_wallet()
-            self.make_sell_order()
-            self.make_buy_order()
-            self.make_scope()
-            self.make_daily_report()
+        self.__report["status"] = Report.BackTestStatus.EXECUTING
+        try:
+            for day in trading_dates:
+                print(f"\n\n\n{day}")
+                self.set_date(day)
+                self.set_universe()
+                self.update_wallet()
+                self.make_sell_order()
+                self.make_buy_order()
+                self.make_scope()
+                self.make_daily_report()
+        except Exception:
+            # Early termination
+            # TODO: Need to specify cancel request from internal failures
+            self.__report["status"] = Report.BackTestStatus.FAILED
+            return self.report_result(start=trading_dates[0], end=trading_dates[-1])
+
+        self.__report["status"] = Report.BackTestStatus.DONE
+        return self.report_result(start=trading_dates[0], end=trading_dates[-1])
