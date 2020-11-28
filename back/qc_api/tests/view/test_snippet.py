@@ -89,3 +89,14 @@ class SnippetTestCase(TestCase):
         self.assertEqual(len(snippet_buys), 1)
         snippet_amounts = Snippet.objects.instance_of(SnippetAmount)
         self.assertEqual(len(snippet_amounts), 1)
+
+    def test_like_snippet(self):
+        """test 'get_or_post_liked_snippets' method"""
+        snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
+        snippet.save()
+        get_all = self.client.get('/api/like/snippet', content_type='application/json')
+        like = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': True}),
+                                content_type='application/json')
+        unlike = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': False}),
+                                  content_type='application/json')
+        self.assertEqual(get_all.status_code, 200)

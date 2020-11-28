@@ -91,6 +91,8 @@ def get_or_post_liked_snippets(request: Request) -> Response:
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         # TODO: get all snippets that I liked
-        print(User.objects.get(id=request.user.id).liked_snippets.all())
-        # User.objects.get(id=request.user).liked_snippets.all()
-        return Response(True, status=status.HTTP_200_OK)
+        # print(User.objects.get(id=request.user.id).liked_snippets.all())
+        liked_snippets = User.objects.get(id=request.user.id).liked_snippets.all()
+        serialized = SnippetSerializer(liked_snippets, many=True)
+        # print(SnippetSerializer(liked_snippets, many=True))
+        return Response(serialized.data, status=status.HTTP_200_OK)
