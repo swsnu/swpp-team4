@@ -32,11 +32,11 @@ class SnippetTestCase(TestCase):
 
     def test_get_snippet_list(self):
         """test for getting snippet lists"""
-        snippet = get_mock_snippet(SnippetType.SCOPE)
+        snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
         snippet.save()
         response = self.client.get('/api/snippet')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data[0].get("name"), 'SnippetType.SCOPE')
+        self.assertEqual(response.data[0].get("name"), 'snippet_type')
 
     def test_post_snippet_list_invalid(self):
         """test for post request for snippet lists with invalid data"""
