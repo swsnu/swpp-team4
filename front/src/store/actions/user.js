@@ -1,11 +1,9 @@
-
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 import {
   initializePushNotifications,
   isPushNotificationSupported,
   registerServiceWorker,
-  sendNotification,
   subscribe
 } from "../../push-notification";
 
