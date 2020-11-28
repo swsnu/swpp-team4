@@ -18,14 +18,13 @@ const mockStore = getMockStore({
 });
 
 describe('test marketPage', () => {
-
   let marketPage;
   beforeEach(() => {
     marketPage = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route path='/' component={MarketPage}/>
+            <Route path="/" component={MarketPage} />
           </Switch>
         </ConnectedRouter>
       </Provider>
@@ -37,10 +36,10 @@ describe('test marketPage', () => {
   });
 
   it('renders marketPage and search', () => {
-    jest.spyOn(axios, 'get')
-      .mockImplementation(() => {
-        return {
-          data: [{
+    jest.spyOn(axios, 'get').mockImplementation(() => {
+      return {
+        data: [
+          {
             author: 1,
             id: 11,
             code: 'k',
@@ -49,22 +48,34 @@ describe('test marketPage', () => {
             name: 'qwe',
             type: 'buy',
             liker_list: [{ id: 1, username: 'test' }],
-          }],
-        };
-      });
+          },
+        ],
+      };
+    });
     const component = createMount()(marketPage);
-    component.find('input#search-input').simulate('change', { target: { value: 'test' } });
-    component.find('label#search-by-name input').simulate('change', { target: { value: 'name' } });
+    component
+      .find('input#search-input')
+      .simulate('change', { target: { value: 'test' } });
+    component
+      .find('label#search-by-name input')
+      .simulate('change', { target: { value: 'name' } });
     component.find('button#search-snippet').simulate('click');
-    component.find('label#search-by-author input').simulate('change', { target: { value: 'author' } });
+    component
+      .find('label#search-by-author input')
+      .simulate('change', { target: { value: 'author' } });
     component.find('button#search-snippet').simulate('click');
-    component.find('label#search-by-description input').simulate('change', { target: { value: 'description' } });
+    component
+      .find('label#search-by-description input')
+      .simulate('change', { target: { value: 'description' } });
     component.find('button#search-snippet').simulate('click');
-    component.find('label#search-type-all input').simulate('change', { target: { value: 'description' } });
+    component
+      .find('label#search-type-all input')
+      .simulate('change', { target: { value: 'description' } });
     component.find('button#search-snippet').simulate('click');
-    component.find('label#search-type-buy input').simulate('change', { target: { value: 'description' } });
+    component
+      .find('label#search-type-buy input')
+      .simulate('change', { target: { value: 'description' } });
     component.find('button#search-snippet').simulate('click');
-
   });
 
   it('handles failed axios request', () => {
@@ -78,42 +89,23 @@ describe('test marketPage', () => {
       });
     });
     const component = createMount()(marketPage);
-    component.find('label#search-by-name input').simulate('change', { target: { value: 'name' } });
-    component.find('label#search-type-buy input').simulate('change', { target: { value: 'buy' } });
-    component.find('input#search-input').simulate('change', { target: { value: 'test' } });
+    component
+      .find('label#search-by-name input')
+      .simulate('change', { target: { value: 'name' } });
+    component
+      .find('label#search-type-buy input')
+      .simulate('change', { target: { value: 'buy' } });
+    component
+      .find('input#search-input')
+      .simulate('change', { target: { value: 'test' } });
     component.find('button#search-snippet').simulate('click');
   });
 
-
   it('handles liking snippets', async () => {
-    jest.spyOn(axios, 'get')
-      .mockImplementation(() => {
-        return {
-          data: [{
-            author: 1,
-            id: 11,
-            code: 'k',
-            description: 'erf',
-            is_shared: false,
-            name: 'qwe',
-            type: 'buy',
-            liker_list: [{ id: 1, username: 'test' }],
-          }, {
-            author: 1,
-            id: 12,
-            code: 'k',
-            description: 'erf',
-            is_shared: false,
-            name: 'qwe',
-            type: 'buy',
-            liker_list: [{ id: 1, username: 'test' }],
-          }],
-        };
-      });
-    jest.spyOn(axios, 'post')
-      .mockImplementation(() => {
-        return {
-          data: {
+    jest.spyOn(axios, 'get').mockImplementation(() => {
+      return {
+        data: [
+          {
             author: 1,
             id: 11,
             code: 'k',
@@ -123,9 +115,35 @@ describe('test marketPage', () => {
             type: 'buy',
             liker_list: [{ id: 1, username: 'test' }],
           },
-        };
-      });
-    jest.spyOn(MarketTableRowImport, 'MarketTableRow')
+          {
+            author: 1,
+            id: 12,
+            code: 'k',
+            description: 'erf',
+            is_shared: false,
+            name: 'qwe',
+            type: 'buy',
+            liker_list: [{ id: 1, username: 'test' }],
+          },
+        ],
+      };
+    });
+    jest.spyOn(axios, 'post').mockImplementation(() => {
+      return {
+        data: {
+          author: 1,
+          id: 11,
+          code: 'k',
+          description: 'erf',
+          is_shared: false,
+          name: 'qwe',
+          type: 'buy',
+          liker_list: [{ id: 1, username: 'test' }],
+        },
+      };
+    });
+    jest
+      .spyOn(MarketTableRowImport, 'MarketTableRow')
       .mockImplementation(({ onLikedChange }) => {
         console.log('test this');
         onLikedChange();
@@ -134,9 +152,15 @@ describe('test marketPage', () => {
     let component;
     component = createMount()(marketPage);
     component.update();
-    component.find('label#search-by-name input').simulate('change', { target: { value: 'name' } });
-    component.find('label#search-type-buy input').simulate('change', { target: { value: 'buy' } });
-    component.find('input#search-input').simulate('change', { target: { value: 'test' } });
+    component
+      .find('label#search-by-name input')
+      .simulate('change', { target: { value: 'name' } });
+    component
+      .find('label#search-type-buy input')
+      .simulate('change', { target: { value: 'buy' } });
+    component
+      .find('input#search-input')
+      .simulate('change', { target: { value: 'test' } });
     await component.find('button#search-snippet').simulate('click');
     await component.update();
     // console.log(component.debug());
@@ -153,6 +177,4 @@ describe('test marketPage', () => {
     await component.find('button#search-snippet').simulate('click');
     await component.update();
   });
-
-
 });

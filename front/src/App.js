@@ -25,17 +25,17 @@ function App(props) {
           {reduxStore.user.loggedIn === true ? (
             <Switch>
               <Route path="/market" exact component={MarketPage} />
-              <Route path="/algo/write" exact component={WritePage}/>
-              <Route path="/algo/manage" exact component={ManagePage}/>
-              <Redirect exact from="/login" to="/dashboard"/>
-              <Route path="/dashboard" exact component={DashboardPage}/>
-              <Route path="/" exact component={LandingPage}/>
+              <Route path="/algo/write" exact component={WritePage} />
+              <Route path="/algo/manage" exact component={ManagePage} />
+              <Redirect exact from="/login" to="/dashboard" />
+              <Route path="/dashboard" exact component={DashboardPage} />
+              <Route path="/" exact component={LandingPage} />
             </Switch>
           ) : (
             <Switch>
               {/*<Route path="/" component={MarketPage}/>*/}
-              <Route path="/" exact component={LandingPage}/>
-              <Redirect to="/"/>
+              <Route path="/" exact component={LandingPage} />
+              <Redirect to="/" />
             </Switch>
           )}
         </Container>

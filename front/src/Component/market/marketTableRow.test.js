@@ -4,7 +4,6 @@ import { createMount } from '@material-ui/core/test-utils';
 import * as cmr2 from 'react-codemirror2';
 
 describe('test MarketTableRow', () => {
-
   let marketTableRow, marketTableRow2;
 
   beforeEach(() => {
@@ -47,7 +46,8 @@ describe('test MarketTableRow', () => {
   });
 
   it('renders MarketTableRow and expand.', () => {
-    jest.spyOn(cmr2, 'Controlled')
+    jest
+      .spyOn(cmr2, 'Controlled')
       .mockImplementation(() => <>Mock Component :)</>);
 
     const component = createMount()(marketTableRow);
@@ -61,6 +61,4 @@ describe('test MarketTableRow', () => {
     component.find('button.toggle-like').simulate('click');
     component.find('button.toggle-like').simulate('click');
   });
-
-
 });

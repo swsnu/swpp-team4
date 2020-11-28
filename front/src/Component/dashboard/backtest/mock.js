@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 export const createData = (name, calories, fat, carbs) => {
-  return {name, calories, fat, carbs};
-}
+  return { name, calories, fat, carbs };
+};
 
 export const rows = [
   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LandingPage } from './landingPage';
-import { mount} from 'enzyme';
+import { mount } from 'enzyme';
 import { Route, Switch } from 'react-router-dom';
 import { history } from '../reduxRelated';
 import { Provider } from 'react-redux';
@@ -18,14 +18,13 @@ const stubInitialState = {
 const mockStore = getMockStore(stubInitialState);
 
 describe('landingPage', () => {
-
   let landing;
   beforeEach(() => {
     landing = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route path='/' exact component={LandingPage}/>
+            <Route path="/" exact component={LandingPage} />
           </Switch>
         </ConnectedRouter>
       </Provider>
@@ -39,5 +38,4 @@ describe('landingPage', () => {
     const wrapper2 = component.find('MenuBar');
     expect(wrapper2.length).toBe(1);
   });
-
 });

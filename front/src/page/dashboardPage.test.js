@@ -19,24 +19,25 @@ const stubInitialState = {
 };
 
 const stubInitialState2 = {
-  ownedAlgorithmList: [{
-    name: 'testName',
-    id: 1,
-    description: 'testDescription',
-  }],
+  ownedAlgorithmList: [
+    {
+      name: 'testName',
+      id: 1,
+      description: 'testDescription',
+    },
+  ],
 };
 
 const mockStore = getMockStore(stubInitialState, stubInitialState2, {});
 
 describe('DashboardPage', () => {
-
   let dashboard;
   beforeEach(() => {
     dashboard = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route path='/' component={DashboardPage}/>
+            <Route path="/" component={DashboardPage} />
           </Switch>
         </ConnectedRouter>
       </Provider>
@@ -48,7 +49,8 @@ describe('DashboardPage', () => {
   });
 
   it('should render DashboardPage without errors', () => {
-    jest.spyOn(NewBackTestFormImport, 'NewBackTestForm')
+    jest
+      .spyOn(NewBackTestFormImport, 'NewBackTestForm')
       .mockImplementation(({ onSubmit }) => {
         useEffect(() => {
           onSubmit();
@@ -67,31 +69,33 @@ describe('DashboardPage', () => {
   });
 
   it('should display backtest data', () => {
-    jest.spyOn(BacktestRowImport, 'BacktestRow')
+    jest
+      .spyOn(BacktestRowImport, 'BacktestRow')
       .mockImplementation(({ onOpenLog }) => {
         onOpenLog();
         return <>Another Mock Component :)</>;
       });
-    jest.spyOn(axios, 'get')
-      .mockImplementation(() => {
-        return {
-          data: [{
+    jest.spyOn(axios, 'get').mockImplementation(() => {
+      return {
+        data: [
+          {
             id: 1,
             transaction_log: '',
             daily_profit: '',
-          }, {
+          },
+          {
             id: 2,
             transaction_log: '',
             daily_profit: '',
-          }],
-        };
-      });
+          },
+        ],
+      };
+    });
     const component = createMount()(dashboard);
     component.find('div.myAlgo-1').simulate('click');
-    jest.spyOn(axios, 'get')
-      .mockImplementation(() => {
-        return false;
-      });
+    jest.spyOn(axios, 'get').mockImplementation(() => {
+      return false;
+    });
     component.find('div.myAlgo-1').simulate('click');
   });
 

@@ -7,12 +7,11 @@ import { initialState } from './store/reducers/user';
 import { history } from './reduxRelated';
 
 describe('renders App?', () => {
-
   it('should render App.js', () => {
     const mockStore = getMockStore(initialState);
     const app = (
       <Provider store={mockStore}>
-        <App history={history} id='testApp'/>
+        <App history={history} id="testApp" />
       </Provider>
     );
     const component = mount(app);
@@ -26,10 +25,10 @@ describe('renders App?', () => {
         name: '',
       },
       loggedIn: true,
-    })
+    });
     const app = (
       <Provider store={mockStore2}>
-        <App history={history} id='testApp'/>
+        <App history={history} id="testApp" />
       </Provider>
     );
     const component = mount(app);
