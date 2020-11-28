@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'webpush',
     'rest_framework',
     'qc_api'
 ]
@@ -127,3 +128,18 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# CELERY
+CELERY_BROKER_URL = 'redis://192.168.99.100:6379/0'
+CELERY_RESULT_BACKEND = 'redis://192.168.99.100:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# WEBPUSH
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY":  "BNM71Y9WCce_qujpq0SBQzR9TExQKVBeeXc3VSwzD90I6JZv7FyrnOFIeI6sNx2o7kKIAJkByXMIxrCc7_2txRw",
+   "VAPID_PRIVATE_KEY":  "V_eMw57yo-hOfrXAce_yF65v_t144JkZkgjmcrwp3YM",
+   "VAPID_ADMIN_EMAIL": "rlacksque@hotmail.co.kr"
+}
