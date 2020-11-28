@@ -1,5 +1,12 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
+import {
+  initializePushNotifications,
+  isPushNotificationSupported,
+  registerServiceWorker,
+  sendNotification,
+  subscribe
+} from "../../push-notification";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -21,6 +28,19 @@ export const sign_in = (username, password) => {
         userInfo: userInfo,
         loggedIn: true
       });
+      const pushNotificationSuported = isPushNotificationSupported();
+
+      if (pushNotificationSuported) {
+        const reg = await registerServiceWorker();
+        console.log("reg!!!", reg);
+        initializePushNotifications().then(function(consent){
+          if(consent === 'granted') {
+            //sendNotification();
+            subscribe(reg);
+            console.log("notification sent motherfucker!!!!");
+          }
+        });
+      }
 
     } catch(error) {
       alert('email or password is wrong');
