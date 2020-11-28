@@ -72,7 +72,9 @@ export const MenuBar = (props) => {
           </Button>
           {reduxStore.user.loggedIn === false ? (
             <div>
-              <Button id='login_button' onClick={handleLogInClick}>Log in</Button>
+              <Button id='login_button' onClick={handleLogInClick}>
+                Log in
+              </Button>
               <Popover
                 open={logInOpen}
                 anchorEl={logInAnchorEl}
@@ -88,7 +90,9 @@ export const MenuBar = (props) => {
               >
                 <LoginModal/>
               </Popover>
-              <Button id='signup_button' onClick={handleSignUpClick}>Sign up</Button>
+              <Button id='signup_button' onClick={handleSignUpClick}>
+                Sign up
+              </Button>
               <Popover
                 open={signUpOpen}
                 anchorEl={signUpAnchorEl}
@@ -115,6 +119,15 @@ export const MenuBar = (props) => {
                 className={classes.button}
               >
                 Dashboard
+              </Button>
+              <Button
+                id='market_button'
+                onClick={() => {
+                  props.history.push('/market');
+                }}
+                className={classes.button}
+              >
+                Snippet market
               </Button>
               <Button
                 id='algo_manage_button'

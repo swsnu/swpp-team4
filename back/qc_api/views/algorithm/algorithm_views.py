@@ -69,8 +69,7 @@ def run_backtest(request: Request) -> Response:
         "optional_stat": "N/A",
         "start_date": start,
         "end_date": end,
-        "initial_budget": budget,
-        "status": Report.BackTestStatus.DONE
+        "initial_budget": budget
     })
     serializer = ReportSerializer(data=report_data)
     if serializer.is_valid():

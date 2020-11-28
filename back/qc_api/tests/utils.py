@@ -1,20 +1,39 @@
 """ Mocking functions for tests. """
 import json
-from enum import Enum
 
 from django.contrib.auth.models import User
 from django.test import Client
 
 from qc_api.models import Algorithm
 from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
+from qc_api.util.utility import SnippetType
 
-
-class SnippetType(Enum):
-    """ Enum for Snippet Type """
-    SCOPE = 1
-    SELL = 2
-    BUY = 3
-    AMOUNT = 4
+mock_algo_ser_data = {
+    "snippet_scope_data": {
+        'code': "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), "
+                "universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))"
+    },
+    'snippet_buy_data': {
+        'code': "for index, candidate in enumerate(scope):"
+                "\n\tif index==0:"
+                "\n\t\tchosen_stocks.append(candidate)"
+                "\n\t\tbreak "
+    },
+    'snippet_sell_data': {
+        'code': "for candidate in sell_candidates:"
+                "\n\tif (universe.loc[universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])"
+                "/candidate.get_avg_purchase_price()-1>0.05:"
+                "\n\t\tchosen_stocks.append(candidate) "
+    },
+    'snippet_amount_data': {
+        'code': "if opt == SnippetType.BUY:"
+                "\n\tfor stock in chosen_stocks:"
+                "\n\t\tbuy_amount_list.append((stock, 1))" +
+                "\nelse:"
+                "\n\tfor stock in chosen_stocks:"
+                "\n\t\tsell_amount_list.append((stock, stock.get_amount()))"
+    }
+}
 
 
 def get_signed_up_user(username: str, password: str) -> User:
