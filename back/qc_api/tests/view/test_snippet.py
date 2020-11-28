@@ -97,8 +97,8 @@ class SnippetTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_like_and_get_liked_snippets(self):
-        stub_snippet = get_mock_snippet(SnippetType.SCOPE)
-        stub_snippet.save()
+        snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
+        snippet.save()
         response = self.client.put('/api/like/snippet/1', json.dumps({'like': 'true'}))
         self.assertEqual(response.status_code, 200)
         response = self.client.put('/api/like/snippet/1', json.dumps({'like': 'false'}))
@@ -107,8 +107,8 @@ class SnippetTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_share_snippet(self):
-        stub_snippet = get_mock_snippet(SnippetType.SCOPE)
-        stub_snippet.save()
+        snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
+        snippet.save()
         response = self.client.put('/api/snippet/1', json.dumps({'public': 'true'}))
         self.assertEqual(response.status_code, 200)
         response = self.client.put('/api/snippet/1', json.dumps({'public': 'false'}))
@@ -117,15 +117,15 @@ class SnippetTestCase(TestCase):
         response = client.put('/api/snippet/1', json.dumps({'public': 'true'}))
         self.assertEqual(response.status_code, 403)
 
-#
-#     def test_like_snippet(self):
-#         """test 'get_or_post_liked_snippets' method"""
-#         snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
-#         snippet.save()
-#         get_all = self.client.get('/api/like/snippet', content_type='application/json')
-#         like = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': True}),
-#                                 content_type='application/json')
-#         unlike = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': False}),
-#                                   content_type='application/json')
-#         self.assertEqual(get_all.status_code, 200)
+        #  DO NOT DELETE. I REPEAT. DO NOT DELETE BELOW
+        #     def test_like_snippet(self):
+        #         """test 'get_or_post_liked_snippets' method"""
+        #         snippet = Snippet.objects.create(name='snippet_type', code='snippet_type', author=self.user)
+        #         snippet.save()
+        #         get_all = self.client.get('/api/like/snippet', content_type='application/json')
+        #         like = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': True}),
+        #                                 content_type='application/json')
+        #         unlike = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': False}),
+        #                                   content_type='application/json')
+        #         self.assertEqual(get_all.status_code, 200)
 
