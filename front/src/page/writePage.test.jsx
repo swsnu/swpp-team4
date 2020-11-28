@@ -13,44 +13,62 @@ import { createMemoryHistory } from 'history';
 
 jest.mock('react-codemirror2');
 
-const mockStore = getMockStore({
-  userInfo: {
-    email: 'test@test.com',
-    name: 'tester',
+const mockStore = getMockStore(
+  {
+    userInfo: {
+      email: 'test@test.com',
+      name: 'tester',
+    },
+    loggedIn: true,
+    snippetSubmit: {
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+    },
+    algorithmSubmit: false,
   },
-  loggedIn: true,
-  snippetSubmit: {
-    1: false,
-    2: false,
-    3: false,
-    4: false,
+  {},
+  {},
+  {
+    loadedDraftName: '',
   },
-  algorithmSubmit: false,
-});
+);
 
-const mockStore2 = getMockStore({
-  userInfo: {
-    email: 'test@test.com',
-    name: 'tester',
+const mockStore2 = getMockStore(
+  {
+    userInfo: {
+      email: 'test@test.com',
+      name: 'tester',
+    },
+    loggedIn: true,
+    snippetSubmit: {
+      1: true,
+      2: true,
+      3: true,
+      4: true,
+    },
+    algorithmSubmit: false,
   },
-  loggedIn: true,
-  snippetSubmit: {
-    1: true,
-    2: true,
-    3: true,
-    4: true,
+  {},
+  {},
+  {
+    loadedDraftName: 'test',
   },
-  algorithmSubmit: false,
-});
+);
 
 describe('test WritePage', () => {
   let writePage, writePage2;
   beforeEach(() => {
+    global.localStorage.setItem(
+      'test',
+      JSON.stringify({ code: '', name: ['', '', '', ''] }),
+    );
     writePage = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Container maxWidth="lg">
-            <WritePage history={createMemoryHistory()}/>
+            <WritePage history={createMemoryHistory()} />
           </Container>
         </ConnectedRouter>
       </Provider>
@@ -60,7 +78,7 @@ describe('test WritePage', () => {
       <Provider store={mockStore2}>
         <ConnectedRouter history={history}>
           <Container maxWidth="lg">
-            <WritePage history={createMemoryHistory()}/>
+            <WritePage history={createMemoryHistory()} />
           </Container>
         </ConnectedRouter>
       </Provider>
@@ -76,65 +94,82 @@ describe('test WritePage', () => {
 
   it('should validate and Submit snippet', () => {
     const component = createMount()(writePage);
-    jest.spyOn(window, 'alert')
-      .mockImplementation(() => {
-      });
-    jest.spyOn(snippetActions, 'submitSnippet')
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest
+      .spyOn(snippetActions, 'submitSnippet')
       .mockImplementation(() => async (dispatch) => {
         dispatch({
           type: 'NO_ACTION',
         });
       });
     component.find('button#submit_snippet').simulate('click');
-    component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('input#snippet_descr').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_name')
+      .simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_descr')
+      .simulate('change', { target: { value: 'content' } });
 
     component.find('button#submit_snippet').simulate('click');
     // expect(component.find('span#status_message').text()).toEqual('Status: Submitted');
   });
 
   it('submit Algorithm', () => {
-    jest.spyOn(window, 'alert')
-      .mockImplementation(() => {
-      });
-    jest.spyOn(snippetActions, 'submitSnippet')
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+    jest
+      .spyOn(snippetActions, 'submitSnippet')
       .mockImplementation(() => async (dispatch) => {
         dispatch({
           type: 'NO_ACTION',
         });
       });
-    jest.spyOn(algoActions, 'submitAlgo')
+    jest
+      .spyOn(algoActions, 'submitAlgo')
       .mockImplementation(() => async (dispatch) => {
         dispatch({
           type: 'CHANGE_LOADING',
           data: false,
-        })
+        });
       });
     const component = createMount()(writePage2);
-    component.find('input#algorithm_name').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#algorithm_name')
+      .simulate('change', { target: { value: 'content' } });
 
-    component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
-    component.find('input#snippet_descr').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_name')
+      .simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_descr')
+      .simulate('change', { target: { value: 'content' } });
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_2').simulate('click');
-    component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_name')
+      .simulate('change', { target: { value: 'content' } });
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_3').simulate('click');
-    component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_name')
+      .simulate('change', { target: { value: 'content' } });
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#snippet_4').simulate('click');
-    component.find('input#snippet_name').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#snippet_name')
+      .simulate('change', { target: { value: 'content' } });
     // component.find('button#snippet_validate').simulate('click');
     component.find('button#submit_snippet').simulate('click');
 
     component.find('button#submit_algorithm').simulate('click');
-    component.find('input#algorithm_descr').simulate('change', { target: { value: 'content' } });
+    component
+      .find('input#algorithm_descr')
+      .simulate('change', { target: { value: 'content' } });
     component.find('button#submit_algorithm').simulate('click');
   });
 

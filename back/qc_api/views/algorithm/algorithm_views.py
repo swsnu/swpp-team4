@@ -15,6 +15,7 @@ from qc_api.util.decorator import catch_bad_request
 from celery import shared_task
 from django.contrib.auth.models import User
 from webpush import send_user_notification
+import json
 
 
 @api_view(['GET'])
@@ -123,3 +124,25 @@ def run_backtest(request: Request) -> Response:
 #     payload = {'head': "fuck yeah", 'body': 'test sucksexfull!!!!!'}
 #     send_user_notification(user=user, payload=payload, ttl=1000)
 #     return Response("notification sent!", status=status.HTTP_200_OK)
+
+
+@api_view(['PUT', 'DELETE'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
+    if request.method == 'PUT':
+        body = request.body.decode()
+        public = json.loads(body)['public']
+        algo = Algorithm.objects.get(id=algo_id)
+        if public:
+            algo.is_shared = True
+        else:
+            algo.is_shared = False
+        algo.save()
+        serializer = AlgorithmSerializer(algo)
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        algo = Algorithm.objects.get(id=algo_id)
+        algo.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+

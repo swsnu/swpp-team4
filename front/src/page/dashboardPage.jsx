@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
+import { List, ListItem, ListItemText, Typography } from '@material-ui/core';
 import MenuBar from '../Component/menuBar';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -28,214 +23,210 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 export const DashboardPage = () => {
-
   const [tab, setTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState(
-    {
-      id: 0,
-      transaction_log: [],
-      daily_profit: [],
-    },
-  );
+  const [backtestDetailDialogData, setBacktestDetailDialogData] = useState({
+    id: 0,
+    transaction_log: [],
+    daily_profit: [],
+  });
   const [selectedAlgorithmId, setSelectedAlgorithmId] = useState(0);
   const dispatch = useDispatch();
-  const ownedAlgorithmListStore = useSelector(s => s.algo.ownedAlgorithmList);
+  const ownedAlgorithmListStore = useSelector((s) => s.algo.ownedAlgorithmList);
   const [tableData, setTableData] = useState([]);
   const [simulationData, setSimulationData] = useState({
     id: 10001,
-    'alpha': 95.00557420115997,
-    'profit': 92.4978,
-    'MDD': 5.355000000000004,
-    'transaction_log': [
+    alpha: 95.00557420115997,
+    profit: 92.4978,
+    MDD: 5.355000000000004,
+    transaction_log: [
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-03',
+        sell: [],
+        buy: [],
+        date: '2020-01-03',
       },
       {
-        'sell': [],
-        'buy': [
+        sell: [],
+        buy: [
           {
-            'name': '대신정보통신',
-            'price': 1400,
-            'amount': 714,
+            name: '대신정보통신',
+            price: 1400,
+            amount: 714,
           },
         ],
-        'date': '2020-01-06',
+        date: '2020-01-06',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-07',
+        sell: [],
+        buy: [],
+        date: '2020-01-07',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-08',
+        sell: [],
+        buy: [],
+        date: '2020-01-08',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-09',
+        sell: [],
+        buy: [],
+        date: '2020-01-09',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-10',
+        sell: [],
+        buy: [],
+        date: '2020-01-10',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-13',
+        sell: [],
+        buy: [],
+        date: '2020-01-13',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-14',
+        sell: [],
+        buy: [],
+        date: '2020-01-14',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-15',
+        sell: [],
+        buy: [],
+        date: '2020-01-15',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-16',
+        sell: [],
+        buy: [],
+        date: '2020-01-16',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-17',
+        sell: [],
+        buy: [],
+        date: '2020-01-17',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-20',
+        sell: [],
+        buy: [],
+        date: '2020-01-20',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-21',
+        sell: [],
+        buy: [],
+        date: '2020-01-21',
       },
       {
-        'sell': [],
-        'buy': [
+        sell: [],
+        buy: [
           {
-            'name': '글로스퍼랩스',
-            'price': 375,
-            'amount': 1,
+            name: '글로스퍼랩스',
+            price: 375,
+            amount: 1,
           },
         ],
-        'date': '2020-01-22',
+        date: '2020-01-22',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-23',
+        sell: [],
+        buy: [],
+        date: '2020-01-23',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-28',
+        sell: [],
+        buy: [],
+        date: '2020-01-28',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-29',
+        sell: [],
+        buy: [],
+        date: '2020-01-29',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-30',
+        sell: [],
+        buy: [],
+        date: '2020-01-30',
       },
       {
-        'sell': [],
-        'buy': [],
-        'date': '2020-01-31',
+        sell: [],
+        buy: [],
+        date: '2020-01-31',
       },
     ],
-    'daily_profit': [
+    daily_profit: [
       {
-        'date': '2020-01-03',
-        'profit': 100.0,
+        date: '2020-01-03',
+        profit: 100.0,
       },
       {
-        'date': '2020-01-06',
-        'profit': 100.0,
+        date: '2020-01-06',
+        profit: 100.0,
       },
       {
-        'date': '2020-01-07',
-        'profit': 100.714,
+        date: '2020-01-07',
+        profit: 100.714,
       },
       {
-        'date': '2020-01-08',
-        'profit': 96.787,
+        date: '2020-01-08',
+        profit: 96.787,
       },
       {
-        'date': '2020-01-09',
-        'profit': 104.641,
+        date: '2020-01-09',
+        profit: 104.641,
       },
       {
-        'date': '2020-01-10',
-        'profit': 104.641,
+        date: '2020-01-10',
+        profit: 104.641,
       },
       {
-        'date': '2020-01-13',
-        'profit': 103.927,
+        date: '2020-01-13',
+        profit: 103.927,
       },
       {
-        'date': '2020-01-14',
-        'profit': 103.57,
+        date: '2020-01-14',
+        profit: 103.57,
       },
       {
-        'date': '2020-01-15',
-        'profit': 104.641,
+        date: '2020-01-15',
+        profit: 104.641,
       },
       {
-        'date': '2020-01-16',
-        'profit': 102.856,
+        date: '2020-01-16',
+        profit: 102.856,
       },
       {
-        'date': '2020-01-17',
-        'profit': 102.142,
+        date: '2020-01-17',
+        profit: 102.142,
       },
       {
-        'date': '2020-01-20',
-        'profit': 99.286,
+        date: '2020-01-20',
+        profit: 99.286,
       },
       {
-        'date': '2020-01-21',
-        'profit': 100.0,
+        date: '2020-01-21',
+        profit: 100.0,
       },
       {
-        'date': '2020-01-22',
-        'profit': 101.428,
+        date: '2020-01-22',
+        profit: 101.428,
       },
       {
-        'date': '2020-01-23',
-        'profit': 102.4982,
+        date: '2020-01-23',
+        profit: 102.4982,
       },
       {
-        'date': '2020-01-28',
-        'profit': 97.1404,
+        date: '2020-01-28',
+        profit: 97.1404,
       },
       {
-        'date': '2020-01-29',
-        'profit': 96.7833,
+        date: '2020-01-29',
+        profit: 96.7833,
       },
       {
-        'date': '2020-01-30',
-        'profit': 95.3535,
+        date: '2020-01-30',
+        profit: 95.3535,
       },
       {
-        'date': '2020-01-31',
-        'profit': 92.4978,
+        date: '2020-01-31',
+        profit: 92.4978,
       },
     ],
   });
-
 
   useEffect(() => {
     // get list of all my algorithms
@@ -278,9 +269,10 @@ export const DashboardPage = () => {
                 My Algorithms
               </Typography>
               <List style={{ margin: 8, maxHeight: 500, overflowY: 'auto' }}>
-                {ownedAlgorithmListStore.map(e =>
+                {ownedAlgorithmListStore.map((e) => (
                   <ListItem
-                    divider button
+                    divider
+                    button
                     className={`myAlgo-${e.id}`}
                     selected={selectedAlgorithmId === e.id}
                     onClick={async () => {
@@ -291,8 +283,8 @@ export const DashboardPage = () => {
                       primary={`${e.name} (#${e.id})`}
                       secondary={e.description}
                     />
-                  </ListItem>,
-                )}
+                  </ListItem>
+                ))}
               </List>
             </div>
           </Grid>
@@ -305,46 +297,53 @@ export const DashboardPage = () => {
                 indicatorColor="primary"
                 textColor="primary"
               >
-                <Tab id='tab-backtest' label="Backtest"/>
-                <Tab id='tab-simulation' label="Simulation"/>
+                <Tab id="tab-backtest" label="Backtest"/>
+                <Tab id="tab-simulation" label="Simulation"/>
               </Tabs>
-              <div style={{ display: tab === 0 ? 'block' : 'none', height: 400, marginTop: 16 }}>
+              <div
+                style={{
+                  display: tab === 0 ? 'block' : 'none',
+                  height: 400,
+                  marginTop: 16,
+                }}
+              >
                 <Typography variant="h6" gutterBottom component="div">
                   Backtests
                 </Typography>
-                <TableContainer component={Paper} style={{ maxHeight: 300, overflowY: 'auto' }}>
+                <TableContainer
+                  component={Paper}
+                  style={{ maxHeight: 300, overflowY: 'auto' }}
+                >
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
                         <TableCell style={{ width: 30 }}/>
                         <TableCell>Backtest ID</TableCell>
-                        <TableCell align="right">
-                          Profit(%)
-                        </TableCell>
-                        <TableCell align="right">
-                          MDD
-                        </TableCell>
-                        <TableCell align="right">
-                          Alpha
-                        </TableCell>
+                        <TableCell align="right">Profit(%)</TableCell>
+                        <TableCell align="right">MDD</TableCell>
+                        <TableCell align="right">Alpha</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {tableData.map((row) =>
+                      {tableData.map((row) => (
                         <BacktestRow
                           data={row}
                           className={`BacktestRow-${row.id}`}
                           onOpenLog={() => {
                             setBacktestDetailDialogData({
                               id: row.id,
-                              transaction_log: JSON.parse(row.transaction_log.replaceAll(`'`, `"`)),
-                              daily_profit: JSON.parse(row.daily_profit.replaceAll(`'`, `"`)),
+                              transaction_log: JSON.parse(
+                                row.transaction_log.replaceAll(`'`, `"`),
+                              ),
+                              daily_profit: JSON.parse(
+                                row.daily_profit.replaceAll(`'`, `"`),
+                              ),
                             });
                             /* istanbul ignore next */
                             setDialogOpen(true);
                           }}
-                        />,
-                      )}
+                        />
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -364,36 +363,38 @@ export const DashboardPage = () => {
                   }}
                 />
               </div>
-              <div style={{ display: tab === 1 ? 'block' : 'none', height: 400, marginTop: 16 }}>
+              <div
+                style={{
+                  display: tab === 1 ? 'block' : 'none',
+                  height: 400,
+                  marginTop: 16,
+                }}
+              >
                 <Typography variant="h6" gutterBottom component="div">
                   Simulation
                 </Typography>
-                <TableContainer component={Paper} style={{ maxHeight: 300, overflowY: 'auto' }}>
+                <TableContainer
+                  component={Paper}
+                  style={{ maxHeight: 300, overflowY: 'auto' }}
+                >
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell style={{ width: 30 }}/>
-                        <TableCell>
-                          Date
-                        </TableCell>
-                        <TableCell align="right">
-                          Profit(%)
-                        </TableCell>
-                        <TableCell align="right">
-                          Bought
-                        </TableCell>
-                        <TableCell align="right">
-                          Sold
-                        </TableCell>
+                        <TableCell>Date</TableCell>
+                        <TableCell align="right">Profit(%)</TableCell>
+                        <TableCell align="right">Bought</TableCell>
+                        <TableCell align="right">Sold</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {simulationData.daily_profit.map((e, i) =>
+                      {simulationData.daily_profit.map((e, i) => (
                         <RowByDateWithLogTable
+                          key={i}
                           transaction_log={simulationData.transaction_log[i]}
                           daily_profit={simulationData.daily_profit[i]}
-                        />,
-                      )}
+                        />
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
