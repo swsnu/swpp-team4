@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { ConnectedRouter } from 'connected-react-router';
-// import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-// import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +11,6 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MenuBar from '../Component/menuBar';
-import * as actionCreators from '../store/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { submitSnippet } from '../store/actions/snippet';
 import { submitAlgo } from '../store/actions/algo';

@@ -2,8 +2,8 @@ import * as actionTypes from "../actions/actionTypes";
 
 export const initialState = {
   userInfo: {
-    email: "",
-    name: ""
+    // email: "",
+    username: ""
   },
   loggedIn: false,
   snippetSubmit: {

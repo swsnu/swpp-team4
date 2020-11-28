@@ -70,6 +70,7 @@ describe('menuBar', () => {
     const wrapper6 = component.find('button#signup_button');
     const wrapper7 = component.find('button#login_button');
     const wrapper8 = component2.find('button#data_manage_button');
+    const wrapper9 = component2.find('button#market_button');
     wrapper.simulate('click');
     wrapper2.simulate('click');
     wrapper3.simulate('click');
@@ -82,6 +83,6 @@ describe('menuBar', () => {
     wrapper6.simulate('close');
     wrapper7.simulate('close');
     wrapper8.simulate('click');
+    wrapper9.simulate('click');
   })
-
 })
