@@ -77,3 +77,48 @@ def run_backtest(request: Request) -> Response:
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT', 'DELETE'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
+    if request.method == 'PUT':
+        body = request.body.decode()
+        if 'public' in json.loads(body):
+            public = json.loads(body)['public']
+        else:
+            public = False
+        algo = Algorithm.objects.get(id=algo_id)
+        if public:
+            algo.is_public = True
+        else:
+            algo.is_public = False
+        algo.save()
+        serializer = AlgorithmSerializer(algo)
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        algo = Algorithm.objects.get(id=algo_id)
+        algo.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['PUT', 'DELETE'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
+    if request.method == 'PUT':
+        body = request.body.decode()
+        public = json.loads(body)['public']
+        algo = Algorithm.objects.get(id=algo_id)
+        if public:
+            algo.is_shared = True
+        else:
+            algo.is_shared = False
+        algo.save()
+        serializer = AlgorithmSerializer(algo)
+        return Response(serializer.data, status.HTTP_200_OK)
+    else:
+        algo = Algorithm.objects.get(id=algo_id)
+        algo.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
