@@ -1,6 +1,6 @@
 import React from 'react';
 import signupModal from './signupModal';
-import { mount} from 'enzyme';
+import { mount } from 'enzyme';
 import { Route, Switch } from 'react-router-dom';
 import { history } from '../reduxRelated';
 import { Provider } from 'react-redux';
@@ -20,14 +20,13 @@ const stubInitialState = {
 const mockStore = getMockStore(stubInitialState);
 
 describe('signupModal', () => {
-
   let signup;
   beforeEach(() => {
     signup = (
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route path='/' exact component={signupModal}/>
+            <Route path="/" exact component={signupModal} />
           </Switch>
         </ConnectedRouter>
       </Provider>
@@ -76,6 +75,5 @@ describe('signupModal', () => {
       });
     });
     wrapper3.simulate('click');
-
   });
 });

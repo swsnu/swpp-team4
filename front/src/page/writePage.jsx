@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { ConnectedRouter } from 'connected-react-router';
-// import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-// import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,12 +12,11 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MenuBar from '../Component/menuBar';
-import * as actionCreators from '../store/actions/user';
-import { useDispatch, useSelector } from 'react-redux';
-import { submitSnippet } from '../store/actions/snippet';
 import { submitAlgo } from '../store/actions/algo';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
+import { deleteDraftName } from '../store/actions/editor';
+import { submitSnippet } from '../store/actions/snippet';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -50,12 +47,12 @@ export const WritePage = (props) => {
   const classes = useStyles();
   const [TabValue, setTabValue] = useState(1);
   const dispatch = useDispatch();
-  const snippetSubmitStore = useSelector(s => s.user.snippetSubmit);
-  const algorithmSubmitStore = useSelector(s => s.user.algorithmSubmit);
-  const loadingStore = useSelector(s => s.user.loading);
+  const snippetSubmitStore = useSelector((s) => s.user.snippetSubmit);
+  const algorithmSubmitStore = useSelector((s) => s.user.algorithmSubmit);
+  const loadingStore = useSelector((s) => s.user.loading);
 
   const [editorValue, setEditorValue] = useState({
-    1: 'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
+    1: "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
     2: `for index, candidate in enumerate(scope):
             if index==0:
                 chosen_stocks.append(candidate)
@@ -121,15 +118,21 @@ else:
   //   setErrorMsg({ ...errorMsg, [i]: v });
   // };
 
+  const draftName = useSelector((store) => store.editor.loadedDraftName);
+
   useEffect(() => {
     // TODO: editor라는 store의 loadedDraftName 항목을 통해 draft의 이름을 불러온다
-    handleDraft(undefined);
+    dispatch(deleteDraftName());
+    if (draftName) {
+      handleDraft(draftName);
+    }
   }, []);
 
   /* istanbul ignore next */
   const handleDraft = (n) => {
     if (n !== undefined) {
       const draft = JSON.parse(localStorage.getItem(n));
+      setAlgorithmName(n);
       setEditorValue(draft.code);
       setSnippetName(draft.name);
     }
@@ -154,7 +157,15 @@ else:
   const handleSubmitSnippet = (i) => {
     // TODO: check for name duplicate
     const snippetType = [undefined, 'scope', 'buy', 'sell', 'amount'];
-    dispatch(submitSnippet(snippetName[i], snippetDescr[i], snippetType[i], editorValue[i], i));
+    dispatch(
+      submitSnippet(
+        snippetName[i],
+        snippetDescr[i],
+        snippetType[i],
+        editorValue[i],
+        i,
+      ),
+    );
   };
 
   const saveAlgorithmAsDraft = () => {
@@ -173,12 +184,12 @@ else:
     // TODO: check for name duplicate  => not now
     // TODO: feedback message?
     if (
-      snippetSubmitStore[0] !== false
-      && snippetSubmitStore[1] !== false
-      && snippetSubmitStore[2] !== false
-      && snippetSubmitStore[3] !== false
-      && algorithmName !== ''
-      && algorithmDescr !== ''
+      snippetSubmitStore[0] !== false &&
+      snippetSubmitStore[1] !== false &&
+      snippetSubmitStore[2] !== false &&
+      snippetSubmitStore[3] !== false &&
+      algorithmName !== '' &&
+      algorithmDescr !== ''
     ) {
       dispatch(submitAlgo(algorithmName, algorithmDescr, snippetSubmitStore));
     } else {
@@ -188,7 +199,7 @@ else:
 
   return (
     <div className={classes.root}>
-      <MenuBar/>
+      <MenuBar />
       <Grid container justify="center" spacing={2}>
         <Grid item xs={4} style={{ backgroundColor: '#eeeeee' }}>
           API DOC
@@ -203,10 +214,10 @@ else:
                 textColor="primary"
                 centered
               >
-                <Tab id='snippet_1' label="Snippet: Scope" value={1}/>
-                <Tab id='snippet_2' label="Snippet: Buy" value={2}/>
-                <Tab id='snippet_3' label="Snippet: Sell" value={3}/>
-                <Tab id='snippet_4' label="Snippet: Amount" value={4}/>
+                <Tab id="snippet_1" label="Snippet: Scope" value={1} />
+                <Tab id="snippet_2" label="Snippet: Buy" value={2} />
+                <Tab id="snippet_3" label="Snippet: Sell" value={3} />
+                <Tab id="snippet_4" label="Snippet: Amount" value={4} />
               </Tabs>
             </Paper>
             <div style={{ margin: 10 }}>
@@ -249,20 +260,21 @@ else:
                 mode: 'python',
                 theme: 'material',
                 lineNumbers: true,
-                readOnly: (snippetSubmitStore[TabValue] !== false),
+                readOnly: snippetSubmitStore[TabValue] !== false,
               }}
               onBeforeChange={
                 /* istanbul ignore next */
                 (editor, data, value) => {
                   handleEditorValueChange(TabValue, value);
-                }}
+                }
+              }
               // onChange={(editor, data, value) => {
               //   // setEditor1Value(value);
               // }}
             />
             <ButtonGroup color="primary" style={{ margin: 10 }}>
               <Button
-                id='import_algorithm'
+                id="import_algorithm"
                 size={'small'}
                 disabled={snippetSubmitStore[TabValue] !== false}
                 onClick={() => {
@@ -284,14 +296,14 @@ else:
               {/*  Validate*/}
               {/*</Button>*/}
               <Button
-                id='submit_snippet'
+                id="submit_snippet"
                 size={'small'}
                 disabled={
-                  snippetName[TabValue] === ''
-                  || snippetDescr[TabValue] === ''
-                  || editorValue[TabValue] === ''
+                  snippetName[TabValue] === '' ||
+                  snippetDescr[TabValue] === '' ||
+                  editorValue[TabValue] === '' ||
                   // || !snippetValidated[TabValue]
-                  || snippetSubmitStore[TabValue] !== false
+                  snippetSubmitStore[TabValue] !== false
                 }
                 onClick={() => {
                   handleSubmitSnippet(TabValue);
@@ -300,17 +312,22 @@ else:
                 Submit Snippet
               </Button>
             </ButtonGroup>
-            <Typography id='status_message' component="span" style={{ color: '#ff0000' }}>
+            <Typography
+              id="status_message"
+              component="span"
+              style={{ color: '#ff0000' }}
+            >
               {/*{`Status: ${snippetValidated[TabValue] === true*/}
               {/*  ? snippetSubmitStore[TabValue] === true*/}
               {/*    ? 'Submitted'*/}
               {/*    : 'Not submitted'*/}
               {/*  : 'Unvalidated'}`*/}
               {/*}*/}
-              {`Status: ${snippetSubmitStore[TabValue] !== false
-                ? 'Submitted'
-                : 'Not submitted'}`
-              }
+              {`Status: ${
+                snippetSubmitStore[TabValue] !== false
+                  ? 'Submitted'
+                  : 'Not submitted'
+              }`}
             </Typography>
           </Paper>
 
@@ -345,7 +362,7 @@ else:
             <Grid item style={{ marginTop: 16 }}>
               <ButtonGroup color="primary" style={{ marginTop: 2 }}>
                 <Button
-                  id='save_algorithm'
+                  id="save_algorithm"
                   onClick={() => {
                     saveAlgorithmAsDraft();
                   }}
@@ -353,14 +370,14 @@ else:
                   Save As Draft
                 </Button>
                 <Button
-                  id='submit_algorithm'
+                  id="submit_algorithm"
                   disabled={
-                    algorithmName === ''
-                    || snippetSubmitStore[1] === false
-                    || snippetSubmitStore[2] === false
-                    || snippetSubmitStore[3] === false
-                    || snippetSubmitStore[4] === false
-                    || algorithmSubmitStore !== false
+                    algorithmName === '' ||
+                    snippetSubmitStore[1] === false ||
+                    snippetSubmitStore[2] === false ||
+                    snippetSubmitStore[3] === false ||
+                    snippetSubmitStore[4] === false ||
+                    algorithmSubmitStore !== false
                   }
                   onClick={() => {
                     handleSubmitAlgorithm();
@@ -372,8 +389,10 @@ else:
             </Grid>
             <Grid item style={{ marginTop: 16 }}>
               <Button
-                id='go_back'
-                size={'small'} color={'secondary'} variant={'contained'}
+                id="go_back"
+                size={'small'}
+                color={'secondary'}
+                variant={'contained'}
                 onClick={() => {
                   props.history.push('/');
                 }}
@@ -392,7 +411,8 @@ else:
           /* istanbul ignore next */
           () => {
             setImportModalOpen(false);
-          }}
+          }
+        }
       >
         <Paper style={{ width: '100%', height: 400 }}>{'asdasd'}</Paper>
       </Dialog>
@@ -407,7 +427,7 @@ else:
         }
         style={{ zIndex: 999 }}
       >
-        <CircularProgress color="inherit"/>
+        <CircularProgress color="inherit" />
       </Backdrop>
     </div>
   );

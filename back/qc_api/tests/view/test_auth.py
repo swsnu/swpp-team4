@@ -22,8 +22,9 @@ class AlgorithmTestCase(TestCase):
 
     def test_signup(self):
         """test signup"""
-        response = self.client.post('/api/sign-up', json.dumps({'username': 'test', 'password': 'test'})
-                                    , content_type='application/json')
+        response = self.client.post('/api/sign_up',
+                                    json.dumps({'username': 'test', 'password': 'test', 'email': 'test'}),
+                                    content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
     def test_signin_before_signup(self):
@@ -42,5 +43,5 @@ class AlgorithmTestCase(TestCase):
     def test_logout(self):
         """test logout"""
         client = get_signed_in_client(username='test', password='test')
-        response = client.get('/api/sign-out')
+        response = client.get('/api/sign_out')
         self.assertEqual(response.status_code, 204)

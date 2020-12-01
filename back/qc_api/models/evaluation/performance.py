@@ -6,6 +6,7 @@ from qc_api.models import Algorithm
 
 class Performance(models.Model):
     """
+    TODO: one model per algorithm.
     Performance model to store the daily simulation result.
     """
     algorithm = models.OneToOneField(
