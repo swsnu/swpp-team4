@@ -68,18 +68,6 @@ class AlgorithmTestCase(TestCase):
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-    # def test_backtest(self):
-    #     """Test for backtest api"""
-    #     stub_kospi = Kospi(date='2020-10-10', close=2300, open=2290, high=2301, low=2280, volume=10000000,
-    #                        d1_diff_rate=0.63)
-    #     stub_kospi.save()
-    #     response = self.client.post('/api/algo/backtest', json.dumps({
-    #         'start': '2020-10-9',
-    #         'end': '2020-10-11',
-    #         'budget': '1000000'
-    #     }), content_type='application/json')
-    #     self.assertEqual(response.status_code, 200)
-
     def test_share_or_delete_algorithm(self):
         stub_algo = get_mock_algo(name='')
         stub_algo.save()
