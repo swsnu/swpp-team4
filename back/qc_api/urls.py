@@ -17,6 +17,7 @@ urlpatterns = [
     path('algo/<int:algo_id>/performance', views.get_performance_by_algo, name='performance'),
     path('algo/me', views.get_my_algorithms, name='my_algorithms'),
     path('performance', views.get_all_performances, name='all-performances'),
+    path('performancetest', views.test_performance, name='test-performances'),
     # path('celery', views.sample_celery, name='celery'),
     # path('webpush', views.webpush_example, name='webpush')
     path('webpush/', include('webpush.urls')),

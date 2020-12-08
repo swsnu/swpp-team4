@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from qc_api.lib import SandBox
-from qc_api.models import Algorithm, Report
+from qc_api.models import Algorithm, Report, Performance
 from qc_api.serializers import AlgorithmSerializer, ReportSerializer
 from qc_api.util.decorator import catch_bad_request
 from celery import shared_task
@@ -50,21 +50,54 @@ def get_or_post_algorithms(request: Request) -> Response:
 
 
 @shared_task
-def run_helper(budget, algo_id, start, end, user_id, options='backtest'):
+def run_helper(budget, algo_id, start, end, user_id, mode='backtest'):
     print('start run_helper')
     algorithm = Algorithm.objects.get(pk=algo_id)
     algorithm_data = AlgorithmSerializer(algorithm).data
     algorithm_data["id"] = algorithm.id
-    if options == 'backtest':
-        print('backtest start')
-        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data, options='backtest')
+    if mode == 'backtest':
+        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data, mode='backtest')
         user = User.objects.get(pk=user_id)
         payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
         send_user_notification(user=user, payload=payload, ttl=100)
     else:
+        # TODO: get current_budget and bought_stocks from performance
+        #   if no performance make a new one?
+        performance = Performance.objects.get(algorithm=algorithm)
         SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data,
-                options='performance', current_budget=100000, bought_stocks=[]
-                )  # TODO
+                mode='performance', performance=performance)  # TODO
+
+
+@api_view(['GET'])  # TODO
+def test_performance(request: Request):
+    budget = 100000
+    algorithm = Algorithm.objects.get(pk=30)
+    performance = None
+    try:
+        performance = Performance.objects.get(algorithm=algorithm)
+    except:  # create performance
+        performance = Performance.objects.create(
+            algorithm=algorithm,
+            name='',
+            description='',
+            alpha=0,
+            profit=0,
+            MDD=0,
+            deposit=budget,
+            curr_portfolio=json.dumps([]),
+            transaction_log=json.dumps([]),
+            max_min_dict=json.dumps({
+                "regi": [100.0, "eq"],  # currVal>preVal=>gt, currVal<preVal=>lt, currVal=preVal=>eq
+                "list": []
+            }),
+            profit_dict=json.dumps({}),
+            scope=json.dumps([]),
+        )
+        performance.save()
+
+    SandBox(budget=budget, start='2020-02-08', end='2020-02-09', algorithm=AlgorithmSerializer(algorithm).data,
+            mode='performance', performance=performance)
+    return Response("successfully tested performance", status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

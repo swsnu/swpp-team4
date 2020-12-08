@@ -30,21 +30,25 @@ class Wallet:
             self.__stock_id_list = list(map(lambda stock: stock.get_id() if stock.get_amount() > 0 else None,
                                             [self.__id_to_coin[i] for i in self.__id_to_coin]))
 
-    def load_setting(self, budget: float, bought_stocks: list) -> bool:
+    def load_setting(self, budget: float, curr_portfolio: list) -> bool:
         """ load budget, transaction log, and coins (stocks) """
         self.__budget = budget
 
-        for bought_stock in bought_stocks:
-            stock = bought_stock.stock
-            amount = bought_stock.amount
-            stock_id = stock.get_id()
-            if stock_id not in self.__stock_id_list:
-                stock_coin = StockCoin(name=stock.get_name(), stock_id=stock_id, price=stock.get_price(),
-                                       amount=0, purchase_log=list(), sell_log=list(), avg_purchase_price=0)
+        for bought_stock in curr_portfolio:
+            if bought_stock.stock_id not in self.__stock_id_list:
+                stock_coin = StockCoin(
+                    name=bought_stock.name,
+                    stock_id=bought_stock.stock_id,
+                    price=bought_stock.price,
+                    amount=bought_stock.amount,
+                    purchase_log=bought_stock.purchase_log,
+                    sell_log=bought_stock.sell_log,
+                    avg_purchase_price=bought_stock.avg_purchase_price
+                )
                 self.__handle_new_coin(stock_coin)
             else:
-                stock_coin = self.__id_to_coin[stock_id]
-            stock_coin.purchase_coin(date_time=datetime.today(), amount=amount)
+                stock_coin = self.__id_to_coin[bought_stock.stock_id] # will not be called ever
+            stock_coin.purchase_coin(date_time=datetime.today(), amount=bought_stock.amount)
         return True
 
     def get_budget(self) -> float:
@@ -63,6 +67,12 @@ class Wallet:
         """ returns full information of possessed stocks """
         return [self.__id_to_coin[sid] for sid in self.__stock_id_list]
         # map(lambda stock: str(stock), [self.stock_id_to_coin[i] for i in self.stock_id_to_coin])
+
+    def dump_coins(self) -> List[dict]:
+        coin_dump = list()
+        for coin in self.__id_to_coin:
+            coin_dump.append(self.__id_to_coin[coin].dump_data())
+        return coin_dump
 
     def __handle_new_coin(self, coin: StockCoin) -> None:
         self.__stock_id_list.append(coin.get_id())
