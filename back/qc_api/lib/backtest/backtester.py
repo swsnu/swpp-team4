@@ -69,6 +69,10 @@ class BackTester:
         }
         self.__wallet = Wallet(budget=self.__budget)
 
+    def load_previous(self, budget: float, bought_stocks: list) -> None:
+        """update self.__wallet's coin and budget"""
+        self.__wallet.load_setting(budget=budget, bought_stocks=bought_stocks)
+
     def set_date(self, today: date) -> None:
         """Sets self.today"""
         self.__today = today

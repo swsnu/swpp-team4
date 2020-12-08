@@ -15,7 +15,9 @@ from ..util.utility import parse_date
 class SandBox:
     """Sandbox class for Backtesting and Simulating registered algorithms"""
 
-    def __init__(self, budget: float, start, end, algorithm: AlgorithmSerializer.data) -> None:
+    def __init__(self, budget: float, start, end, algorithm: AlgorithmSerializer.data,
+                 current_budget: Optional[float], bought_stocks: Optional[list], options
+                 ) -> None:
         """
         Runs backtest with settings defined by the '/algo/backtest' request.
         When backtest is complete, Sandbox updates 'report' attribute, which will be fetched by the view for
@@ -41,6 +43,8 @@ class SandBox:
         self.date_rows = self.get_trading_dates()
         self.report = None
         back_tester = self.prepare()
+        if options != 'backtest':
+            self.load_previous(back_tester, budget=current_budget, bought_stocks=bought_stocks)
         self.run(back_tester)
 
     def get_budget(self) -> float:
@@ -62,6 +66,13 @@ class SandBox:
             print("validation process failed, the code will be not executed.")
             return None
 
+    def load_previous(self, back_tester: BackTester, budget: float, bought_stocks: list) -> None:
+        """
+        Load previous data into backtest.
+        """
+        if back_tester is not None:
+            back_tester.load_previous(budget=budget, bought_stocks=bought_stocks)
+
     def run(self, back_tester: Optional[BackTester]) -> None:
         """
         Executes backtest.
@@ -69,6 +80,7 @@ class SandBox:
         if back_tester is not None:
             back_tester.run(self.get_trading_dates())
             self.clean_up(back_tester)
+        print('backtest sandbox done')
 
     def clean_up(self, back_tester: BackTester) -> None:
         self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1])
@@ -83,7 +95,7 @@ class SandBox:
             "status": Report.BackTestStatus.DONE
         })
         print(self.report)
-        serializer = ReportSerializer(data=self.report)
+        serializer = ReportSerializer(data=self.report)  # TODO: if options is not 'backtest', then save on Performance
         if serializer.is_valid():
             serializer.save()
         else:

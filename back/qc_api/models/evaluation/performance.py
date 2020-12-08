@@ -22,7 +22,7 @@ class Performance(models.Model):
     alpha = models.FloatField()
     profit = models.FloatField(default=None, blank=True, null=True)
     MDD = models.FloatField(default=None, blank=True, null=True)
-    deposit = models.IntegerField(default=None, blank=True, null=True)
-    curr_portfolio = models.TextField(default=None, blank=True, null=True)
+    deposit = models.IntegerField(default=None, blank=True, null=True)  # current money?
+    curr_portfolio = models.TextField(default=None, blank=True, null=True)  # current stocks?
     max_min_dict = models.TextField(default=None, blank=True, null=True)
     profit_dict = models.TextField(default=None, blank=True, null=True)

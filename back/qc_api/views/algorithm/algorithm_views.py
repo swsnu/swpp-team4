@@ -50,14 +50,21 @@ def get_or_post_algorithms(request: Request) -> Response:
 
 
 @shared_task
-def run_helper(budget, algo_id, start, end, user_id):
+def run_helper(budget, algo_id, start, end, user_id, options='backtest'):
+    print('start run_helper')
     algorithm = Algorithm.objects.get(pk=algo_id)
     algorithm_data = AlgorithmSerializer(algorithm).data
     algorithm_data["id"] = algorithm.id
-    SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
-    user = User.objects.get(pk=user_id)
-    payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
-    send_user_notification(user=user, payload=payload, ttl=100)
+    if options == 'backtest':
+        print('backtest start')
+        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data, options='backtest')
+        user = User.objects.get(pk=user_id)
+        payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
+        send_user_notification(user=user, payload=payload, ttl=100)
+    else:
+        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data,
+                options='performance', current_budget=100000, bought_stocks=[]
+                )  # TODO
 
 
 @api_view(['POST'])
@@ -75,9 +82,9 @@ def run_backtest(request: Request) -> Response:
     # algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
     # algorithm_data = AlgorithmSerializer(algorithm).data
     # algorithm_data["id"] = algorithm.id
-    #start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id)
-    #SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
+    # start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
+    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id, 'backtest')
+    # SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
 
     # report_data = sandbox.report
     # report_data["transaction_log"] = str(report_data["transaction_log"])
@@ -125,7 +132,6 @@ def run_backtest(request: Request) -> Response:
 #     payload = {'head': "fuck yeah", 'body': 'test sucksexfull!!!!!'}
 #     send_user_notification(user=user, payload=payload, ttl=1000)
 #     return Response("notification sent!", status=status.HTTP_200_OK)
-
 
 
 @api_view(['PUT', 'DELETE'])
