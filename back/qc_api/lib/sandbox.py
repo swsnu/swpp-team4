@@ -94,7 +94,7 @@ class SandBox:
         self.report["transaction_log"] = str(self.report["transaction_log"])
         self.report["daily_profit"] = str(self.report["daily_profit"])
         self.report.update({
-            "algorithm": Algorithm.objects.get(id=self.algorithm.get("id")),
+            "algorithm": self.algorithm.get("id"),
             "optional_stat": "N/A",
             "start_date": parse_date(self.__start),
             "end_date": parse_date(self.__end),
@@ -120,6 +120,7 @@ class SandBox:
             for st in self.report["scope"]:
                 new_scope.append(st.dump_data())
 
+            print(self.report)
             if performance is not None:
                 performance.alpha = self.report["alpha"]
                 performance.profit = self.report["profit"]
@@ -137,7 +138,7 @@ class SandBox:
         Get dates used for trading.
         """
         if self.mode == 'performance':
-            return [Kospi.objects.filter(date__gte=self.__start).order_by('date').first().date]
+            return [Kospi.objects.filter(date__gte=self.__end).order_by('date').first().date]
         else:
             return [
                 kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')

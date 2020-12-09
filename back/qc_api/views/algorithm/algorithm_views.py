@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from qc_api.lib import SandBox
 from qc_api.models import Algorithm, Report, Performance
@@ -67,19 +68,41 @@ qwe = []
 
 @api_view(['GET'])
 def test_performance(request: Request):
-    print(len(qwe))
-    q = datetime.datetime.strptime('2020-02-01', '%Y-%m-%d') + datetime.timedelta(days=len(qwe))
-    qwe.append(2)
-    print(q.strftime('%Y-%m-%d'))
-    daily_performance.delay(q.strftime('%Y-%m-%d'))
+    run_daily_performance()
     return Response("successfully tested performance", status=status.HTTP_200_OK)
 
 
+# Check if performance task exists, and add it if it doesnt
+try:
+    PeriodicTask.objects.get(name='daily_performance_test')
+except:
+    schedule, created = IntervalSchedule.objects.get_or_create(
+        every=10,
+        period=IntervalSchedule.SECONDS,
+    )
+    PeriodicTask.objects.create(
+        interval=schedule,  # we created this above.
+        name='daily_performance_test',  # simply describes this periodic task.
+        task='qc_api.views.algorithm.algorithm_views.run_daily_performance',  # name of task.
+    )
+
+
 @shared_task
-def daily_performance(startDate):
-    print('daily_performance')
+def run_daily_performance():
+    print(len(qwe))
+    q = datetime.datetime.strptime('2020-02-03', '%Y-%m-%d') + datetime.timedelta(days=len(qwe))
+    qwe.append(2)
+    print(q.strftime('%Y-%m-%d'))
+    daily_performance.delay(q.strftime('%Y-%m-%d'), 38)
+    daily_performance.delay(q.strftime('%Y-%m-%d'), 39)
+    daily_performance.delay(q.strftime('%Y-%m-%d'), 42)
+
+
+@shared_task
+def daily_performance(performance_date, algorithm_id):
+    print('daily_performance ' + performance_date)
     budget = 100000
-    algorithm = Algorithm.objects.get(pk=30)
+    algorithm = Algorithm.objects.get(pk=algorithm_id)
     performance = None
     try:
         performance = Performance.objects.get(algorithm=algorithm)
@@ -103,7 +126,7 @@ def daily_performance(startDate):
         )
         performance.save()
 
-    SandBox(budget=budget, start=startDate, end='2020-01-01', algorithm=AlgorithmSerializer(algorithm).data,
+    SandBox(budget=budget, start='2020-02-03', end=performance_date, algorithm=AlgorithmSerializer(algorithm).data,
             mode='performance', performance=performance)
 
 

@@ -219,6 +219,7 @@ class BackTester:
         self.__report.get("transaction_log").append(self.__wallet.get_transaction_log(self.__today))
         self.__report.get("daily_profit").append({"date": str(self.__today), "profit": profit})
         self.__track_max_min(profit=profit)
+        # TODO 디포짓 증가한거 왜 그런지 찾아보기.
 
     def __track_max_min(self, profit: float) -> None:
         """
@@ -317,6 +318,10 @@ class BackTester:
             alpha value.
         """
         kospi_profit = Kospi.objects.get(date=end).close / Kospi.objects.get(date=start).close
+        print('kospi_profit')
+        print(kospi_profit)
+        print(start)
+        print(end)
         return self.__report.get("profit") / float(kospi_profit)
 
     def validate(self) -> bool:
