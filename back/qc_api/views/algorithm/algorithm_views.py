@@ -16,6 +16,7 @@ from celery import shared_task
 from django.contrib.auth.models import User
 from webpush import send_user_notification
 import json
+import datetime
 
 
 @api_view(['GET'])
@@ -61,13 +62,21 @@ def run_helper(budget, algo_id, start, end, user_id):
     send_user_notification(user=user, payload=payload, ttl=100)
 
 
+qwe = []
+
+
 @api_view(['GET'])
 def test_performance(request: Request):
-    daily_performance.delay('')
+    print(len(qwe))
+    q = datetime.datetime.strptime('2020-02-01', '%Y-%m-%d') + datetime.timedelta(days=len(qwe))
+    qwe.append(2)
+    print(q.strftime('%Y-%m-%d'))
+    daily_performance.delay(q.strftime('%Y-%m-%d'))
     return Response("successfully tested performance", status=status.HTTP_200_OK)
 
 
-def daily_performance(date):
+@shared_task
+def daily_performance(startDate):
     print('daily_performance')
     budget = 100000
     algorithm = Algorithm.objects.get(pk=30)
@@ -94,7 +103,7 @@ def daily_performance(date):
         )
         performance.save()
 
-    SandBox(budget=budget, start='2020-02-10', end='2020-02-11', algorithm=AlgorithmSerializer(algorithm).data,
+    SandBox(budget=budget, start=startDate, end='2020-01-01', algorithm=AlgorithmSerializer(algorithm).data,
             mode='performance', performance=performance)
 
 

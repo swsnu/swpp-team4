@@ -137,9 +137,8 @@ class SandBox:
         Get dates used for trading.
         """
         if self.mode == 'performance':
-            return [kospi.date for kospi in
-                    Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
-                    ][0:1]
-        return [
-            kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
-        ]
+            return [Kospi.objects.filter(date__gte=self.__start).order_by('date').first().date]
+        else:
+            return [
+                kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
+            ]
