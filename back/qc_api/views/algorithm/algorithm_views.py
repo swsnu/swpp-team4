@@ -50,26 +50,25 @@ def get_or_post_algorithms(request: Request) -> Response:
 
 
 @shared_task
-def run_helper(budget, algo_id, start, end, user_id, mode='backtest'):
+def run_helper(budget, algo_id, start, end, user_id):
     print('start run_helper')
     algorithm = Algorithm.objects.get(pk=algo_id)
     algorithm_data = AlgorithmSerializer(algorithm).data
     algorithm_data["id"] = algorithm.id
-    if mode == 'backtest':
-        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data, mode='backtest')
-        user = User.objects.get(pk=user_id)
-        payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
-        send_user_notification(user=user, payload=payload, ttl=100)
-    else:
-        # TODO: get current_budget and bought_stocks from performance
-        #   if no performance make a new one?
-        performance = Performance.objects.get(algorithm=algorithm)
-        SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data,
-                mode='performance', performance=performance)  # TODO
+    SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data, mode='backtest', performance=None)
+    user = User.objects.get(pk=user_id)
+    payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
+    send_user_notification(user=user, payload=payload, ttl=100)
 
 
-@api_view(['GET'])  # TODO
+@api_view(['GET'])
 def test_performance(request: Request):
+    daily_performance.delay('')
+    return Response("successfully tested performance", status=status.HTTP_200_OK)
+
+
+def daily_performance(date):
+    print('daily_performance')
     budget = 100000
     algorithm = Algorithm.objects.get(pk=30)
     performance = None
@@ -95,9 +94,8 @@ def test_performance(request: Request):
         )
         performance.save()
 
-    SandBox(budget=budget, start='2020-02-08', end='2020-02-09', algorithm=AlgorithmSerializer(algorithm).data,
+    SandBox(budget=budget, start='2020-02-10', end='2020-02-11', algorithm=AlgorithmSerializer(algorithm).data,
             mode='performance', performance=performance)
-    return Response("successfully tested performance", status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -116,7 +114,7 @@ def run_backtest(request: Request) -> Response:
     # algorithm_data = AlgorithmSerializer(algorithm).data
     # algorithm_data["id"] = algorithm.id
     # start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id, 'backtest')
+    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id)
     # SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
 
     # report_data = sandbox.report

@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '5s!g9xcj-1#b_h4^(-mkwzw=*h%8g&s(data2d7&7oqeblb&4w'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -40,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpush',
     'rest_framework',
-    'qc_api'
+    'qc_api',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -90,7 +89,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -109,20 +107,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -139,7 +135,7 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # WEBPUSH
 WEBPUSH_SETTINGS = {
-   "VAPID_PUBLIC_KEY":  "BNM71Y9WCce_qujpq0SBQzR9TExQKVBeeXc3VSwzD90I6JZv7FyrnOFIeI6sNx2o7kKIAJkByXMIxrCc7_2txRw",
-   "VAPID_PRIVATE_KEY":  "V_eMw57yo-hOfrXAce_yF65v_t144JkZkgjmcrwp3YM",
-   "VAPID_ADMIN_EMAIL": "rlacksque@hotmail.co.kr"
+    "VAPID_PUBLIC_KEY": "BNM71Y9WCce_qujpq0SBQzR9TExQKVBeeXc3VSwzD90I6JZv7FyrnOFIeI6sNx2o7kKIAJkByXMIxrCc7_2txRw",
+    "VAPID_PRIVATE_KEY": "V_eMw57yo-hOfrXAce_yF65v_t144JkZkgjmcrwp3YM",
+    "VAPID_ADMIN_EMAIL": "rlacksque@hotmail.co.kr"
 }

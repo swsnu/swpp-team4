@@ -81,6 +81,7 @@ class SandBox:
         Executes backtest.
         """
         if back_tester is not None:
+            print(self.get_trading_dates())
             back_tester.run(self.get_trading_dates())
             if self.mode == 'backtest':
                 self.clean_up(back_tester)
@@ -135,6 +136,10 @@ class SandBox:
         """
         Get dates used for trading.
         """
+        if self.mode == 'performance':
+            return [kospi.date for kospi in
+                    Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
+                    ][0:1]
         return [
             kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
         ]
