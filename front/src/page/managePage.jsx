@@ -381,6 +381,7 @@ export const ManagePage = (props) => {
     const likedSnippets = useSelector((store) => store.snippet.likedSnippetList);
     const [tempAlgos, setTempAlgos] = useState([]);
 
+
     useEffect(() => {
         const algos = [];
         for (let i = 0; i < localStorage.length; i++) {
@@ -391,16 +392,39 @@ export const ManagePage = (props) => {
             const tempAlgo = {
                 id: i,
                 algoName: key,
-                snippetName1: snippet[0],
-                snippetName2: snippet[1],
-                snippetName3: snippet[2],
-                snippetName4: snippet[3],
+                snippetName1: snippet[1],
+                snippetName2: snippet[2],
+                snippetName3: snippet[3],
+                snippetName4: snippet[4],
                 code: code,
             };
             algos.push(tempAlgo);
         }
         setTempAlgos(algos);
     }, []);
+
+    useEffect(() => {
+        window.addEventListener("storage", () => {
+            const algos = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const object = JSON.parse(localStorage.getItem(key));
+                const snippet = object.name;
+                const code = object.code;
+                const tempAlgo = {
+                    id: i,
+                    algoName: key,
+                    snippetName1: snippet[1],
+                    snippetName2: snippet[2],
+                    snippetName3: snippet[3],
+                    snippetName4: snippet[4],
+                    code: code,
+                };
+                algos.push(tempAlgo);
+            }
+            setTempAlgos(algos);
+        });
+    })
 
     const [value, setValue] = React.useState('one');
     const handleTabChange = (event, newValue) => {
