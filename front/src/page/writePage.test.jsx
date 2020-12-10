@@ -29,7 +29,11 @@ const mockStore = getMockStore(
     algorithmSubmit: false,
   },
   {},
-  {},
+  {likedSnippetList: [{id: 1, name: '', type: 'scope', code: '', description: ''},
+      {id: 2, name: '', type: 'buy', code: '', description: ''},
+      {id: 3, name: '', type: 'sell', code: '', description: ''},
+      {id: 4, name: '', type: 'amount', code: '', description: ''},
+      {id: 5, name: '', type: '', code: '', description: ''}]},
   {
     loadedDraftName: '',
   },
@@ -51,7 +55,10 @@ const mockStore2 = getMockStore(
     algorithmSubmit: false,
   },
   {},
-  {},
+  {likedSnippetList: [{id: 1, name: '', type: 'scope', code: '', description: ''},
+      {id: 2, name: '', type: 'buy', code: '', description: ''},
+      {id: 3, name: '', type: 'sell', code: '', description: ''},
+      {id: 4, name: '', type: 'amount', code: '', description: ''}]},
   {
     loadedDraftName: 'test',
   },
@@ -182,4 +189,14 @@ describe('test WritePage', () => {
     const component = createMount()(writePage);
     component.find('button#import_algorithm').simulate('click');
   });
+
+  it('should render snippetRow', () => {
+      const component = createMount()(writePage);
+      component.find('button#import_algorithm').simulate('click');
+      component.find('button#import_button').at(0).simulate('click');
+      component.find('button#import_button').at(1).simulate('click');
+      component.find('button#import_button').at(2).simulate('click');
+      component.find('button#import_button').at(3).simulate('click');
+      component.find('button#import_button').at(4).simulate('click');
+  })
 });

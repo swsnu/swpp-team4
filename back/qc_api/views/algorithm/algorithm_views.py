@@ -17,6 +17,8 @@ from django.contrib.auth.models import User
 from webpush import send_user_notification
 import json
 
+from qc_api.util.utility import parse_date
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
@@ -70,7 +72,6 @@ def run_backtest(request: Request) -> Response:
         HttpResponse: with status 200.
     """
     budget = request.data.get("budget")
-<<<<<<< HEAD
     algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
     algorithm_data = AlgorithmSerializer(algorithm).data
     start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
@@ -115,32 +116,6 @@ def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
         algo = Algorithm.objects.get(id=algo_id)
         algo.delete()
         return Response(status.HTTP_204_NO_CONTENT)
-=======
-
-    algo_id = request.data.get("algo_id")
-    # algorithm = Algorithm.objects.get(pk=request.data.get("algo_id"))
-    # algorithm_data = AlgorithmSerializer(algorithm).data
-    # algorithm_data["id"] = algorithm.id
-    #start, end = parse_date(request.data.get("start")), parse_date(request.data.get("end"))
-    run_helper.delay(budget, algo_id, request.data.get("start"), request.data.get("end"), request.user.id)
-    #SandBox(budget=budget, start=start, end=end, algorithm=algorithm_data)
-
-    # report_data = sandbox.report
-    # report_data["transaction_log"] = str(report_data["transaction_log"])
-    # report_data["daily_profit"] = str(report_data["daily_profit"])
-    # report_data.update({
-    #     "algorithm": algorithm.id,
-    #     "optional_stat": "N/A",
-    #     "start_date": start,
-    #     "end_date": end,
-    #     "initial_budget": budget,
-    #     "status": Report.BackTestStatus.DONE
-    # })
-    # serializer = ReportSerializer(data=report_data)
-    # if serializer.is_valid():
-    #     serializer.save()
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response("successfully running backtest", status=status.HTTP_200_OK)
 
 
 # @shared_task
@@ -172,25 +147,3 @@ def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
 #     send_user_notification(user=user, payload=payload, ttl=1000)
 #     return Response("notification sent!", status=status.HTTP_200_OK)
 
->>>>>>> 98d5af16f62867955aef8132b5d581d881370998
-
-
-@api_view(['PUT', 'DELETE'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
-    if request.method == 'PUT':
-        body = request.body.decode()
-        public = json.loads(body)['public']
-        algo = Algorithm.objects.get(id=algo_id)
-        if public:
-            algo.is_shared = True
-        else:
-            algo.is_shared = False
-        algo.save()
-        serializer = AlgorithmSerializer(algo)
-        return Response(serializer.data, status.HTTP_200_OK)
-    else:
-        algo = Algorithm.objects.get(id=algo_id)
-        algo.delete()
-        return Response(status.HTTP_204_NO_CONTENT)
