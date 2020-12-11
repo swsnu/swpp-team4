@@ -17,6 +17,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { deleteDraftName } from '../store/actions/editor';
 import { submitSnippet } from '../store/actions/snippet';
+import IconButton from '@material-ui/core/IconButton';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -43,6 +46,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const SnippetRow = props => {
+  const handleImport = () => {
+    props.handleImportState(props.type, props.name, props.des, props.code);
+  };
+
+  return (
+    <Paper variant="outlined" square className='SnippetRow'>
+      <Grid container>
+        <Grid item xs={11}>
+          <Typography>{props.type}</Typography>
+          <Typography>{props.name}</Typography>
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton align="right" onClick={handleImport} id='import_button'>
+            <AddShoppingCartIcon/>
+          </IconButton>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
 export const WritePage = (props) => {
   const classes = useStyles();
   const [TabValue, setTabValue] = useState(1);
@@ -50,9 +75,11 @@ export const WritePage = (props) => {
   const snippetSubmitStore = useSelector((s) => s.user.snippetSubmit);
   const algorithmSubmitStore = useSelector((s) => s.user.algorithmSubmit);
   const loadingStore = useSelector((s) => s.user.loading);
+  const likedSnippets = useSelector(s => s.snippet.likedSnippetList);
+  const ownedSnippets = useSelector(s => s.snippet.ownedSnippetList);
 
   const [editorValue, setEditorValue] = useState({
-    1: "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
+    1: 'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
     2: `for index, candidate in enumerate(scope):
             if index==0:
                 chosen_stocks.append(candidate)
@@ -145,6 +172,39 @@ else:
     // make editor readonly by changing snippetValidated & snippetSubmitted
   };
 
+  const handleImportState = (type, name, des, code) => {
+    const newSnippetDescr = snippetDescr;
+    const newSnippetName = snippetName;
+    const newEditorValue = editorValue;
+    switch (type) {
+      case 'scope':
+        newSnippetDescr['1'] = des;
+        newSnippetName['1'] = name;
+        newEditorValue['1'] = code;
+        break;
+      case 'buy':
+        newSnippetDescr['2'] = des;
+        newSnippetName['2'] = name;
+        newEditorValue['2'] = code;
+        break;
+      case 'sell':
+        newSnippetDescr['3'] = des;
+        newSnippetName['3'] = name;
+        newEditorValue['3'] = code;
+        break;
+      case 'amount':
+        newSnippetDescr['4'] = des;
+        newSnippetName['4'] = name;
+        newEditorValue['4'] = code;
+        break;
+      default:
+        break;
+    }
+    setSnippetDescr(newSnippetDescr);
+    setSnippetName(newSnippetName);
+    setEditorValue(newEditorValue);
+  };
+
   // const handleValidate = (i) => {
   //   if (Math.random() > 0.5) {
   //     window.alert('validated');
@@ -199,7 +259,7 @@ else:
 
   return (
     <div className={classes.root}>
-      <MenuBar />
+      <MenuBar/>
       <Grid container justify="center" spacing={2}>
         <Grid item xs={4} style={{ backgroundColor: '#eeeeee' }}>
           API DOC
@@ -214,10 +274,10 @@ else:
                 textColor="primary"
                 centered
               >
-                <Tab id="snippet_1" label="Snippet: Scope" value={1} />
-                <Tab id="snippet_2" label="Snippet: Buy" value={2} />
-                <Tab id="snippet_3" label="Snippet: Sell" value={3} />
-                <Tab id="snippet_4" label="Snippet: Amount" value={4} />
+                <Tab id="snippet_1" label="Snippet: Scope" value={1}/>
+                <Tab id="snippet_2" label="Snippet: Buy" value={2}/>
+                <Tab id="snippet_3" label="Snippet: Sell" value={3}/>
+                <Tab id="snippet_4" label="Snippet: Amount" value={4}/>
               </Tabs>
             </Paper>
             <div style={{ margin: 10 }}>
@@ -414,7 +474,16 @@ else:
           }
         }
       >
-        <Paper style={{ width: '100%', height: 400 }}>{'asdasd'}</Paper>
+        <Paper style={{ width: '100%', height: 400 }}>
+          {likedSnippets.map(s => {
+            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                                handleImportState={handleImportState}/>);
+          })}
+          {ownedSnippets.map(s => {
+            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                                handleImportState={handleImportState}/>);
+          })}
+        </Paper>
       </Dialog>
       <Backdrop
         open={loadingStore}
@@ -427,7 +496,7 @@ else:
         }
         style={{ zIndex: 999 }}
       >
-        <CircularProgress color="inherit" />
+        <CircularProgress color="inherit"/>
       </Backdrop>
     </div>
   );

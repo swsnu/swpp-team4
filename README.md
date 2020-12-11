@@ -6,7 +6,7 @@
 
 ## https://quant.cash
 
-###How To Run
+### How To Run
 
 #### 1. Clone this repository
 
@@ -30,3 +30,9 @@ Please move to 'front' directory, install npm modules with `yarn`, and start fro
 ##### (3) install necessary dependencies for backend
 
     pip install -r requirements.txt
+
+##### (4) setting up multi-threading environment for the backend
+First, you need to have REDIS installed, and have it running in docker environment. 
+
+
+    (~/back) 
