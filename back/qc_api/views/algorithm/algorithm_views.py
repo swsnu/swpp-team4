@@ -63,9 +63,6 @@ def run_helper(budget, algo_id, start, end, user_id):
     send_user_notification(user=user, payload=payload, ttl=100)
 
 
-qwe = []
-
-
 @api_view(['GET'])
 def test_performance(request: Request):
     run_daily_performance()
@@ -86,16 +83,19 @@ except:
         task='qc_api.views.algorithm.algorithm_views.run_daily_performance',  # name of task.
     )
 
+qwe = []
+
 
 @shared_task
 def run_daily_performance():
     print(len(qwe))
     q = datetime.datetime.strptime('2020-02-03', '%Y-%m-%d') + datetime.timedelta(days=len(qwe))
-    qwe.append(2)
-    print(q.strftime('%Y-%m-%d'))
-    daily_performance.delay(q.strftime('%Y-%m-%d'), 38)
-    daily_performance.delay(q.strftime('%Y-%m-%d'), 39)
-    daily_performance.delay(q.strftime('%Y-%m-%d'), 42)
+    qwe.append(True)
+    algo_id_list = list()
+    for k in Algorithm.objects.all():
+        algo_id_list.append(k.id)
+    for k in algo_id_list:
+        daily_performance.delay(q.strftime('%Y-%m-%d'), k)
 
 
 @shared_task
