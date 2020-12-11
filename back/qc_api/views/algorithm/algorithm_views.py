@@ -65,10 +65,10 @@ def run_helper(budget, algo_id, start, end, user_id):
     send_user_notification(user=user, payload=payload, ttl=100)
 
 
-@api_view(['GET'])
-def test_performance(request: Request):
-    run_daily_performance()
-    return Response("successfully tested performance", status=status.HTTP_200_OK)
+# @api_view(['GET'])
+# def test_performance(request: Request):
+#     run_daily_performance()
+#     return Response("successfully tested performance", status=status.HTTP_200_OK)
 
 
 # Check if performance task exists, and add it if it doesnt

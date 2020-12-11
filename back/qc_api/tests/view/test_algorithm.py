@@ -8,8 +8,10 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 
 from ..utils import get_mock_algo, get_mock_snippet, SnippetType, seed_stock_data
+from ...lib.backtest.backtester import BackTester
 from ...models import Algorithm
-from ...views.algorithm.algorithm_views import run_helper
+from ...serializers.algorithm.algorithm_serializer import AlgorithmSerializer
+from ...views.algorithm.algorithm_views import run_helper, run_daily_performance, daily_performance
 
 
 class AlgorithmTestCase(TestCase):
@@ -99,7 +101,7 @@ class AlgorithmTestCase(TestCase):
         # mock_delay = run_helper
         stub_algo = get_mock_algo(name='')
         stub_algo.save()
-        budget = 1000000
+        budget = 10000000
         response = self.client.post('/api/algo/backtest', json.dumps({
             'algo_id': stub_algo.id,
             'budget': budget,
@@ -107,3 +109,21 @@ class AlgorithmTestCase(TestCase):
             'end': '2020-01-10'
         }), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+
+    @patch('qc_api.views.algorithm.algorithm_views.daily_performance.delay', side_effect=daily_performance)
+    def test_run_daily_performance(self, mock_delay):
+        seed_stock_data()
+        run_daily_performance()
+        stub_algo = get_mock_algo(name='')
+        stub_algo.save()
+        daily_performance.delay(performance_date='2020-01-09', algorithm_id=1)
+
+    def test_backtester(self):
+        seed_stock_data()
+        stub_algo = get_mock_algo(name='')
+        stub_algo.save()
+        asd = AlgorithmSerializer(Algorithm.objects.first()).data
+        bt = BackTester(budget=100000, algorithm=asd)
+        bt.get_budget()
+        bt.get_coins()
+        bt.make_daily_report()
