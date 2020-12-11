@@ -2,12 +2,14 @@
 test_algorithm.py
 """
 import json
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 
-from ..utils import get_mock_algo, get_mock_snippet, SnippetType
-from ...models import Algorithm, Kospi
+from ..utils import get_mock_algo, get_mock_snippet, SnippetType, seed_stock_data
+from ...models import Algorithm
+from ...views.algorithm.algorithm_views import run_helper
 
 
 class AlgorithmTestCase(TestCase):
@@ -90,3 +92,18 @@ class AlgorithmTestCase(TestCase):
 
         response = client.delete('/api/algo/1')
         self.assertEqual(response.status_code, 403)
+
+    @patch('qc_api.views.algorithm.algorithm_views.run_helper.delay', side_effect=run_helper)
+    def test_algorithm_backtest(self, mock_delay):
+        seed_stock_data()
+        # mock_delay = run_helper
+        stub_algo = get_mock_algo(name='')
+        stub_algo.save()
+        budget = 1000000
+        response = self.client.post('/api/algo/backtest', json.dumps({
+            'algo_id': stub_algo.id,
+            'budget': budget,
+            'start': '2020-01-03',
+            'end': '2020-01-10'
+        }), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
