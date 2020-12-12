@@ -21,7 +21,7 @@ def sign_up(request):
         password = req_data['password']
         email = req_data['email']
         User.objects.create_user(username=username, password=password, email=email)
-    except IntegrityError as error:
+    except IntegrityError as error:  # pragma: no cover
         if 'UNIQUE constraint' in str(error.args):
             return HttpResponse(status=400)
     return HttpResponse(status=201)

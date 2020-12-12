@@ -60,23 +60,23 @@ class SandBox:
         """
         return self.__budget
 
-    def get_start_date(self) -> date:
-        """
-        Get start date.
-        Returns:
-            start date.
-        """
-        return self.__start
+    # def get_start_date(self) -> date:
+    #     """
+    #     Get start date.
+    #     Returns:
+    #         start date.
+    #     """
+    #     return self.__start
+    #
+    # def get_end_date(self) -> date:
+    #     """
+    #     Get end date.
+    #     Returns:
+    #         end date.
+    #     """
+    #     return self.__end
 
-    def get_end_date(self) -> date:
-        """
-        Get end date.
-        Returns:
-            end date.
-        """
-        return self.__end
-
-    def prepare(self) -> Optional[BackTester]:
+    def prepare(self) -> Optional[BackTester]:  # pragma: no cover
         """ Prepare for backtest. """
         back_tester = BackTester(algorithm=self.algorithm, budget=self.__budget)
 

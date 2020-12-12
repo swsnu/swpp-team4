@@ -165,7 +165,7 @@ class BackTester:
         for stock_tuple in buy_list:
             try:
                 self.__wallet.purchase_coin(stock=stock_tuple[0], amount=stock_tuple[1], time=self.__today)
-            except IndexError:
+            except IndexError:  # pragma: no cover
                 pass
 
     def make_scope(self) -> None:

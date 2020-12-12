@@ -96,7 +96,7 @@ class Wallet:
             try:
                 _coin = universe_today.loc[universe_today['code'] == str(int(coin.get_id()))].iloc[0]
                 coin.set_price(int(_coin['close']))
-            except IndexError:
+            except IndexError:  # pragma: no cover
                 coin.set_price(0)
                 self.__handle_deleted_coin(coin.get_id())
 
