@@ -1,7 +1,7 @@
 """
 test_algorithm.py
 """
-# pylint: disable=E5142, C0116, W0613
+# pylint: disable=E5142, C0116, W0613, R0201, C0103, R0201
 import json
 from unittest.mock import patch
 
