@@ -11,4 +11,3 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
         read_only_fields = ('create_at', 'update_at')
-

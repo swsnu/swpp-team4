@@ -1,5 +1,5 @@
 """backtester.py"""
-# pylint: disable=W0122, R0902, W0511, W0703
+# pylint: disable=W0122, R0902, W0511, W0703, W9008
 from copy import copy
 from datetime import date, datetime
 from typing import List, Dict, Any, Union
@@ -182,7 +182,7 @@ class BackTester:
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
             return exec_result['buy_amount_list']
-        elif opt == SnippetType.SELL:
+        if opt == SnippetType.SELL:
             self.__sell_amount_list = exec_result['sell_amount_list']
             return exec_result['sell_amount_list']
         return []

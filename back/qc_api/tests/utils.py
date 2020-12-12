@@ -1,17 +1,20 @@
 """ Mocking functions for tests. """
+# pylint: disable=E5142
 import json
+import os
 
 from django.contrib.auth.models import User
 from django.test import Client
 
+import default_dataset_seeder
 from qc_api.models import Algorithm
 from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
-from qc_api.util.utility import SnippetType
+from qc_api.util.utility import SnippetType, parse_date
 
 mock_algo_ser_data = {
     "snippet_scope_data": {
         'code': "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), "
-                "universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))"
+                "universe.query('(volume >5000000)').to_numpy()))"
     },
     'snippet_buy_data': {
         'code': "for index, candidate in enumerate(scope):"
@@ -78,13 +81,14 @@ def get_mock_snippet(snippet_type: SnippetType) -> Snippet:
         Snippet object
     """
     if snippet_type == SnippetType.SCOPE:
-        snippet = SnippetScope.objects.create(name=snippet_type, code=snippet_type)
+        snippet = SnippetScope.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_scope_data"]["code"])
     elif snippet_type == SnippetType.BUY:
-        snippet = SnippetBuy.objects.create(name=snippet_type, code=snippet_type)
+        snippet = SnippetBuy.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_buy_data"]["code"])
     elif snippet_type == SnippetType.SELL:
-        snippet = SnippetSell.objects.create(name=snippet_type, code=snippet_type)
+        snippet = SnippetSell.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_sell_data"]["code"])
     else:
-        snippet = SnippetAmount.objects.create(name=snippet_type, code=snippet_type)
+        snippet = SnippetAmount.objects.create(name=snippet_type,
+                                               code=mock_algo_ser_data["snippet_amount_data"]["code"])
     return snippet
 
 
@@ -100,3 +104,16 @@ def get_mock_algo(name: str, public: bool = False) -> Algorithm:
     algo = Algorithm.objects.create(name=name, snippet_scope=scope, snippet_buy=buy,
                                     snippet_sell=sell, snippet_amount=amount, is_public=public)
     return algo
+
+
+def seed_stock_data() -> None:
+    """
+    Seeds KOSPI, KOSDAQ and STOCK_DATA objects into Test DB (period set to 2020-01-03 ~ 2020-01-10)
+    """
+    dir_path = f"{os.getcwd()}/qc_api/tests/seed/"
+    default_dataset_seeder.run(100, f"{dir_path}seed_kospi.csv",
+                               "kospi", parse_date('2020-1-3'), parse_date('2020-1-10'))
+    default_dataset_seeder.run(100, f"{dir_path}seed_kosdaq.csv",
+                               "kosdaq", parse_date('2020-1-3'), parse_date('2020-1-10'))
+    default_dataset_seeder.run(100, f"{dir_path}seed_stock_data.csv",
+                               "stock", parse_date('2020-1-3'), parse_date('2020-1-10'))

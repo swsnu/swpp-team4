@@ -85,7 +85,7 @@ export const WritePage = (props) => {
                 chosen_stocks.append(candidate)
                 break`,
         3: `for index, candidate in enumerate(sell_candidates):
-            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:
+            if (universe.loc[universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.get_avg_purchase_price()-1>0.05:
                 chosen_stocks.append(candidate)`,
         4: `if opt == "buy":
         for stock in chosen_stocks:

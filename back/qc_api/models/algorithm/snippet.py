@@ -1,6 +1,7 @@
 """
 Snippet Library
 """
+# pylint: disable=E5142
 from polymorphic.models import PolymorphicModel
 from django.db import models
 from django.contrib.auth.models import User
