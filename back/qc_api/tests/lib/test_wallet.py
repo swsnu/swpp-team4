@@ -1,14 +1,17 @@
+""" Testcase for Stock, Stockcoin, and Wallet. """
+# pylint: disable=C0116, W0212
+from datetime import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
-from datetime import datetime
+
 from qc_api.lib import Stock, StockCoin, Wallet
 
 
 class StockTestCase(TestCase):
+    """ Testcase for Stock object. """
     def setUp(self):
         self.stock = Stock(name="CreamCheeseCompany", stock_id=0, price=1000)
-        return
 
     def test_stock_creation(self):
         stock_fields = self.stock.__dict__.keys()
@@ -39,6 +42,7 @@ class StockTestCase(TestCase):
 
 
 class StockCoinTestCase(TestCase):
+    """ Testcase for StockCoin object. """
     def setUp(self):
         self.coin = StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
                               purchase_log=[(datetime(year=2020, month=1, day=1), 1000, 5)],
@@ -102,13 +106,13 @@ class StockCoinTestCase(TestCase):
 
 
 class WalletTestCase(TestCase):
+    """ Testcase for Wallet object. """
     def setUp(self):
         self.stock = Stock(name="CreamCheeseCompany", stock_id=0, price=1000)
         self.coin = StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
                               purchase_log=[(datetime(year=2020, month=1, day=1), 1000, 5)],
                               sell_log=[], avg_purchase_price=1000)
         self.wallet = Wallet(budget=10000, stock_id_to_coin={0: self.coin})
-        return
 
     def test_create_empty_wallet(self):
         empty_wallet = Wallet(budget=10000)

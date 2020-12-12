@@ -1,14 +1,14 @@
 """
 Sandbox class
 """
-# pylint: disable=R0903
+# pylint: disable=R0903, W0511,
 from datetime import datetime, date
+from typing import List, Optional
 
+from .backtest.backtester import BackTester
 from ..models.default_dataset.kospi import Kospi
 from ..models.evaluation.report import Report
 from ..serializers import AlgorithmSerializer, ReportSerializer
-from .backtest.backtester import BackTester
-from typing import List, Optional
 from ..util.utility import parse_date
 
 
@@ -44,12 +44,27 @@ class SandBox:
         self.run(back_tester)
 
     def get_budget(self) -> float:
+        """
+        Get current budget.
+        Returns:
+            current budget.
+        """
         return self.__budget
 
     def get_start_date(self) -> date:
+        """
+        Get start date.
+        Returns:
+            start date.
+        """
         return self.__start
 
     def get_end_date(self) -> date:
+        """
+        Get end date.
+        Returns:
+            end date.
+        """
         return self.__end
 
     def prepare(self) -> Optional[BackTester]:
@@ -58,9 +73,8 @@ class SandBox:
 
         if back_tester.validate():
             return back_tester
-        else:
-            print("validation process failed, the code will be not executed.")
-            return None
+        print("validation process failed, the code will be not executed.")
+        return None
 
     def run(self, back_tester: Optional[BackTester]) -> None:
         """
@@ -71,6 +85,11 @@ class SandBox:
             self.clean_up(back_tester)
 
     def clean_up(self, back_tester: BackTester) -> None:
+        """
+        Clean up backtest results.
+        Parameters:
+            back_tester: BackTester object.
+        """
         self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1])
         self.report["transaction_log"] = str(self.report["transaction_log"])
         self.report["daily_profit"] = str(self.report["daily_profit"])
@@ -93,6 +112,8 @@ class SandBox:
     def get_trading_dates(self) -> List[datetime.date]:
         """
         Get dates used for trading.
+        Returns:
+            list of dates to run tests.
         """
         return [
             kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')

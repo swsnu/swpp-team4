@@ -1,6 +1,7 @@
 """
 test_auth.py
 """
+# pylint: disable=E5142
 import json
 
 from django.contrib.auth.models import User

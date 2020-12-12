@@ -1,6 +1,7 @@
 """
 Models for qc_api
 """
+# pylint: disable=E5142
 from django.contrib.auth.models import User
 
 from .algorithm.snippet import Snippet, SnippetAmount, SnippetBuy, SnippetScope, SnippetSell

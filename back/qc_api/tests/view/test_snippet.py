@@ -1,6 +1,7 @@
 """
 test_snippet.py
 """
+# pylint: disable=E5142, C0116
 import json
 
 from django.contrib.auth.models import User
@@ -128,4 +129,3 @@ class SnippetTestCase(TestCase):
         #         unlike = self.client.post('/api/like/snippet', json.dumps({'id': 1, 'value': False}),
         #                                   content_type='application/json')
         #         self.assertEqual(get_all.status_code, 200)
-

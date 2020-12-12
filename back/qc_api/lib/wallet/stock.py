@@ -1,6 +1,7 @@
 """
 Stock library to manage single stock data.
 """
+# pylint: disable=W9006
 from datetime import datetime
 
 from typing import List, Tuple
@@ -70,6 +71,8 @@ class StockCoin(Stock):
             purchase_log: purchase history in the form of (dateTime, price, amount)
             sell_log: sell history
             avg_purchase_price: average purchase price
+        Raises:
+            ValueError when the consistency check has failed.
         """
         super().__init__(name, stock_id, price)
         self.__amount = amount

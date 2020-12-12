@@ -1,3 +1,5 @@
+""" Testcases for Defensive Code Executor"""
+# pylint: disable=C0116
 from unittest.mock import patch
 
 from django.test import TestCase
