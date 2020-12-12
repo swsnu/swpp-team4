@@ -8,7 +8,6 @@ import Container from '@material-ui/core/Container';
 import {createMount} from '@material-ui/core/test-utils';
 import {createMemoryHistory} from 'history';
 import axios from 'axios';
-import {act} from "@testing-library/react";
 
 const mockStore = getMockStore(
     {
@@ -51,6 +50,6 @@ describe('test leaderboard', () => {
             return Promise.resolve({status: 200, data: [{id: 1, name: '', author: '', description: ''}]});
         });
         const wrapper = component.find('LeaderboardPage');
-        const wrapper2 = component.find('CollapsibleTable');
+        expect(wrapper.length).toBe(1);
     })
 })

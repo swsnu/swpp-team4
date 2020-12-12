@@ -32,6 +32,7 @@ export const sign_in = (username, password) => {
 
       const pushNotificationSuported = isPushNotificationSupported();
 
+      /* istanbul ignore next */
       if (pushNotificationSuported) {
         const reg = await registerServiceWorker();
         console.log("reg!!!", reg);
