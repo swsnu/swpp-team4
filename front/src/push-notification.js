@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* istanbul ignore file */
 import axios from 'axios';
 
 export const VAPID_PUBLIC_KEY = "BNM71Y9WCce_qujpq0SBQzR9TExQKVBeeXc3VSwzD90I6JZv7FyrnOFIeI6sNx2o7kKIAJkByXMIxrCc7_2txRw";
