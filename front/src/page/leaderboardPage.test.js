@@ -52,6 +52,5 @@ describe('test leaderboard', () => {
         });
         const wrapper = component.find('LeaderboardPage');
         const wrapper2 = component.find('CollapsibleTable');
-        component.find('button#row-button').simulate('click')
     })
 })
