@@ -1,7 +1,7 @@
 """
 Wallet library to handle stocks possessed by the user.
 """
-# pylint: disable=C0103
+# pylint: disable=C0103, C0116
 from datetime import datetime
 from typing import Optional, Dict, List, Any
 

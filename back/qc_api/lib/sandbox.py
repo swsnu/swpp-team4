@@ -1,19 +1,16 @@
 """
 Sandbox class
 """
-# pylint: disable=R0903, W0511,
-from datetime import datetime, date
+# pylint: disable=R0903, W0511, R0902, R0201, C0103
 import json
+from datetime import datetime, date
 from typing import List, Optional
 
 from .backtest.backtester import BackTester
 from ..models.default_dataset.kospi import Kospi
-from ..models.algorithm.algorithm import Algorithm
-from ..models.evaluation.report import Report
 from ..models.evaluation.performance import Performance
-from ..serializers import AlgorithmSerializer, ReportSerializer, PerformanceSerializer
-from .backtest.backtester import BackTester
-from typing import List, Optional
+from ..models.evaluation.report import Report
+from ..serializers import AlgorithmSerializer, ReportSerializer
 from ..util.utility import parse_date
 
 
@@ -131,6 +128,12 @@ class SandBox:
         # TODO: ERROR HANDLING (CH)
 
     def write_performance(self, back_tester: BackTester, performance: Performance) -> None:
+        """
+        Write performance
+        Parameters:
+            back_tester: BackTester object.
+            performance: Perforance object.
+        """
         if len(self.date_rows) > 0:
             self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1], mode='performance')
             new_transaction_log = json.loads(performance.transaction_log)
@@ -162,7 +165,6 @@ class SandBox:
         """
         if self.mode == 'performance':
             return [Kospi.objects.filter(date__gte=self.__end).order_by('date').first().date]
-        else:
-            return [
-                kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
-            ]
+        return [
+            kospi.date for kospi in Kospi.objects.filter(date__range=[self.__start, self.__end]).order_by('date')
+        ]

@@ -1,5 +1,5 @@
 """ Views regarding snippet model"""
-# pylint: disable=W0511, E5142, W0707, R1705, C0116
+# pylint: disable=W0511, E5142, W0707, R1705, C0116, R1710
 import json
 from typing import Dict, Any
 
