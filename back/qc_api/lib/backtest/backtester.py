@@ -1,5 +1,8 @@
 """backtester.py"""
+import json
+
 # pylint: disable=W0122, R0902, W0511, W0703, W9008
+
 from copy import copy
 from datetime import date, datetime
 from typing import List, Dict, Any, Union
@@ -68,6 +71,29 @@ class BackTester:
             "list": []
         }
         self.__wallet = Wallet(budget=self.__budget)
+
+    def load_previous(self, performance) -> None:
+        """update self.__wallet's coin, budget, and __scope"""
+        self.__wallet.load_setting(budget=performance.deposit, curr_portfolio=json.loads(performance.curr_portfolio))
+        self.__max_min_dict = json.loads(performance.max_min_dict)
+        scopeData = json.loads(performance.scope)
+        scope = list()
+        for st in scopeData:
+            scope.append(Stock(
+                name=st["name"],
+                stock_id=st["stock_id"],
+                price=st["price"],
+            ))
+        self.__scope = scope
+
+    def get_budget(self):
+        return self.__wallet.get_budget()
+
+    def get_coins(self):
+        return self.__wallet.get_coins()
+
+    def get_max_min_dict(self):
+        return self.__max_min_dict
 
     def set_date(self, today: date) -> None:
         """Sets self.today"""
@@ -155,6 +181,8 @@ class BackTester:
         }
         exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
         self.__scope = exec_result.get("scope")
+        print('scope')
+        print(self.__scope)
 
     def make_amount_list(self, opt: SnippetType,
                          chosen_stocks: List[Union[Stock, StockCoin]]) -> List[Union[Stock, StockCoin]]:
@@ -242,7 +270,7 @@ class BackTester:
                 self.__max_min_dict.get("regi")[1] = 'eq'
         self.__max_min_dict.get("regi")[0] = profit
 
-    def report_result(self, start: datetime.date, end: datetime.date) -> Dict[str, Any]:
+    def report_result(self, start: datetime.date, end: datetime.date, mode: str = 'backtest') -> Dict[str, Any]:
         """
         finalizes self.report that will be saved in report table of DB by calculating MDD, profit, alpha.
         Since as we have been tracking daily profit, the final profit is last element of the report.daily_profit array.
@@ -250,6 +278,11 @@ class BackTester:
         self.__report["MDD"] = self.__calculate_mdd()
         self.__report["profit"] = self.__report.get("daily_profit")[-1].get("profit")
         self.__report["alpha"] = self.__calculate_alpha(start=start, end=end)
+        if mode == 'performance':
+            self.__report["deposit"] = self.__wallet.get_budget()
+            self.__report["curr_portfolio"] = self.__wallet.dump_coins()
+            self.__report["max_min_dict"] = self.get_max_min_dict()
+            self.__report["scope"] = self.__scope
         return self.__report
 
     def __calculate_mdd(self) -> float:
@@ -286,6 +319,10 @@ class BackTester:
             alpha value.
         """
         kospi_profit = Kospi.objects.get(date=end).close / Kospi.objects.get(date=start).close
+        print('kospi_profit')
+        print(kospi_profit)
+        print(start)
+        print(end)
         return self.__report.get("profit") / float(kospi_profit)
 
     def validate(self) -> bool:

@@ -14,7 +14,7 @@ from qc_api.util.utility import SnippetType, parse_date
 mock_algo_ser_data = {
     "snippet_scope_data": {
         'code': "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), "
-                "universe.query('(volume >5000000)').to_numpy()))"
+                "universe.query('(volume >50000)').to_numpy()))"
     },
     'snippet_buy_data': {
         'code': "for index, candidate in enumerate(scope):"

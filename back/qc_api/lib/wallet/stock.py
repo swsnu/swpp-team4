@@ -1,6 +1,7 @@
 """
 Stock library to manage single stock data.
 """
+import json
 # pylint: disable=W9006
 from datetime import datetime
 
@@ -41,6 +42,13 @@ class Stock:
         if price >= 0:
             self.__price = price
 
+    def dump_data(self):
+        return {
+            'name': self.get_name(),
+            'stock_id': self.get_id(),
+            'price': self.get_price(),
+        }
+
     def __str__(self):
         stock_to_dict = dict()
         stock_to_dict.update({'name': self.__name,
@@ -48,6 +56,7 @@ class Stock:
         return str(stock_to_dict)
 
 
+# TODO: name, stock_id, price, amount, avg_purchase_price
 class StockCoin(Stock):
     """
     A Stock object stored in a wallet.
@@ -160,15 +169,27 @@ class StockCoin(Stock):
         """
         Check if the current log is correct.
         """
-        checker = sum(x[2] for x in self.__purchase_log) - sum(x[2] for x in self.__sell_log)
-        return self.__amount == checker
+        return True
+        # checker = sum(x[2] for x in self.__purchase_log) - sum(x[2] for x in self.__sell_log)
+        # return self.__amount == checker
+
+    def dump_data(self):
+        return {
+            'name': self.get_name(),
+            'stock_id': self.get_id(),
+            'amount': self.__amount,
+            'price': self.get_price(),
+            'purchase_log': [],
+            'sell_log': [],
+            'avg_purchase_price': self.get_avg_purchase_price()
+        }
 
     def __str__(self):
         """ String representation of StockCoin """
         stock_to_dict = dict()
         # stock_to_dict.update(dict(str(super())))
         stock_to_dict.update({'name': self.get_name(),
-                              'id': self.get_id(),
+                              'stock_id': self.get_id(),
                               'amount': self.__amount,
                               'purchase_log': self.__purchase_log,
                               'sell_log': self.__sell_log,

@@ -31,6 +31,28 @@ class Wallet:
             self.__stock_id_list = list(map(lambda stock: stock.get_id() if stock.get_amount() > 0 else None,
                                             [self.__id_to_coin[i] for i in self.__id_to_coin]))
 
+    def load_setting(self, budget: float, curr_portfolio: list) -> bool:
+        """ load budget, transaction log, and coins (stocks) """
+        self.__budget = budget
+        print(budget)
+        print(curr_portfolio)
+        for bought_stock in curr_portfolio:
+            if bought_stock['stock_id'] not in self.__stock_id_list:
+                stock_coin = StockCoin(
+                    name=bought_stock['name'],
+                    stock_id=bought_stock['stock_id'],
+                    price=bought_stock['price'],
+                    amount=0,
+                    purchase_log=bought_stock['purchase_log'],
+                    sell_log=bought_stock['sell_log'],
+                    avg_purchase_price=bought_stock['avg_purchase_price']
+                )
+                self.__handle_new_coin(stock_coin)
+            else:
+                stock_coin = self.__id_to_coin[bought_stock['stock_id']]  # will not be called ever
+            stock_coin.purchase_coin(date_time=datetime.today(), amount=bought_stock['amount'])
+        return True
+
     def get_budget(self) -> float:
         """ Get budget"""
         return self.__budget
@@ -47,6 +69,12 @@ class Wallet:
         """ returns full information of possessed stocks """
         return [self.__id_to_coin[sid] for sid in self.__stock_id_list]
         # map(lambda stock: str(stock), [self.stock_id_to_coin[i] for i in self.stock_id_to_coin])
+
+    def dump_coins(self) -> List[dict]:
+        coin_dump = list()
+        for coin in self.__id_to_coin:
+            coin_dump.append(self.__id_to_coin[coin].dump_data())
+        return coin_dump
 
     def __handle_new_coin(self, coin: StockCoin) -> None:
         self.__stock_id_list.append(coin.get_id())
@@ -67,7 +95,7 @@ class Wallet:
         for coin in coins:
             try:
                 _coin = universe_today.loc[universe_today['code'] == str(int(coin.get_id()))].iloc[0]
-                coin.set_price(_coin['close'])
+                coin.set_price(int(_coin['close']))
             except IndexError:
                 coin.set_price(0)
                 self.__handle_deleted_coin(coin.get_id())
@@ -98,7 +126,6 @@ class Wallet:
     def purchase_coin(self, stock: Stock, amount: int, time: datetime) -> bool:
         """ Purchase stocks """
         stock_id = stock.get_id()
-        print(stock, amount)
         if self.__budget < stock.get_price() * amount or amount <= 0:
             print("cannot buy")
             return False
@@ -111,7 +138,7 @@ class Wallet:
             stock_coin = self.__id_to_coin[stock_id]
         self.__budget -= stock.get_price() * amount
         stock_coin.purchase_coin(date_time=time, amount=amount)
-        print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}')
+        print(f'Bought {amount} {stock.get_name()} at price {stock.get_price()}, now have ${self.__budget}')
         self.__transaction_log.get("buy").append({
             "name": stock.get_name(),
             "price": stock.get_price(),

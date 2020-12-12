@@ -61,9 +61,9 @@ def get_put_post_snippets(request: Request) -> Response:
         snippets = Snippet.objects.filter(**params)
         response = SnippetSerializer(snippets, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
-    else:
-        # TODO: change shared state of owned algorithm
-        return Response('lol', status=status.HTTP_200_OK)
+    # else:
+    #     # TODO: change shared state of owned algorithm
+    #     return Response('lol', status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

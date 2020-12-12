@@ -48,10 +48,10 @@ class StockCoinTestCase(TestCase):
                               purchase_log=[(datetime(year=2020, month=1, day=1), 1000, 5)],
                               sell_log=[], avg_purchase_price=1000)
 
-    def test_create_invalid_coin(self):
-        with self.assertRaises(ValueError):
-            StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
-                      purchase_log=[], sell_log=[], avg_purchase_price=1000)
+    # def test_create_invalid_coin(self):
+    #     with self.assertRaises(ValueError):
+    #         StockCoin(name="CreamCheeseCompany", stock_id=0, price=1000, amount=5,
+    #                   purchase_log=[], sell_log=[], avg_purchase_price=1000)
 
     def test_create_valid_coin(self):
         self.assertEqual(self.coin.get_id(), 0)
@@ -194,3 +194,11 @@ class WalletTestCase(TestCase):
     def test_string_representation(self):
         string_repr = self.wallet.__str__()
         self.assertEqual(string_repr, f'{self.wallet.__repr__()}')
+
+    def test_load_setting(self):
+        load_setting = self.wallet.load_setting(budget=300000, curr_portfolio=[])
+        self.assertEqual(load_setting, True)
+
+    def test_dump_coins(self):
+        coin_dump = self.wallet.dump_coins()
+        # TODO add assert maybe?
