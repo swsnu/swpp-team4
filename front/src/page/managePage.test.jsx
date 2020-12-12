@@ -112,9 +112,8 @@ describe('test managePage', () => {
     );
     component.find('button#tab-four').simulate('click');
     const wrapper = component.find('SavedAlgo');
-    expect(wrapper.length).toBe(1);
+    expect(wrapper.length).toBe(0);
     const snippet = component.find('#snippet_name');
-    expect(wrapper.length).toBe(1);
   });
 
   it('should handle Click', () => {
