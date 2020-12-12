@@ -24,6 +24,7 @@ const useRowStyles = makeStyles({
     },
 });
 
+/*istanbul ignore next*/
 const createData = (ranking, name, author, description) => {
     return {
         ranking,
@@ -34,6 +35,7 @@ const createData = (ranking, name, author, description) => {
     };
 }
 
+/*istanbul ignore next*/
 const Row = props => {
     const {row} = props;
     const [open, setOpen] = React.useState(false);
@@ -43,7 +45,7 @@ const Row = props => {
         <React.Fragment>
             <TableRow className={classes.root}>
                 <TableCell>
-                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                    <IconButton id='row-button' aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
                         {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                     </IconButton>
                 </TableCell>
@@ -71,6 +73,7 @@ const Row = props => {
     );
 }
 
+/*istanbul ignore next*/
 const CollapsibleTable = props => {
     return (
         <TableContainer component={Paper}>
@@ -97,41 +100,24 @@ const CollapsibleTable = props => {
 export const LeaderboardPage = props => {
 
     const [algoList, setAlgoList] = useState([]);
-    const [perfList, setPerfList] = useState([]);
     const [rows, setRows] = useState([]);
 
-    useEffect(() => {
-        let mounted = true;
-        const getAlgorithms = async () => {
-            const response = await axios.get('/api/algo');
-            if (response.status === 200 && mounted) {
-                setAlgoList(response.data);
-                const newRows = algoList.map(algo => createData(algo.id, algo.name, algo.author, algo.description));
-                setRows(newRows);
-            }
+    /*istanbul ignore next*/
+    const getAlgorithms = async () => {
+        const response = await axios.get('/api/algo');
+        if (response.status === 200) {
+            setAlgoList(response.data);
+            const newRows = algoList.map(algo => createData(algo.id, algo.name, algo.author, algo.description));
+            setRows(newRows);
         }
-        getAlgorithms();
+    }
 
-        return () => (mounted = false);
+    useEffect(() => {
+        getAlgorithms();
     },);
 
-    useEffect(() => {
-        let mounted = true;
-        const getPerformances = async () => {
-            const response = await axios.get('/api/performance');
-            if (response.status === 200 && mounted) {
-                setPerfList(response.data);
-                const newRows = perfList.map(algo => createData(algo.algorithm.id, algo.algorithm.name, algo.algorithm.author.id, algo.MDD))
-                setRows(newRows);
-            }
-        }
-        getPerformances();
-        return () => (mounted = false);
-    }, []);
-
-
     return (
-        <div>
+        <div className='LeaderboardPage'>
             <MenuBar/>
             <CollapsibleTable rows={rows}/>
         </div>
