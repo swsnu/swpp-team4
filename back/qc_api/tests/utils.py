@@ -1,11 +1,12 @@
 """ Mocking functions for tests. """
+# pylint: disable=E5142
 import json
-import default_dataset_seeder
 import os
 
 from django.contrib.auth.models import User
 from django.test import Client
 
+import default_dataset_seeder
 from qc_api.models import Algorithm
 from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
 from qc_api.util.utility import SnippetType, parse_date
@@ -86,7 +87,8 @@ def get_mock_snippet(snippet_type: SnippetType) -> Snippet:
     elif snippet_type == SnippetType.SELL:
         snippet = SnippetSell.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_sell_data"]["code"])
     else:
-        snippet = SnippetAmount.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_amount_data"]["code"])
+        snippet = SnippetAmount.objects.create(name=snippet_type,
+                                               code=mock_algo_ser_data["snippet_amount_data"]["code"])
     return snippet
 
 
@@ -109,6 +111,9 @@ def seed_stock_data() -> None:
     Seeds KOSPI, KOSDAQ and STOCK_DATA objects into Test DB (period set to 2020-01-03 ~ 2020-01-10)
     """
     dir_path = f"{os.getcwd()}/qc_api/tests/seed/"
-    default_dataset_seeder.run(100, f"{dir_path}seed_kospi.csv", "kospi", parse_date('2020-1-3'), parse_date('2020-1-10'))
-    default_dataset_seeder.run(100, f"{dir_path}seed_kosdaq.csv", "kosdaq", parse_date('2020-1-3'), parse_date('2020-1-10'))
-    default_dataset_seeder.run(100, f"{dir_path}seed_stock_data.csv", "stock", parse_date('2020-1-3'), parse_date('2020-1-10'))
+    default_dataset_seeder.run(100, f"{dir_path}seed_kospi.csv",
+                               "kospi", parse_date('2020-1-3'), parse_date('2020-1-10'))
+    default_dataset_seeder.run(100, f"{dir_path}seed_kosdaq.csv",
+                               "kosdaq", parse_date('2020-1-3'), parse_date('2020-1-10'))
+    default_dataset_seeder.run(100, f"{dir_path}seed_stock_data.csv",
+                               "stock", parse_date('2020-1-3'), parse_date('2020-1-10'))

@@ -4,7 +4,6 @@ import {
   LikedSnippet,
   ManagePage,
   SavedAlgo,
-  Snippet,
 } from './managePage';
 import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
@@ -13,8 +12,6 @@ import { history } from '../reduxRelated';
 import Container from '@material-ui/core/Container';
 import { createMount } from '@material-ui/core/test-utils';
 import { createMemoryHistory } from 'history';
-import * as snippetActions from '../store/actions/snippet';
-import * as algoActions from '../store/actions/algo';
 
 const mockStore = getMockStore(
   {

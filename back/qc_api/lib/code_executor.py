@@ -1,6 +1,6 @@
 """ Defensive code executor class to wrap user code execution. """
+# pylint: disable=W0703, W0122
 from copy import copy
-from traceback import print_exc
 from typing import Dict, Any
 
 

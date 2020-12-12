@@ -1,7 +1,7 @@
 """
 Utils to inject stock data into database
 """
-
+# pylint: disable=W0511, C0413, W9016, W9012, W0613,
 import datetime
 import os
 
@@ -21,7 +21,9 @@ def kospi_to_db(chunk):
     """
     Helper function to inject kospi data to database
     Parameters:
-        chunk:
+        chunk: db fragments to process.
+    Returns:
+        chunk of Kospi Objects
     """
     bulk_list = []
     for row in chunk:
@@ -42,7 +44,9 @@ def kosdaq_to_db(chunk):
     """
     Helper function to inject kosdaq data to database
     Parameters:
-        chunk:
+        chunk: db fragments to process.
+    Returns:
+        chunk of Kosdaq objects.
     """
     bulk_list = []
     for row in chunk:
@@ -63,7 +67,9 @@ def insert_into_sql(chunk):
     """
     Helper function to inject other data to sqlite
     Parameters:
-        chunk:
+        chunk: db fragments
+    Returns:
+        chunk of Stock objects.
     """
     print("hello world!")
     bulk_list = []
@@ -115,7 +121,18 @@ def insert_into_sql(chunk):
     return bulk_list
 
 
-def seed_kospi_or_kosdaq(name, type, chunk_size, start=None, end=None):
+def seed_kospi_or_kosdaq(name, stock_type, chunk_size, start=None, end=None):
+    """
+    seed kospi and kosdaq data to DB.
+    Parameters:
+        name: Name of the csv file
+        stock_type: either kospi or kosdaq
+        chunk_size: size to process the data at one time
+        start: starting date of the data to process. If None, start from the first line of the data
+        end: ending date of the data to process. If None, finish at the end line of the data.
+    Returns:
+        parsed data objects.
+    """
     objects = []
     for chunk in pd.read_csv(name, chunksize=chunk_size, header=0,
                              names=['date', 'close', 'open', 'high', 'low', 'volume', 'd1_diff_rate']):
@@ -138,7 +155,7 @@ def seed_kospi_or_kosdaq(name, type, chunk_size, start=None, end=None):
         #  if end is not None and chunk_as_mat[0][0] > end:
         #      break
 
-        if type == 'kospi':
+        if stock_type == 'kospi':
             print(chunk.to_numpy())
             objects += kospi_to_db(chunk.to_numpy())
         else:
@@ -148,6 +165,16 @@ def seed_kospi_or_kosdaq(name, type, chunk_size, start=None, end=None):
 
 
 def seed_other_dataset(name: str, chunk_size: int, start=None, end=None):
+    """
+    seed other data to DB.
+    Parameters:
+        name: Name of the csv file
+        chunk_size: size to process the data at one time
+        start: starting date of the data to process. If None, start from the first line of the data
+        end: ending date of the data to process. If None, finish at the end line of the data.
+    Returns:
+        parsed data objects.
+    """
     objects = []
     for chunk in pd.read_csv(name, chunksize=chunk_size, header=1):
         chunk_as_mat = chunk.to_numpy()
@@ -171,11 +198,13 @@ def run(chunk_size: int, path: str, name: str, start=None, end=None):
         name: identifier of the file. For now, it supports 'kospi', and 'kosdaq'
         start: Beginning date of the queried result. If None, it starts from the beginning of the file.
         end: Ending date of the queired result. If None, it processes until the end of the file.
+    Returns:
+        parsed result.
     """
     # _input = str(input("enter the file name from which the data will be fetched: ")) -> path
     # _to = str(input("enter the db table name to which the fetched data will be injected: ")) -> name
     if name in ('kospi', 'kosdaq'):
-        result = seed_kospi_or_kosdaq(name=path, type=name, chunk_size=chunk_size, start=start, end=end)
+        result = seed_kospi_or_kosdaq(name=path, stock_type=name, chunk_size=chunk_size, start=start, end=end)
     else:
         result = seed_other_dataset(name=path, chunk_size=chunk_size, start=start, end=end)
 

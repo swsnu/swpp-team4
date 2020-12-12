@@ -1,8 +1,7 @@
 """
 Views for authorization.
 """
-import json
-
+# pylint: disable=E5142
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -22,8 +21,8 @@ def sign_up(request):
         password = req_data['password']
         email = req_data['email']
         User.objects.create_user(username=username, password=password, email=email)
-    except IntegrityError as e:
-        if 'UNIQUE constraint' in str(e.args):
+    except IntegrityError as error:
+        if 'UNIQUE constraint' in str(error.args):
             return HttpResponse(status=400)
     return HttpResponse(status=201)
 

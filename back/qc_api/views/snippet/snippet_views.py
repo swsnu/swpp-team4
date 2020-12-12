@@ -1,6 +1,9 @@
 """ Views regarding snippet model"""
+# pylint: disable=W0511, E5142, W0707, R1705, C0116
+import json
 from typing import Dict, Any
 
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -8,13 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
-from django.contrib.auth.models import User
+
 from qc_api.models import Snippet
 from qc_api.serializers import SnippetSerializer, SnippetScopeSerializer, \
     SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
 from ...util.decorator import catch_bad_request
-
-import json
 
 
 def type_extract(data) -> (str, Dict[str, Any]):

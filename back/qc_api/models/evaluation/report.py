@@ -51,4 +51,3 @@ class Report(models.Model):
         choices=BackTestStatus.choices,
         default=BackTestStatus.PENDING,
     )
-

@@ -1,12 +1,18 @@
 """
     algorithm views
 """
+# pylint: disable=E0401, E5142, R1705, C0116,
+import json
+
+from celery import shared_task
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from qc_api.lib import SandBox
@@ -218,4 +224,3 @@ def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
         algo = Algorithm.objects.get(id=algo_id)
         algo.delete()
         return Response(status.HTTP_204_NO_CONTENT)
-

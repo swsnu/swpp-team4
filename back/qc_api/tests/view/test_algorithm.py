@@ -1,6 +1,7 @@
 """
 test_algorithm.py
 """
+# pylint: disable=E5142, C0116, W0613
 import json
 from unittest.mock import patch
 
@@ -73,6 +74,7 @@ class AlgorithmTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_share_or_delete_algorithm(self):
+        """ Test sharing or deleting algorithm. """
         stub_algo = get_mock_algo(name='')
         stub_algo.save()
         response = self.client.put('/api/algo/1', json.dumps({'public': 'true'}))
