@@ -1,5 +1,5 @@
 """ Testcase for Stock, Stockcoin, and Wallet. """
-# pylint: disable=C0116, W0212
+# pylint: disable=C0116, W0212, W0511, W0612, R0904
 from datetime import datetime
 from unittest.mock import patch
 

@@ -1,11 +1,10 @@
 """
 Stock library to manage single stock data.
 """
-import json
-# pylint: disable=W9006
+# pylint: disable=W9006, W0511, R0201
 from datetime import datetime
 
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 
 
 class Stock:
@@ -42,7 +41,12 @@ class Stock:
         if price >= 0:
             self.__price = price
 
-    def dump_data(self):
+    def dump_data(self) -> Dict[str, Any]:
+        """
+        Dump data to json
+        Returns:
+            dumped dictionary,
+        """
         return {
             'name': self.get_name(),
             'stock_id': self.get_id(),

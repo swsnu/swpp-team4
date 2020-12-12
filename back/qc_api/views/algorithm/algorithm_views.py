@@ -1,31 +1,26 @@
 """
     algorithm views
 """
-# pylint: disable=E0401, E5142, R1705, C0116,
+# pylint: disable=E0401, E5142, R1705, C0116, W0702, C0103
+
+import datetime
 import json
 
 from celery import shared_task
 from django.contrib.auth.models import User
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from webpush import send_user_notification
 
 from qc_api.lib import SandBox
-from qc_api.models import Algorithm, Report, Performance
-from qc_api.serializers import AlgorithmSerializer, ReportSerializer
+from qc_api.models import Algorithm, Performance
+from qc_api.serializers import AlgorithmSerializer
 from qc_api.util.decorator import catch_bad_request
-from celery import shared_task
-from django.contrib.auth.models import User
-from webpush import send_user_notification
-import json
-import datetime
-
-from qc_api.util.utility import parse_date
 
 
 @api_view(['GET'])

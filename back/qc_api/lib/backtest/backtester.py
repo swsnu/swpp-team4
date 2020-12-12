@@ -1,19 +1,19 @@
 """backtester.py"""
+# pylint: disable=W0122, R0902, W0511, W0703, W9008, C0103
 import json
-
-# pylint: disable=W0122, R0902, W0511, W0703, W9008
-
 from copy import copy
 from datetime import date, datetime
 from typing import List, Dict, Any, Union
+
 import pandas as pd
 
+from ..code_executor import DefensiveCodeExecutor
 from ..wallet.stock import Stock, StockCoin
 from ..wallet.wallet import Wallet
 from ...models import Kospi, StockData, Report
 from ...serializers import AlgorithmSerializer
 from ...util.utility import SnippetType, stock_data_columns
-from ..code_executor import DefensiveCodeExecutor
+
 
 
 class BackTester:
@@ -76,9 +76,9 @@ class BackTester:
         """update self.__wallet's coin, budget, and __scope"""
         self.__wallet.load_setting(budget=performance.deposit, curr_portfolio=json.loads(performance.curr_portfolio))
         self.__max_min_dict = json.loads(performance.max_min_dict)
-        scopeData = json.loads(performance.scope)
+        scope_data = json.loads(performance.scope)
         scope = list()
-        for st in scopeData:
+        for st in scope_data:
             scope.append(Stock(
                 name=st["name"],
                 stock_id=st["stock_id"],
@@ -86,13 +86,28 @@ class BackTester:
             ))
         self.__scope = scope
 
-    def get_budget(self):
+    def get_budget(self) -> float:
+        """
+        Get budget.
+        Returns:
+            current budget.
+        """
         return self.__wallet.get_budget()
 
-    def get_coins(self):
+    def get_coins(self) -> List[StockCoin]:
+        """
+        Get possessed coins.
+        Returns:
+            coins.
+        """
         return self.__wallet.get_coins()
 
-    def get_max_min_dict(self):
+    def get_max_min_dict(self) -> Dict:
+        """
+        Get max_min_dict
+        Returns:
+            max_min_dict
+        """
         return self.__max_min_dict
 
     def set_date(self, today: date) -> None:
