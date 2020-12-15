@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router-dom';
 import LoginModal from './loginModal';
+import {logo} from '../static';
 import SignupModal from './signupModal';
 import { useDispatch } from 'react-redux';
 import * as actionCreators from '../store/actions/user';
@@ -58,7 +59,7 @@ export const MenuBar = (props) => {
       <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
         <Toolbar>
           <Button id="logo_button" onClick={() => props.history.push('/')}>
-            <Typography>QuantCash</Typography>
+            <img src={logo} style={{ width: 120 }}/>
           </Button>
           <div className={classes.grow} />
           <Button

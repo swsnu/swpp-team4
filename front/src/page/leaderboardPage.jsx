@@ -114,7 +114,7 @@ export const LeaderboardPage = props => {
 
     useEffect(() => {
         getAlgorithms();
-    },);
+    }, []);
 
     return (
         <div className='LeaderboardPage'>

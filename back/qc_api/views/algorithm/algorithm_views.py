@@ -88,7 +88,6 @@ except:
 
 qwe = []
 
-
 @shared_task
 def run_daily_performance():
     print(len(qwe))
