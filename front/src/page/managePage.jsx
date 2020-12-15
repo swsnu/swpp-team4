@@ -387,6 +387,7 @@ export const ManagePage = (props) => {
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             const object = JSON.parse(localStorage.getItem(key));
+            console.log(object)
             const snippet = object.name;
             const code = object.code;
             const tempAlgo = {
