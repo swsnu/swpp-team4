@@ -36,3 +36,19 @@ First, you need to have REDIS installed, and have it running in docker environme
 
 
     (~/back) 
+    
+
+##### (5) setting up celery and celery-beats
+
+Open docker quickstart terminal and run following commands
+- docker pull redis
+- docker run -d -p 6379:6379 (container identifier)
+- docker exec -it (container identifier) /bin/sh
+- redis-server      
+
+From two other separate terminals, run two following commands
+- celery -A qc_back worker --loglevel=info --pool=solo   (pool 옵션은 윈도우에서만 필요함)
+- celery -A qc_back beat --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+
+
