@@ -48,15 +48,16 @@ const useStyles = makeStyles((theme) => ({
 
 const SnippetRow = props => {
   const handleImport = () => {
+    window.alert(`${props.type} 코드를 불러왔습니다.`);
     props.handleImportState(props.type, props.name, props.des, props.code);
   };
 
   return (
-    <Paper variant="outlined" square className='SnippetRow'>
+    <Paper variant="outlined" square className='SnippetRow' style={{ padding: 5 }}>
       <Grid container>
         <Grid item xs={11}>
-          <Typography>{props.type}</Typography>
-          <Typography>{props.name}</Typography>
+          <b>{`Name: ${props.name}`}</b>
+          <Typography>{`(Type: ${props.type})`}</Typography>
         </Grid>
         <Grid item xs={1}>
           <IconButton align="right" onClick={handleImport} id='import_button'>
@@ -465,7 +466,7 @@ else:
       </Grid>
       <Dialog
         fullWidth={true}
-        maxWidth={'sm'}
+        maxWidth={'md'}
         open={importModalOpen}
         onClose={
           /* istanbul ignore next */
@@ -474,16 +475,36 @@ else:
           }
         }
       >
-        <Paper style={{ width: '100%', height: 400 }}>
-          {likedSnippets.map(s => {
-            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
-                                handleImportState={handleImportState}/>);
-          })}
-          {ownedSnippets.map(s => {
-            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
-                                handleImportState={handleImportState}/>);
-          })}
-        </Paper>
+        <Grid container style={{ padding: 20 }}>
+          <Grid item xs={6} style={{ padding: 10, height: 500 }} component={Paper}>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginLeft: 20 }}>
+              Liked Snippets
+            </Typography>
+            <div style={{ maxHeight: 450, overflowY: 'auto' }}>
+              {likedSnippets.map(s => <SnippetRow
+                key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                handleImportState={(type, name, des, code) => {
+                  handleImportState(type, name, des, code);
+                  setImportModalOpen(false);
+                }}
+              />)}
+            </div>
+          </Grid>
+          <Grid item xs={6} style={{ paddingTop: 10, height: 500 }} component={Paper}>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginLeft: 20 }}>
+              Detailed log
+            </Typography>
+            <div style={{ maxHeight: 450, overflowY: 'auto' }}>
+              {ownedSnippets.map(s => <SnippetRow
+                key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                handleImportState={(type, name, des, code) => {
+                  handleImportState(type, name, des, code);
+                  setImportModalOpen(false);
+                }}
+              />)}
+            </div>
+          </Grid>
+        </Grid>
       </Dialog>
       <Backdrop
         open={loadingStore}
