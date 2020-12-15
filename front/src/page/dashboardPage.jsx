@@ -29,7 +29,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import DialogContent from '@material-ui/core/DialogContent';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -270,10 +269,32 @@ export const DashboardPage = () => {
     }
   };
 
-  /* istanbul ignore next */
-  const getAlgorithmEvaluation = (id) => {
-    // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+
+  const startBacktest = async (
+    {
+      startDate,
+      endDate,
+      startingBudget,
+    },
+  ) => {
+    try {
+      const response = await axios.post(`api/algo/backtest`, {
+        start: startDate,
+        end: endDate,
+        budget: startingBudget,
+        algo_id: selectedAlgorithmId,
+      });
+      console.log(response);
+      window.alert('백테스팅을 시작했습니다.');
+    } catch (e) {
+      window.alert('에러 발생! 백테스팅이 시작되지 않았습니다.');
+      console.log(e);
+    }
   };
+  // /* istanbul ignore next */
+  // const getAlgorithmEvaluation = (id) => {
+  //   // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+  // };
 
   return (
     <div>
@@ -377,6 +398,7 @@ export const DashboardPage = () => {
                 <NewBackTestForm
                   onSubmit={(d) => {
                     console.log(d);
+                    startBacktest(d);
                   }}
                 />
               </div>
