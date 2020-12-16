@@ -1,7 +1,9 @@
 """ Views regarding snippet model"""
 # pylint: disable=W0511, E5142, W0707, R1705, C0116, R1710
 import json
-from typing import Dict, Any
+import regex as re
+from typing import Dict, Any, List
+from functools import reduce
 
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -16,6 +18,18 @@ from qc_api.models import Snippet
 from qc_api.serializers import SnippetSerializer, SnippetScopeSerializer, \
     SnippetBuySerializer, SnippetSellSerializer, SnippetAmountSerializer
 from ...util.decorator import catch_bad_request
+from ...util.utility import stock_data_columns
+
+
+def extract_variables(code: str) -> List[str]:
+    """Given snippet, extracts variables out of the code"""
+    regex_str_header = r'(^|[^A-Za-z0-9])'
+    regex_str_footer = r'($|[^A-Za-z0-9])'
+    regex_str_payload = reduce(lambda x, y: x+'|'+y, stock_data_columns)
+    regex_str = regex_str_header + '(' + regex_str_payload + ')' + regex_str_footer
+    print(regex_str)
+    match_vars = re.findall(regex_str, code, overlapped=True)
+    return [var[1] for var in match_vars]
 
 
 def type_extract(data) -> (str, Dict[str, Any]):
@@ -48,7 +62,8 @@ def get_put_post_snippets(request: Request) -> Response:
     """api endpoint for snippet lists"""
     if request.method == 'POST':
         snippet_type, checked_data = type_extract(request.data)
-        checked_data.update({'author': request.user.id})
+        checked_data.update({'author': request.user.id, 'variables': json.dumps(extract_variables(
+            checked_data.get("code")))})
         serializer = check_type_and_serialize_request(snippet_type=snippet_type, data=checked_data)
 
         if not serializer.is_valid():
