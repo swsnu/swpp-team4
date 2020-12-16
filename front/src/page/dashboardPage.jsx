@@ -32,199 +32,6 @@ import {
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-const mockSimulationData = {
-  id: 10001,
-  alpha: 95.00557420115997,
-  profit: 92.4978,
-  MDD: 5.355000000000004,
-  transaction_log: [
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-03',
-    },
-    {
-      sell: [],
-      buy: [
-        {
-          name: '대신정보통신',
-          price: 1400,
-          amount: 714,
-        },
-      ],
-      date: '2020-01-06',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-07',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-08',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-09',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-10',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-13',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-14',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-15',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-16',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-17',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-20',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-21',
-    },
-    {
-      sell: [],
-      buy: [
-        {
-          name: '글로스퍼랩스',
-          price: 375,
-          amount: 1,
-        },
-      ],
-      date: '2020-01-22',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-23',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-28',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-29',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-30',
-    },
-    {
-      sell: [],
-      buy: [],
-      date: '2020-01-31',
-    },
-  ],
-  daily_profit: [
-    {
-      date: '2020-01-03',
-      profit: 100.0,
-    },
-    {
-      date: '2020-01-06',
-      profit: 100.0,
-    },
-    {
-      date: '2020-01-07',
-      profit: 100.714,
-    },
-    {
-      date: '2020-01-08',
-      profit: 96.787,
-    },
-    {
-      date: '2020-01-09',
-      profit: 104.641,
-    },
-    {
-      date: '2020-01-10',
-      profit: 104.641,
-    },
-    {
-      date: '2020-01-13',
-      profit: 103.927,
-    },
-    {
-      date: '2020-01-14',
-      profit: 103.57,
-    },
-    {
-      date: '2020-01-15',
-      profit: 104.641,
-    },
-    {
-      date: '2020-01-16',
-      profit: 102.856,
-    },
-    {
-      date: '2020-01-17',
-      profit: 102.142,
-    },
-    {
-      date: '2020-01-20',
-      profit: 99.286,
-    },
-    {
-      date: '2020-01-21',
-      profit: 100.0,
-    },
-    {
-      date: '2020-01-22',
-      profit: 101.428,
-    },
-    {
-      date: '2020-01-23',
-      profit: 102.4982,
-    },
-    {
-      date: '2020-01-28',
-      profit: 97.1404,
-    },
-    {
-      date: '2020-01-29',
-      profit: 96.7833,
-    },
-    {
-      date: '2020-01-30',
-      profit: 95.3535,
-    },
-    {
-      date: '2020-01-31',
-      profit: 92.4978,
-    },
-  ],
-};
 
 export const DashboardPage = () => {
   const [tab, setTab] = useState(0);
@@ -242,7 +49,6 @@ export const DashboardPage = () => {
     profit_dict: '[]',
     transaction_log: '[]',
   });
-  console.log(mockSimulationData);
 
   useEffect(() => {
     // get list of all my algorithms
@@ -265,7 +71,10 @@ export const DashboardPage = () => {
       console.log(response);
       setSimulationData(response.data);
     } catch (e) {
-      setSimulationData(mockSimulationData);
+      setSimulationData({
+        profit_dict: '[]',
+        transaction_log: '[]',
+      });
     }
   };
 
