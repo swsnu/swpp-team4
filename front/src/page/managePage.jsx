@@ -28,6 +28,21 @@ import {
     shareSnippet,
 } from '../store/actions/snippet';
 import Grid from "@material-ui/core/Grid";
+import LoginModal from "../Component/loginModal";
+import Popover from "@material-ui/core/Popover";
+import {OptimizationModal} from "../Component/optimizationModal";
+import {
+    CartesianGrid,
+    Legend,
+    Line,
+    LineChart,
+    ReferenceLine,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from "recharts";
+import DialogContent from "@material-ui/core/DialogContent";
 
 const Accordion = withStyles({
     root: {
@@ -276,6 +291,27 @@ export const Snippet = (props) => {
         }
     };
 
+    const [Pending, setPending] = React.useState(false);
+    const handlePending = () => {
+        setPending(true);
+    }
+
+    const [OptAnchorEl, setOptAnchorEl] = React.useState(null);
+    const OptOpen = Boolean(OptAnchorEl);
+    const handleOptimize = event => {
+        setOptAnchorEl(event.currentTarget);
+    }
+
+    /* istanbul ignore next */
+    const handleOptClose = () => {
+        setOptAnchorEl(null);
+    };
+    const data = [
+        {argument: 1, value: 0},
+        {argument: 2, value: 0},
+        {argument: 3, value: 0},
+    ];
+
     return (
         <div className="Snippet">
             <Accordion
@@ -289,8 +325,8 @@ export const Snippet = (props) => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container>
-                        <Grid item xs={11}>
-                            <Typography component={'span'}>
+                        <Grid item xs={10}>
+                            <Typography component='span'>
                                 {props.description}
                             </Typography>
                         </Grid>
@@ -304,7 +340,56 @@ export const Snippet = (props) => {
                             >
                                 {Public ? 'Public' : 'Private'}
                             </Button>
+                            <Button
+                                id="snippet_share"
+                                className={classes.button}
+                                onClick={handleOptimize}
+                                variant="outlined"
+                                color="primary"
+                            >
+                                Optimize
+                            </Button>
+                            <Popover
+                                open={OptOpen}
+                                anchorEl={OptAnchorEl}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                onClose={handleOptClose}
+                            >
+                                <OptimizationModal handlePending={handlePending}/>
+                            </Popover>
                         </Grid>
+                        {Pending ?
+                            <div>
+                                <h1>Result</h1>
+                                <Typography variant="h6" gutterBottom component="div">
+                                    Profit
+                                </Typography>
+                                <ResponsiveContainer width={'100%'} height={250}>
+                                    <LineChart
+                                        data={data}
+                                        margin={{top: 5, right: 20, left: 20, bottom: 5}}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3"/>
+                                        <XAxis dataKey="date"/>
+                                        <YAxis
+                                            interval={0}
+                                        />
+                                        <Tooltip/>
+                                        <Legend/>
+                                        <Line type="monotone" dataKey="before" stroke="#82ca9d"/>
+                                        <Line type="monotone" dataKey="after" stroke="#82ca9d"/>
+                                        <ReferenceLine y={100} stroke="red"/>
+                                    </LineChart>
+                                </ResponsiveContainer>
+                                Optimization Pending...
+                            </div> : null}
                     </Grid>
                 </AccordionDetails>
             </Accordion>
@@ -387,6 +472,7 @@ export const ManagePage = (props) => {
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             const object = JSON.parse(localStorage.getItem(key));
+            console.log(object)
             const snippet = object.name;
             const code = object.code;
             const tempAlgo = {

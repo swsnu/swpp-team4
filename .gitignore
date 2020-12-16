@@ -28,3 +28,8 @@ db.sqlite3
 
 #migration files
 back/qc_api/migrations
+
+#csv files for stockdata seeding
+back/static
+
+node_modules

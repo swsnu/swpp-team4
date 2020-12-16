@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 526 166.7"><defs><style>.cls-1{opacity:0.72;font-size:72px;font-family:ExpoM-HM, Expo M;}</style></defs><title>EasyCash</title><g id="레이어_2" data-name="레이어 2"><g id="레이어_1-2" data-name="레이어 1"><text class="cls-1" transform="translate(0 61.88)">QUANTCASH,<tspan x="0" y="86.4">EASY CASY</tspan></text></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="812" height="248" viewBox="0 0 812 248">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 105px;
+        font-family: ExpoM-HM, Expo M;
+        opacity: 0.72;
+      }
+    </style>
+  </defs>
+  <text id="QUANTCASH_EASY_CASH" data-name="QUANTCASH,
+EASY CASH" class="cls-1"><tspan x="0" y="90">QUANTCASH,</tspan><tspan x="0" y="216">EASY CASH</tspan></text>
+</svg>

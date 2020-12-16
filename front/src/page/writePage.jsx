@@ -48,15 +48,16 @@ const useStyles = makeStyles((theme) => ({
 
 const SnippetRow = props => {
   const handleImport = () => {
+    window.alert(`${props.type} 코드를 불러왔습니다.`);
     props.handleImportState(props.type, props.name, props.des, props.code);
   };
 
   return (
-    <Paper variant="outlined" square className='SnippetRow'>
+    <Paper variant="outlined" square className='SnippetRow' style={{ padding: 5 }}>
       <Grid container>
         <Grid item xs={11}>
-          <Typography>{props.type}</Typography>
-          <Typography>{props.name}</Typography>
+          <b>{`Name: ${props.name}`}</b>
+          <Typography>{`(Type: ${props.type})`}</Typography>
         </Grid>
         <Grid item xs={1}>
           <IconButton align="right" onClick={handleImport} id='import_button'>
@@ -79,17 +80,16 @@ export const WritePage = (props) => {
   const ownedSnippets = useSelector(s => s.snippet.ownedSnippetList);
 
   const [editorValue, setEditorValue] = useState({
-    1: 'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
+    1: 'scope = QC.query(universe, \'code_name == "삼성전자"\')',
     2: `for index, candidate in enumerate(scope):
             if index==0:
                 chosen_stocks.append(candidate)
                 break`,
-    3: `for index, candidate in enumerate(sell_candidates):
-            if (universe.loc[universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.get_avg_purchase_price()-1>0.05:
-                chosen_stocks.append(candidate)`,
-    4: `if opt == "buy":
-        for stock in chosen_stocks:
-            buy_amount_list.append((stock, 1))
+    3: `for candidate in sell_candidates:
+            chosen_stocks.append(candidate)`,
+    4: `if opt == SnippetType.BUY:
+      for stock in chosen_stocks:
+        buy_amount_list.append((stock, 1))
 else:
     for stock in chosen_stocks:
         sell_amount_list.append((stock, stock.get_amount()))`,
@@ -465,7 +465,7 @@ else:
       </Grid>
       <Dialog
         fullWidth={true}
-        maxWidth={'sm'}
+        maxWidth={'md'}
         open={importModalOpen}
         onClose={
           /* istanbul ignore next */
@@ -474,16 +474,36 @@ else:
           }
         }
       >
-        <Paper style={{ width: '100%', height: 400 }}>
-          {likedSnippets.map(s => {
-            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
-                                handleImportState={handleImportState}/>);
-          })}
-          {ownedSnippets.map(s => {
-            return (<SnippetRow key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
-                                handleImportState={handleImportState}/>);
-          })}
-        </Paper>
+        <Grid container style={{ padding: 20 }}>
+          <Grid item xs={6} style={{ padding: 10, height: 500 }} component={Paper}>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginLeft: 20 }}>
+              Liked Snippets
+            </Typography>
+            <div style={{ maxHeight: 450, overflowY: 'auto' }}>
+              {likedSnippets.map(s => <SnippetRow
+                key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                handleImportState={(type, name, des, code) => {
+                  handleImportState(type, name, des, code);
+                  setImportModalOpen(false);
+                }}
+              />)}
+            </div>
+          </Grid>
+          <Grid item xs={6} style={{ paddingTop: 10, height: 500 }} component={Paper}>
+            <Typography variant="h6" gutterBottom component="div" style={{ marginLeft: 20 }}>
+              Detailed log
+            </Typography>
+            <div style={{ maxHeight: 450, overflowY: 'auto' }}>
+              {ownedSnippets.map(s => <SnippetRow
+                key={s.id} name={s.name} type={s.type} code={s.code} des={s.description}
+                handleImportState={(type, name, des, code) => {
+                  handleImportState(type, name, des, code);
+                  setImportModalOpen(false);
+                }}
+              />)}
+            </div>
+          </Grid>
+        </Grid>
       </Dialog>
       <Backdrop
         open={loadingStore}

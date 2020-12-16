@@ -31,7 +31,7 @@ function App(props) {
                             <Route path="/algo/manage" exact component={ManagePage}/>
                             <Redirect exact from="/login" to="/dashboard"/>
                             <Route path="/dashboard" exact component={DashboardPage}/>
-                            <Route path="/" exact component={LandingPage}/>
+                            <Route path="/" exact component={DashboardPage}/>
                         </Switch>
                     ) : (
                         <Switch>

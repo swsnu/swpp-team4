@@ -209,4 +209,8 @@ def run(chunk_size: int, path: str, name: str, start=None, end=None):
         result = seed_other_dataset(name=path, chunk_size=chunk_size, start=start, end=end)
 
     return result
-# run(100)
+
+
+run(100, 'static/KOSPI.csv', 'kospi')
+run(100, 'static/KOSDAQ.csv', 'kosdaq')
+run(100, 'static/csv_stock.csv', 'stock_data')
