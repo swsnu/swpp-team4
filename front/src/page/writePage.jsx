@@ -79,17 +79,16 @@ export const WritePage = (props) => {
   const ownedSnippets = useSelector(s => s.snippet.ownedSnippetList);
 
   const [editorValue, setEditorValue] = useState({
-    1: 'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
+    1: 'scope = QC.query(universe, \'code_name == "삼성전자"\')',
     2: `for index, candidate in enumerate(scope):
             if index==0:
                 chosen_stocks.append(candidate)
                 break`,
-    3: `for index, candidate in enumerate(sell_candidates):
-            if (universe.loc[universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.get_avg_purchase_price()-1>0.05:
-                chosen_stocks.append(candidate)`,
-    4: `if opt == "buy":
-        for stock in chosen_stocks:
-            buy_amount_list.append((stock, 1))
+    3: `for candidate in sell_candidates:
+            chosen_stocks.append(candidate)`,
+    4: `if opt == SnippetType.BUY:
+      for stock in chosen_stocks:
+        buy_amount_list.append((stock, 1))
 else:
     for stock in chosen_stocks:
         sell_amount_list.append((stock, stock.get_amount()))`,

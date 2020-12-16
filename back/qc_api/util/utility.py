@@ -16,8 +16,8 @@ class SnippetType(Enum):
     AMOUNT = 4
 
 
-stock_data_columns = ['date',
-                      'code', 'code_name', 'd1_diff_rate', 'close', 'open',
+stock_data_columns = ['date', 'code_name',
+                      'code', 'd1_diff_rate', 'close', 'open',
                       'high', 'low',
                       'volume',
                       'clo5', 'clo10', 'clo20', 'clo40', 'clo60', 'clo80',
