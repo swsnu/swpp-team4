@@ -8,12 +8,12 @@ from typing import List, Dict, Any, Union
 import pandas as pd
 
 from ..code_executor import DefensiveCodeExecutor
+from ..userspace import UserSpace
 from ..wallet.stock import Stock, StockCoin
 from ..wallet.wallet import Wallet
 from ...models import Kospi, StockData, Report
 from ...serializers import AlgorithmSerializer
 from ...util.utility import SnippetType, stock_data_columns
-
 
 
 class BackTester:
@@ -47,11 +47,13 @@ class BackTester:
                 - daily_profit: list of dicts: { date: today, profit: ? }. Used for rendering profit graph at front.
             max_min_dict: keeps track of local maxima and local minima.
             wallet: Wallet instance. Keeps track of current budget and assets.
+            variables: StockData DB related variables used in user algorithm (["code", "date",...])
         """
         self.__snippet_scope = algorithm.get("snippet_scope_data").get("code")
         self.__snippet_sell = algorithm.get("snippet_sell_data").get("code")
         self.__snippet_buy = algorithm.get("snippet_buy_data").get("code")
         self.__snippet_amount = algorithm.get("snippet_amount_data").get("code")
+        self.__variables = BackTester.init_variable_list(json.loads(algorithm.get("variables")))
         self.__scope = []
         self.__budget = budget
         self.__universe = None
@@ -71,6 +73,16 @@ class BackTester:
             "list": []
         }
         self.__wallet = Wallet(budget=self.__budget)
+        self.user_space = None
+
+    @staticmethod
+    def init_variable_list(variables: List[str]) -> List[str]:
+        """Append date, code, code_name and close to variable list"""
+        initialized_variables = ["date", "code", "code_name", "close"]
+        for var in variables:
+            if var not in initialized_variables:
+                initialized_variables.append(var)
+        return initialized_variables
 
     def load_previous(self, performance) -> None:
         """update self.__wallet's coin, budget, and __scope"""
@@ -116,8 +128,8 @@ class BackTester:
 
     def set_universe(self) -> None:
         """Brings today (in context of backtesting)'s stock data from StockData DB table into memory"""
-        self.__universe = pd.DataFrame(list(StockData.objects.filter(date=self.__today).values()),
-                                       columns=stock_data_columns)
+        self.__universe = pd.DataFrame(list(StockData.objects.filter(date=self.__today).values(*self.__variables)),
+                                       columns=self.__variables)
 
     def update_wallet(self) -> None:
         """
@@ -194,10 +206,10 @@ class BackTester:
             'scope': scope,
             'universe': universe
         }
-        exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {'Stock': Stock}, accessible_vars)
+        exec_result = DefensiveCodeExecutor.execute(self.__snippet_scope, {
+            'Stock': Stock, 'QC': UserSpace
+        }, accessible_vars)
         self.__scope = exec_result.get("scope")
-        print('scope')
-        print(self.__scope)
 
     def make_amount_list(self, opt: SnippetType,
                          chosen_stocks: List[Union[Stock, StockCoin]]) -> List[Union[Stock, StockCoin]]:
@@ -221,7 +233,6 @@ class BackTester:
         exec_result = DefensiveCodeExecutor.execute(code=self.__snippet_amount,
                                                     accessible_src=accessible_src,
                                                     accessible_vars=accessible_vars)
-        print(opt)
         if opt == SnippetType.BUY:
             self.__buy_amount_list = exec_result['buy_amount_list']
             return exec_result['buy_amount_list']
@@ -334,10 +345,6 @@ class BackTester:
             alpha value.
         """
         kospi_profit = Kospi.objects.get(date=end).close / Kospi.objects.get(date=start).close
-        print('kospi_profit')
-        print(kospi_profit)
-        print(start)
-        print(end)
         return self.__report.get("profit") / float(kospi_profit)
 
     def validate(self) -> bool:
