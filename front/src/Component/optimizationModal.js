@@ -7,17 +7,13 @@ import axios from 'axios';
 export const OptimizationModal = (props) => {
     const [Parameter, setParameter] = React.useState(
         {
-            'learning_rate': [0.0001, 0.05],
-            'num_leaves': [300, 600],
-            'max_depth': [2, 25],
-            'min_child_weight': [30, 100],
-            'colsample_bytree': [0, 0.99],
-            'feature_fraction': [0.0001, 0.99],
-            'bagging_fraction': [0.0001, 0.99],
-            'lambda_l1': [0, 0.99],
-            'lambda_l2': [0, 0.99],
+            'Parameter 1': [0.0001, 0.05],
+            'Parameter 2': [300, 600],
+            'Parameter 3': [2, 25],
         }
     );
+
+    const [index, setIndex] = React.useState(4);
 
     const handleChange = (e) => {
         const name = e.target.name.split(" ");
@@ -33,6 +29,13 @@ export const OptimizationModal = (props) => {
 
     const handleSubmit = async () => {
         props.handlePending();
+    };
+
+    const handleVariable = async () => {
+        let newParameter = Parameter;
+        newParameter["Parameter " + index] = [];
+        setIndex(index + 1);
+        setParameter(newParameter);
     };
 
     return (
@@ -60,9 +63,14 @@ export const OptimizationModal = (props) => {
                         </div>
                     )
                 })}
-
                 <Button
-                    id="sign_up_button"
+                    onClick={handleVariable}
+                    fullWidth
+                    style={{marginTop: 10}}
+                >
+                    New Variable
+                </Button>
+                <Button
                     onClick={handleSubmit}
                     fullWidth
                     style={{marginTop: 10}}

@@ -43,6 +43,8 @@ import {
     YAxis
 } from "recharts";
 import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
 
 const Accordion = withStyles({
     root: {
@@ -291,9 +293,14 @@ export const Snippet = (props) => {
         }
     };
 
+    const [Graph, setGraph] = React.useState(false);
     const [Pending, setPending] = React.useState(false);
     const handlePending = () => {
         setPending(true);
+        setTimeout(() => {
+            setPending(false);
+            setGraph(true);
+        }, 3000)
     }
 
     const [OptAnchorEl, setOptAnchorEl] = React.useState(null);
@@ -307,10 +314,98 @@ export const Snippet = (props) => {
         setOptAnchorEl(null);
     };
     const data = [
-        {argument: 1, value: 0},
-        {argument: 2, value: 0},
-        {argument: 3, value: 0},
-    ];
+        {
+            date: '2020-01-03',
+            before: 100.0,
+            after: 100.0
+        },
+        {
+            date: '2020-01-06',
+            before: 100.0,
+            after: 100.0
+        },
+        {
+            date: '2020-01-07',
+            before: 100.714,
+            after: 100.759
+        },
+        {
+            date: '2020-01-08',
+            before: 96.787,
+            after: 99.5
+        },
+        {
+            date: '2020-01-09',
+            before: 104.641,
+            after: 103.112
+        },
+        {
+            date: '2020-01-10',
+            before: 104.641,
+            after: 103.112
+        },
+        {
+            date: '2020-01-13',
+            before: 103.927,
+            after: 104.001
+        },
+        {
+            date: '2020-01-14',
+            before: 103.57,
+            after: 103.67
+        },
+        {
+            date: '2020-01-15',
+            before: 103,
+            after: 104.0212
+        },
+        {
+            date: '2020-01-16',
+            before: 101.002,
+            after: 101.782
+        },
+        {
+            date: '2020-01-17',
+            before: 102.142,
+            after: 101.922
+        },
+        {
+            date: '2020-01-22',
+            before: 101.428,
+            after: 100.339
+        },
+        {
+            date: '2020-01-23',
+            before: 102.4982,
+            after: 102.6832
+        },
+        {
+            date: '2020-01-28',
+           before: 97.1404,
+            after: 98.112
+        },
+        {
+            date: '2020-01-29',
+            before: 96.7833,
+            after: 96.9902
+        },
+        {
+            date: '2020-01-30',
+            before: 95.3535,
+            after: 100.0
+        },
+        {
+            date: '2020-01-31',
+            before: 92.4978,
+            after: 93.882
+        },
+    ]
+
+    function handleClose() {
+        setOpen(false);
+    }
+
+    const [open, setOpen] = useState(true);
 
     return (
         <div className="Snippet">
@@ -365,30 +460,51 @@ export const Snippet = (props) => {
                                 <OptimizationModal handlePending={handlePending}/>
                             </Popover>
                         </Grid>
-                        {Pending ?
+                        {Pending ? 'Optimization Pending...' : null}
+                        {Graph ?
                             <div>
-                                <h1>Result</h1>
-                                <Typography variant="h6" gutterBottom component="div">
-                                    Profit
-                                </Typography>
-                                <ResponsiveContainer width={'100%'} height={250}>
-                                    <LineChart
-                                        data={data}
-                                        margin={{top: 5, right: 20, left: 20, bottom: 5}}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3"/>
-                                        <XAxis dataKey="date"/>
-                                        <YAxis
-                                            interval={0}
-                                        />
-                                        <Tooltip/>
-                                        <Legend/>
-                                        <Line type="monotone" dataKey="before" stroke="#82ca9d"/>
-                                        <Line type="monotone" dataKey="after" stroke="#82ca9d"/>
-                                        <ReferenceLine y={100} stroke="red"/>
-                                    </LineChart>
-                                </ResponsiveContainer>
-                                Optimization Pending...
+                                <Dialog fullWidth={true} maxWidth={'md'} open={open} onClose={handleClose}>
+                                    <DialogContent>
+                                        <h1>Result</h1>
+                                        <Typography variant="h6" gutterBottom component="div">
+                                            Profit
+                                        </Typography>
+                                        <ResponsiveContainer width={'100%'} height={250}>
+                                            <LineChart
+                                                data={data}
+                                                margin={{top: 5, right: 20, left: 20, bottom: 5}}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3"/>
+                                                <XAxis dataKey="date"/>
+                                                <YAxis
+                                                    dataKey='before'
+                                                    interval={0}
+                                                    domain={[
+                                                        /* istanbul ignore next */
+                                                        (dataMin) => Math.floor(dataMin - 2),
+                                                        /* istanbul ignore next */
+                                                        (dataMax) => Math.ceil(dataMax + 2),
+                                                    ]}
+                                                />
+                                                <YAxis
+                                                    dataKey='after'
+                                                    interval={0}
+                                                    domain={[
+                                                        /* istanbul ignore next */
+                                                        (dataMin) => Math.floor(dataMin - 2),
+                                                        /* istanbul ignore next */
+                                                        (dataMax) => Math.ceil(dataMax + 2),
+                                                    ]}
+                                                />
+                                                <Tooltip/>
+                                                <Legend/>
+                                                <Line type="monotone" dataKey="before" stroke="#82ca9d"/>
+                                                <Line type="monotone" dataKey="after" stroke="#3356a6"/>
+                                                <ReferenceLine y={100} stroke="red"/>
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </DialogContent>
+                                </Dialog>
                             </div> : null}
                     </Grid>
                 </AccordionDetails>
