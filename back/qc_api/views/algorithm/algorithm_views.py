@@ -93,11 +93,8 @@ def run_daily_performance():
     print(len(qwe))
     q = datetime.datetime.strptime('2020-02-03', '%Y-%m-%d') + datetime.timedelta(days=len(qwe))
     qwe.append(True)
-    algo_id_list = list()
     for k in Algorithm.objects.all():
-        algo_id_list.append(k.id)
-    for k in algo_id_list:
-        daily_performance.delay(q.strftime('%Y-%m-%d'), k)
+        daily_performance.delay(q.strftime('%Y-%m-%d'), k.id)
 
 
 @shared_task

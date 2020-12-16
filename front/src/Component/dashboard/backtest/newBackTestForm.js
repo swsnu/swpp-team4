@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 export const NewBackTestForm = ({ onSubmit }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [startingBudget, setStartingBudget] = useState(2000);
+  const [startingBudget, setStartingBudget] = useState(1000000);
 
   return (
     <>
