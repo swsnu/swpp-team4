@@ -6,6 +6,7 @@
 import datetime
 import json
 
+from functools import reduce
 from celery import shared_task
 from django.contrib.auth.models import User
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
@@ -18,7 +19,7 @@ from rest_framework.response import Response
 from webpush import send_user_notification
 
 from qc_api.lib import SandBox
-from qc_api.models import Algorithm, Performance
+from qc_api.models import Algorithm, Performance, Snippet
 from qc_api.serializers import AlgorithmSerializer
 from qc_api.util.decorator import catch_bad_request
 
@@ -41,7 +42,12 @@ def get_or_post_algorithms(request: Request) -> Response:
     """api endpoint for algorithm lists"""
     if request.method == 'POST':
         data = request.data
-        data.update({'author': request.user.id})
+        variables = list(Snippet.objects.filter(pk__in=[
+            data.get("snippet_scope"), data.get("snippet_buy"), data.get("snippet_sell"), data.get("snippet_amount")
+        ]).values_list("variables"))  # [('["var1", "var2", "var3",...]',),...]
+        variables = [json.loads(var[0]) for var in variables]
+        variables = reduce(lambda x, y: x+y, variables)
+        data.update({'author': request.user.id, 'variables': json.dumps(variables)})
         serializer = AlgorithmSerializer(data=data)
 
         if serializer.is_valid():
