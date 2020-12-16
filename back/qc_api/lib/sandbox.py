@@ -57,23 +57,23 @@ class SandBox:
         """
         return self.__budget
 
-    def get_start_date(self) -> date:
-        """
-        Get start date.
-        Returns:
-            start date.
-        """
-        return self.__start
+    # def get_start_date(self) -> date:
+    #     """
+    #     Get start date.
+    #     Returns:
+    #         start date.
+    #     """
+    #     return self.__start
+    #
+    # def get_end_date(self) -> date:
+    #     """
+    #     Get end date.
+    #     Returns:
+    #         end date.
+    #     """
+    #     return self.__end
 
-    def get_end_date(self) -> date:
-        """
-        Get end date.
-        Returns:
-            end date.
-        """
-        return self.__end
-
-    def prepare(self) -> Optional[BackTester]:
+    def prepare(self) -> Optional[BackTester]:  # pragma: no cover
         """ Prepare for backtest. """
         back_tester = BackTester(algorithm=self.algorithm, budget=self.__budget)
 
@@ -137,6 +137,8 @@ class SandBox:
         if len(self.date_rows) > 0:
             self.report = back_tester.report_result(start=self.date_rows[0], end=self.date_rows[-1], mode='performance')
             new_transaction_log = json.loads(performance.transaction_log)
+            new_profit_dict = json.loads(performance.profit_dict)
+            new_profit_dict[self.__end] = self.report["profit"]
             new_transaction_log.append(self.report["transaction_log"][0])
             # new_profit_dict = json.loads(performance.profit_dict)  # TODO i thought I needed this, but lost clue
             # new_profit_dict.append(self.report["profit_dict"])
@@ -155,6 +157,7 @@ class SandBox:
                 performance.max_min_dict = json.dumps(self.report["max_min_dict"])
                 # performance.profit_dict = json.dumps(new_profit_dict),
                 performance.scope = json.dumps(new_scope)
+                performance.profit_dict = json.dumps(new_profit_dict)
                 performance.save()
 
     def get_trading_dates(self) -> List[datetime.date]:

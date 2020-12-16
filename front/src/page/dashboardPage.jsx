@@ -18,6 +18,17 @@ import { BacktestDetailDialog } from '../Component/dashboard/backtest/backtestDe
 import { NewBackTestForm } from '../Component/dashboard/backtest/newBackTestForm';
 import { getAllMyAlgorithm } from '../store/actions/algo';
 import { RowByDateWithLogTable } from '../Component/dashboard/backtest/rowByDateWithLogTable';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -35,197 +46,8 @@ export const DashboardPage = () => {
   const ownedAlgorithmListStore = useSelector((s) => s.algo.ownedAlgorithmList);
   const [tableData, setTableData] = useState([]);
   const [simulationData, setSimulationData] = useState({
-    id: 10001,
-    alpha: 95.00557420115997,
-    profit: 92.4978,
-    MDD: 5.355000000000004,
-    transaction_log: [
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-03',
-      },
-      {
-        sell: [],
-        buy: [
-          {
-            name: '대신정보통신',
-            price: 1400,
-            amount: 714,
-          },
-        ],
-        date: '2020-01-06',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-07',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-08',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-09',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-10',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-13',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-14',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-15',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-16',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-17',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-20',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-21',
-      },
-      {
-        sell: [],
-        buy: [
-          {
-            name: '글로스퍼랩스',
-            price: 375,
-            amount: 1,
-          },
-        ],
-        date: '2020-01-22',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-23',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-28',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-29',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-30',
-      },
-      {
-        sell: [],
-        buy: [],
-        date: '2020-01-31',
-      },
-    ],
-    daily_profit: [
-      {
-        date: '2020-01-03',
-        profit: 100.0,
-      },
-      {
-        date: '2020-01-06',
-        profit: 100.0,
-      },
-      {
-        date: '2020-01-07',
-        profit: 100.714,
-      },
-      {
-        date: '2020-01-08',
-        profit: 96.787,
-      },
-      {
-        date: '2020-01-09',
-        profit: 104.641,
-      },
-      {
-        date: '2020-01-10',
-        profit: 104.641,
-      },
-      {
-        date: '2020-01-13',
-        profit: 103.927,
-      },
-      {
-        date: '2020-01-14',
-        profit: 103.57,
-      },
-      {
-        date: '2020-01-15',
-        profit: 104.641,
-      },
-      {
-        date: '2020-01-16',
-        profit: 102.856,
-      },
-      {
-        date: '2020-01-17',
-        profit: 102.142,
-      },
-      {
-        date: '2020-01-20',
-        profit: 99.286,
-      },
-      {
-        date: '2020-01-21',
-        profit: 100.0,
-      },
-      {
-        date: '2020-01-22',
-        profit: 101.428,
-      },
-      {
-        date: '2020-01-23',
-        profit: 102.4982,
-      },
-      {
-        date: '2020-01-28',
-        profit: 97.1404,
-      },
-      {
-        date: '2020-01-29',
-        profit: 96.7833,
-      },
-      {
-        date: '2020-01-30',
-        profit: 95.3535,
-      },
-      {
-        date: '2020-01-31',
-        profit: 92.4978,
-      },
-    ],
+    profit_dict: '[]',
+    transaction_log: '[]',
   });
 
   useEffect(() => {
@@ -244,19 +66,44 @@ export const DashboardPage = () => {
       console.log(e);
       setTableData([]);
     }
-
-    // try {
-    //   // TODO: axios.get('api/?????')
-    //   setSimulationData([]);  // TODO
-    // } catch (e) {
-    //   setSimulationData([]);
-    // }
+    try {
+      const response = await axios.get(`api/algo/${id}/performance`);
+      console.log(response);
+      setSimulationData(response.data);
+    } catch (e) {
+      setSimulationData({
+        profit_dict: '[]',
+        transaction_log: '[]',
+      });
+    }
   };
 
-  /* istanbul ignore next */
-  const getAlgorithmEvaluation = (id) => {
-    // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+
+  const startBacktest = async (
+    {
+      startDate,
+      endDate,
+      startingBudget,
+    },
+  ) => {
+    try {
+      const response = await axios.post(`api/algo/backtest`, {
+        start: startDate,
+        end: endDate,
+        budget: startingBudget,
+        algo_id: selectedAlgorithmId,
+      });
+      console.log(response);
+      window.alert('백테스팅을 시작했습니다.');
+    } catch (e) {
+      window.alert('에러 발생! 백테스팅이 시작되지 않았습니다.');
+      console.log(e);
+    }
   };
+  // /* istanbul ignore next */
+  // const getAlgorithmEvaluation = (id) => {
+  //   // TODO: get Backtesting and Performance(daily test) data of certain algorithm
+  // };
 
   return (
     <div>
@@ -360,6 +207,7 @@ export const DashboardPage = () => {
                 <NewBackTestForm
                   onSubmit={(d) => {
                     console.log(d);
+                    startBacktest(d);
                   }}
                 />
               </div>
@@ -372,6 +220,36 @@ export const DashboardPage = () => {
               >
                 <Typography variant="h6" gutterBottom component="div">
                   Simulation
+                </Typography>
+                <ResponsiveContainer width={'100%'} height={250}>
+                  <LineChart
+                    data={
+                      Object.keys(JSON.parse(simulationData.profit_dict)).map(e => ({
+                        date: e,
+                        profit: JSON.parse(simulationData.profit_dict)[e],
+                      }))
+                    }
+                    margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="date"/>
+                    <YAxis
+                      interval={0}
+                      domain={[
+                        /* istanbul ignore next */
+                        (dataMin) => Math.floor(dataMin - 2),
+                        /* istanbul ignore next */
+                        (dataMax) => Math.ceil(dataMax + 2),
+                      ]}
+                    />
+                    <Tooltip/>
+                    <Legend/>
+                    <Line type="monotone" dataKey="profit" stroke="#82ca9d"/>
+                    <ReferenceLine y={100} stroke="red"/>
+                  </LineChart>
+                </ResponsiveContainer>
+                <Typography variant="h6" gutterBottom component="div">
+                  Detailed log
                 </Typography>
                 <TableContainer
                   component={Paper}
@@ -388,11 +266,12 @@ export const DashboardPage = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {simulationData.daily_profit.map((e, i) => (
+                      {JSON.parse(simulationData.transaction_log).map((e, i) => (
                         <RowByDateWithLogTable
                           key={i}
-                          transaction_log={simulationData.transaction_log[i]}
-                          daily_profit={simulationData.daily_profit[i]}
+                          transaction_log={JSON.parse(simulationData.transaction_log)[i]}
+                          daily_profit={JSON.parse(simulationData.profit_dict)[e.date]}
+                          mode={'f'}
                         />
                       ))}
                     </TableBody>

@@ -11,12 +11,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import React, { useState } from 'react';
 
-export const RowByDateWithLogTable = ({ transaction_log, daily_profit }) => {
+export const RowByDateWithLogTable = ({ transaction_log, daily_profit, mode }) => {
   const [rowExpanded, setRowExpanded] = useState(false);
 
   return (
     <>
-      <TableRow key={daily_profit.date}>
+      <TableRow key={mode === 'f' ? transaction_log.date : daily_profit.date}>
         <TableCell component="th" scope="row">
           <IconButton
             className="toggle-expand"
@@ -25,18 +25,18 @@ export const RowByDateWithLogTable = ({ transaction_log, daily_profit }) => {
               setRowExpanded(!rowExpanded);
             }}
           >
-            {rowExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {rowExpanded ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
           </IconButton>
         </TableCell>
         {/*  Date	Profit(%)	Bought Sold*/}
         <TableCell component="th" scope="row">
-          {daily_profit.date}
+          {mode === 'f' ? transaction_log.date : daily_profit.date}
         </TableCell>
-        <TableCell align="right">{daily_profit.profit}</TableCell>
+        <TableCell align="right">{mode === 'f' ? daily_profit : daily_profit.profit}</TableCell>
         <TableCell align="right">{transaction_log.buy.length}</TableCell>
         <TableCell align="right">{transaction_log.sell.length}</TableCell>
       </TableRow>
-      <TableRow key={daily_profit.date + '_expanded'}>
+      <TableRow key={(mode === 'f' ? transaction_log.date : daily_profit.date) + '_expanded'}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={rowExpanded} timeout="auto" unmountOnExit>
             <Box margin={1}>
