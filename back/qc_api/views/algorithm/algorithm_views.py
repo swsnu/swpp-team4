@@ -81,9 +81,12 @@ def run_helper(budget, algo_id, start, end, user_id):
 # Check if performance task exists, and add it if it doesnt
 try:
     PeriodicTask.objects.get(name='daily_performance_test')
+    kk = PeriodicTask.objects.get(name='daily_performance_test')
+    kk.interval.every = 600
+    kk.interval.save()
 except:
     schedule, created = IntervalSchedule.objects.get_or_create(
-        every=10,
+        every=600,
         period=IntervalSchedule.SECONDS,
     )
     PeriodicTask.objects.create(
