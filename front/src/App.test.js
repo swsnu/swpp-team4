@@ -34,6 +34,6 @@ describe('renders App?', () => {
       </Provider>
     );
     const component = mount(app);
-    // expect(component.find('#testApp').length).toBe(1);
+    expect(component.find('#testApp').length).toBe(1);
   });
 });
