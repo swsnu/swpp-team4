@@ -95,7 +95,7 @@ def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSeri
     # Initialize Trials instance for optimization logging
     trials = Trials()
 
-    n_iter = 15
+    n_iter = 2
 
     best = fmin(fn=objective_func,  # function to optimize
                 space=space,
