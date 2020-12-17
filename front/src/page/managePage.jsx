@@ -45,6 +45,7 @@ import {
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import {Controlled as CodeMirror} from "react-codemirror2";
 
 const Accordion = withStyles({
     root: {
@@ -288,8 +289,8 @@ export const Snippet = (props) => {
             response = window.confirm('Do you wanna set this snippet public?');
         }
         if (response) {
-            setPublic(!Public);
             dispatch(shareSnippet(props.id, Public));
+            setPublic(props.public);
         }
     };
 
@@ -381,7 +382,7 @@ export const Snippet = (props) => {
         },
         {
             date: '2020-01-28',
-           before: 97.1404,
+            before: 97.1404,
             after: 98.112
         },
         {
@@ -435,7 +436,7 @@ export const Snippet = (props) => {
                             >
                                 {Public ? 'Public' : 'Private'}
                             </Button>
-                            <Button
+                            {/*<Button
                                 id="snippet_share"
                                 className={classes.button}
                                 onClick={handleOptimize}
@@ -458,8 +459,19 @@ export const Snippet = (props) => {
                                 onClose={handleOptClose}
                             >
                                 <OptimizationModal handlePending={handlePending}/>
-                            </Popover>
+                            </Popover>*/}
                         </Grid>
+                        <div style={{width:1000}}>
+                            <CodeMirror
+                                value={props.code}
+                                options={{
+                                    mode: 'python',
+                                    theme: 'material',
+                                    lineNumbers: true,
+                                    readOnly: true,
+                                }}
+                            />
+                        </div>
                         {Pending ? 'Optimization Pending...' : null}
                         {Graph ?
                             <div>
@@ -557,7 +569,20 @@ export const LikedSnippet = (props) => {
                                 unlike
                             </Button>
                         </Grid>
+                        <div style={{width:1000}}>
+                            <CodeMirror
+                                value={props.code}
+                                options={{
+                                    mode: 'python',
+                                    theme: 'material',
+                                    lineNumbers: true,
+                                    readOnly: true,
+                                }}
+
+                            />
+                        </div>
                     </Grid>
+
                 </AccordionDetails>
             </Accordion>
         </div>
@@ -652,6 +677,7 @@ export const ManagePage = (props) => {
                             key={snippet.id}
                             id={snippet.id}
                             name={snippet.name}
+                            code={snippet.code}
                             description={snippet.description}
                             public={snippet.is_shared}
                         />
@@ -666,6 +692,7 @@ export const ManagePage = (props) => {
                             id={snippet.id}
                             name={snippet.name}
                             description={snippet.description}
+                            code={snippet.code}
                         />
                     );
                 })}

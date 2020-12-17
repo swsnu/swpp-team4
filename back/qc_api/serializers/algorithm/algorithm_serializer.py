@@ -11,16 +11,22 @@ from qc_api.serializers import SnippetScopeSerializer, SnippetBuySerializer, \
 
 class AlgorithmSerializer(serializers.ModelSerializer):
     """ Serializer class for Algorithm """
+    author_name = serializers.SerializerMethodField()
     snippet_scope_data = serializers.SerializerMethodField()
     snippet_sell_data = serializers.SerializerMethodField()
     snippet_buy_data = serializers.SerializerMethodField()
     snippet_amount_data = serializers.SerializerMethodField()
+    snippet_scope_name = serializers.SerializerMethodField()
+    snippet_sell_name = serializers.SerializerMethodField()
+    snippet_buy_name = serializers.SerializerMethodField()
+    snippet_amount_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Algorithm
-        fields = ['id', 'name', 'description', 'author', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
+        fields = ['id', 'name', 'description', 'author', 'author_name', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
                   'snippet_amount', 'create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
-                  'snippet_buy_data', 'snippet_amount_data', 'variables']
+                  'snippet_buy_data', 'snippet_amount_data', 'variables', 'optimization',
+                  'snippet_scope_name', 'snippet_sell_name', 'snippet_buy_name', 'snippet_amount_name']
         read_only_fields = ('id','create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
                             'snippet_buy_data', 'snippet_amount_data')
 
@@ -39,3 +45,23 @@ class AlgorithmSerializer(serializers.ModelSerializer):
     def get_snippet_amount_data(self, obj: Algorithm) -> Dict[str, Any]:
         """relational representation for snippet_amount"""
         return SnippetAmountSerializer(obj.snippet_amount).data
+
+    def get_snippet_scope_name(self, obj: Algorithm) -> str:
+        """relational representation for snippet_scope"""
+        return obj.snippet_scope.name
+
+    def get_snippet_sell_name(self, obj: Algorithm) -> str:
+        """relational representation for snippet_sell"""
+        return obj.snippet_sell.name
+
+    def get_snippet_buy_name(self, obj: Algorithm) -> str:
+        """relational representation for snippet_buy"""
+        return obj.snippet_buy.name
+
+    def get_snippet_amount_name(self, obj: Algorithm) -> str:
+        """relational representation for snippet_amount"""
+        return obj.snippet_amount.name
+
+    def get_author_name(self, obj: Algorithm) -> str:
+        """relational representation for author_name"""
+        return obj.author.username
