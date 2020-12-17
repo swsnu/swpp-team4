@@ -105,5 +105,5 @@ def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSeri
                 )
 
     print(best)
-    return best, (-1)*list(trials)[-1]['result']['loss']
+    return best, (-1)*min([result['loss'] for result in trials.results])
 
