@@ -14,6 +14,7 @@ urlpatterns = [
     path('algo/backtest', views.run_backtest, name='backtest'),
     path('algo/<int:algo_id>', views.share_or_delete_algorithm, name='share_algo'),
     path('algo/<int:algo_id>/report', views.get_reports_by_algo, name='report'),
+    path('algo/<int:algo_id>/opt', views.run_optimization, name='optimization'),
     path('algo/<int:algo_id>/performance', views.get_performance_by_algo, name='performance'),
     path('algo/me', views.get_my_algorithms, name='my_algorithms'),
     path('performance', views.get_all_performances, name='all-performances'),
