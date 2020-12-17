@@ -102,12 +102,11 @@ export const DashboardPage = () => {
     const paramNum = scopeSnippet.split('@').length - 1;
     setOptimizationParameterNum(paramNum);
     const ob = {};
-    for (let i = 1; i <= paramNum; i++) {
+    for (let i = 0; i <= paramNum; i++) {
       ob[`param_${i}_0`] = '1';
       ob[`param_${i}_1`] = '10';
     }
     setOptimizationRanges(ob);
-    // TODO: fetch ~~
   };
 
 
@@ -384,10 +383,6 @@ export const DashboardPage = () => {
                   <Grid item xs={3} style={{ padding: 20 }}>
                     {Array(optimizationParameterNum).fill(true).map((_, i) =>
                       <div style={{ marginBottom: 15 }} key={i}>
-                        <div>
-                          Parameter{i + 1}
-                          {/*optimizationRanges, setOptimizationRanges*/}
-                        </div>
                         <TextField
                           value={optimizationRanges[`param_${i}_0`] === undefined
                             ? 1
