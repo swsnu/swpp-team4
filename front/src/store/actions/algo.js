@@ -249,13 +249,28 @@ const mockAllMyAlgorithm = [
 ];
 console.log(mockAllMyAlgorithm);
 
+export const getAllAlgorithm = () => {
+  // GET all algorithms and put it to algo.ownedAlgorithmList
+  return async (dispatch) => {
+    try {
+      // TODO: shoot api
+      const response = await axios.get('/api/algo/sort');
+      dispatch({
+        type: 'GET_ALL_ALGORITHM',
+        data: response.data, // TODO: change
+      });
+    } catch (e) {
+      // TODO handle error
+    }
+  };
+};
+
 export const getAllMyAlgorithm = () => {
   // GET all algorithms and put it to algo.ownedAlgorithmList
   return async (dispatch) => {
     try {
       // TODO: shoot api
       const response = await axios.get('/api/algo/me');
-      console.log(response);
       dispatch({
         type: 'GET_OWNED_ALGORITHM',
         data: response.data, // TODO: change

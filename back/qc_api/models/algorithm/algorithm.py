@@ -40,6 +40,7 @@ class Algorithm(models.Model):
         on_delete=models.CASCADE,
         related_name='algorithms'
     )
+
     variables = models.TextField()
     optimization = models.TextField(default="none")
     create_at = models.DateTimeField(auto_now_add=True)
