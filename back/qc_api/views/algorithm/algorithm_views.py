@@ -119,7 +119,7 @@ def opt_helper(algo_id: int, req_data: str, user_id: int):
         "profit": loss,
         "new_code": new_code
     }
-    algorithm.optimization = str(optimization)
+    algorithm.optimization = json.dumps(optimization)
     algorithm.save()
     user = User.objects.get(pk=user_id)
     payload = {'head': "Optimization is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
