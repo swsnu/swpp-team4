@@ -1,6 +1,7 @@
 """backtester.py"""
 # pylint: disable=W0122, R0902, W0511, W0703, W9008, C0103
 import json
+import re
 from copy import copy
 from datetime import date, datetime
 from typing import List, Dict, Any, Union
@@ -49,7 +50,8 @@ class BackTester:
             wallet: Wallet instance. Keeps track of current budget and assets.
             variables: StockData DB related variables used in user algorithm (["code", "date",...])
         """
-        self.__snippet_scope = algorithm.get("snippet_scope_data").get("code")
+        self.__snippet_scope = re.sub('@', '', algorithm.get("snippet_scope_data").get("code"))
+        print(self.__snippet_scope)
         self.__snippet_sell = algorithm.get("snippet_sell_data").get("code")
         self.__snippet_buy = algorithm.get("snippet_buy_data").get("code")
         self.__snippet_amount = algorithm.get("snippet_amount_data").get("code")
@@ -247,6 +249,11 @@ class BackTester:
         self.__report.get("transaction_log").append(self.__wallet.get_transaction_log(self.__today))
         self.__report.get("daily_profit").append({"date": str(self.__today), "profit": profit})
         self.__track_max_min(profit=profit)
+
+    def get_profit(self) -> float:
+        """returns profit of the day it is called"""
+        print("profit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", self.__wallet.get_profit())
+        return self.__wallet.get_profit()
 
     def __track_max_min(self, profit: float) -> None:
         """
