@@ -253,14 +253,12 @@ export const getAllAlgorithm = () => {
   // GET all algorithms and put it to algo.ownedAlgorithmList
   return async (dispatch) => {
     try {
-      // TODO: shoot api
       const response = await axios.get('/api/algo/sort');
       dispatch({
         type: 'GET_ALL_ALGORITHM',
-        data: response.data, // TODO: change
+        data: response.data,
       });
     } catch (e) {
-      // TODO handle error
     }
   };
 };
@@ -269,14 +267,12 @@ export const getAllMyAlgorithm = () => {
   // GET all algorithms and put it to algo.ownedAlgorithmList
   return async (dispatch) => {
     try {
-      // TODO: shoot api
       const response = await axios.get('/api/algo/me');
       dispatch({
         type: 'GET_OWNED_ALGORITHM',
-        data: response.data, // TODO: change
+        data: response.data,
       });
     } catch (e) {
-      // TODO handle error
     }
   };
 };
