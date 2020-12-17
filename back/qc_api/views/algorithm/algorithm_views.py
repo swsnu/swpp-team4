@@ -43,7 +43,7 @@ def get_sorted_algorithms(request: Request) -> Response:
     Get list of sorted algorithm for leaderboard display.
     Sorting criteria:
     """
-    public_algos = Algorithm.objects.filter(is_public=True).order_by("id").values()
+    public_algos = Algorithm.objects.all().order_by("id").values()
     performances = Performance.objects.filter(algorithm__is_public=True).order_by("algorithm_id").values()
     print(public_algos[0])
     print(performances[0]["profit"])

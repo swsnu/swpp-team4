@@ -289,8 +289,8 @@ export const Snippet = (props) => {
             response = window.confirm('Do you wanna set this snippet public?');
         }
         if (response) {
-            setPublic(!Public);
             dispatch(shareSnippet(props.id, Public));
+            setPublic(props.public);
         }
     };
 
@@ -436,7 +436,7 @@ export const Snippet = (props) => {
                             >
                                 {Public ? 'Public' : 'Private'}
                             </Button>
-                            <Button
+                            {/*<Button
                                 id="snippet_share"
                                 className={classes.button}
                                 onClick={handleOptimize}
@@ -459,7 +459,7 @@ export const Snippet = (props) => {
                                 onClose={handleOptClose}
                             >
                                 <OptimizationModal handlePending={handlePending}/>
-                            </Popover>
+                            </Popover>*/}
                         </Grid>
                         <div style={{width:1000}}>
                             <CodeMirror
