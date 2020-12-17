@@ -150,7 +150,7 @@ export const DashboardPage = () => {
     }, {});
     console.log(ob);
     try {
-      await axios.post(`api/algo/${selectedAlgorithmId}`, ob);
+      await axios.post(`api/algo/${selectedAlgorithmId}/opt`, ob);
     } catch (e) {
       console.log(e);
     }
