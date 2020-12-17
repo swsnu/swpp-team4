@@ -19,6 +19,7 @@ from rest_framework.response import Response
 from webpush import send_user_notification
 
 from qc_api.lib import SandBox
+from qc_api.lib.optimizer import extract_offsets, optimize, insert_params_non_global
 from qc_api.models import Algorithm, Performance, Snippet
 from qc_api.serializers import AlgorithmSerializer
 from qc_api.util.decorator import catch_bad_request
@@ -98,6 +99,50 @@ def run_helper(budget, algo_id, start, end, user_id):
     payload = {'head': "Your Backtest is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
     send_user_notification(user=user, payload=payload, ttl=100)
 
+
+@shared_task
+def opt_helper(algo_id: int, req_data: str, user_id: int):
+    algorithm = Algorithm.objects.get(pk=algo_id)
+    algorithm.optimization = "pending"
+    algorithm.save()
+    algorithm_data = AlgorithmSerializer(algorithm).data
+    algorithm_data["id"] = algo_id
+    var_scopes = list(json.loads(req_data).values())
+    preprocessed_code, offsets = extract_offsets(algorithm_data["snippet_scope_data"]["code"])
+    print("offsets at opt helper!!!!!!!!!!!!!!!!!!!!!", offsets)
+    algorithm_data["snippet_scope_data"]["code"] = preprocessed_code
+    # offsets: [...(offset: @의 위치)...] , snippet_scope 의 @뒤 숫자들은 모두 삭제된 상태.
+    best, loss = optimize(offsets, var_scopes, algorithm_data)
+    new_code = insert_params_non_global(offsets, list(best.values()), preprocessed_code)
+    optimization = {
+        "parameters": best,
+        "profit": loss,
+        "new_code": new_code
+    }
+    algorithm.optimization = str(optimization)
+    algorithm.save()
+    user = User.objects.get(pk=user_id)
+    payload = {'head': "Optimization is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
+    send_user_notification(user=user, payload=payload, ttl=100)
+
+
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def run_optimization(request: Request, algo_id) -> Response:
+    if request.method == 'POST':
+        print("algo_id", algo_id)
+        print(request.data)
+        # sandbox 에 넘겨주기 전에 algorithm_data를 손봐주자!
+
+        opt_helper.delay(algo_id, json.dumps(request.data), request.user.id)
+        # var_scopes = list(request.data.values())
+        # opt_helper.delay(json.dumps(offsets), json.dumps(var_scopes), code)
+        #
+        return Response("optimization successfully initiated", status=status.HTTP_200_OK)
+    else:
+        algorithm = Algorithm.objects.get(pk=algo_id)
+        return Response(algorithm.optimization, status=status.HTTP_200_OK)
 
 # @api_view(['GET'])
 # def test_performance(request: Request):

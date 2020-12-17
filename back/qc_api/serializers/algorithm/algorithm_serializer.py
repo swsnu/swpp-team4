@@ -21,7 +21,7 @@ class AlgorithmSerializer(serializers.ModelSerializer):
         model = Algorithm
         fields = ['id', 'name', 'description', 'author', 'author_name', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
                   'snippet_amount', 'create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
-                  'snippet_buy_data', 'snippet_amount_data', 'variables']
+                  'snippet_buy_data', 'snippet_amount_data', 'variables', 'optimization']
         read_only_fields = ('id','create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
                             'snippet_buy_data', 'snippet_amount_data')
 

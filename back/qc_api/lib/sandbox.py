@@ -47,6 +47,7 @@ class SandBox:
         back_tester = self.prepare()
         if self.mode == 'performance':
             self.load_previous(back_tester, performance=performance)
+        self.opt_loss = 0.0
         self.run(back_tester)
 
     def get_budget(self) -> float:
@@ -98,9 +99,15 @@ class SandBox:
             back_tester.run(self.get_trading_dates())
             if self.mode == 'backtest':
                 self.clean_up(back_tester)
-            else:  # self.mode == performance
+            elif self.mode == 'performance':
                 self.write_performance(back_tester, self.performance)
+            else:  # self.mode == 'optimization':
+                self.opt_loss = (-1)*back_tester.get_profit()
+                print("opt loss at sandbox!!!!!!!!!", self.opt_loss)
         print('backtest sandbox done')
+
+    def get_opt_loss(self) -> float:
+        return self.opt_loss
 
     def clean_up(self, back_tester: BackTester) -> None:
         """
