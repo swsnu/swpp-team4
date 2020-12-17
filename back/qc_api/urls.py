@@ -11,6 +11,7 @@ urlpatterns = [
     path('snippet/<int:snippet_id>', views.share_or_not_snippet, name='share_snippet'),
     path('like/snippet', views.get_or_post_liked_snippets, name='liked_snippets'),
     path('algo', views.get_or_post_algorithms, name='algo'),
+    path('algo/sort', views.get_sorted_algorithms, name="sort_algo"),
     path('algo/backtest', views.run_backtest, name='backtest'),
     path('algo/<int:algo_id>', views.share_or_delete_algorithm, name='share_algo'),
     path('algo/<int:algo_id>/report', views.get_reports_by_algo, name='report'),
