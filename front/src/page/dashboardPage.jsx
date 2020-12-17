@@ -102,7 +102,7 @@ export const DashboardPage = () => {
     const paramNum = scopeSnippet.split('@').length - 1;
     setOptimizationParameterNum(paramNum);
     const ob = {};
-    for (let i = 1; i <= paramNum; i++) {
+    for (let i = 0; i <= paramNum; i++) {
       ob[`param_${i}_0`] = '1';
       ob[`param_${i}_1`] = '10';
     }
