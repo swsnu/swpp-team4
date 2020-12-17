@@ -28,7 +28,6 @@ import {
     shareSnippet,
 } from '../store/actions/snippet';
 import Grid from "@material-ui/core/Grid";
-import LoginModal from "../Component/loginModal";
 import Popover from "@material-ui/core/Popover";
 import {OptimizationModal} from "../Component/optimizationModal";
 import {
@@ -43,7 +42,6 @@ import {
     YAxis
 } from "recharts";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import {Controlled as CodeMirror} from "react-codemirror2";
 
@@ -104,19 +102,19 @@ export const TabPanel = (props) => {
     const {children, value, index, ...other} = props;
 
     return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`wrapped-tabpanel-${index}`}
-            aria-labelledby={`wrapped-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    <Typography component={'span'}>{children}</Typography>
-                </Box>
-            )}
-        </div>
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`wrapped-tabpanel-${index}`}
+        aria-labelledby={`wrapped-tab-${index}`}
+        {...other}
+      >
+          {value === index && (
+            <Box p={3}>
+                <Typography component={'span'}>{children}</Typography>
+            </Box>
+          )}
+      </div>
     );
 };
 
@@ -156,49 +154,49 @@ export const Algo = (props) => {
     };
 
     return (
-        <div className="Algo">
-            <Accordion
-                square
-                expanded={expanded === 'panel1'}
-                onChange={handleChange('panel1')}
-            >
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography component={'span'}>{props.name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Grid container>
-                        <Grid item xs={10}>
-                            <Typography component={'span'}>
-                                {props.description}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <div style={{textAlign: 'center'}}>
-                                <Button
-                                    id="algo_share"
-                                    className={classes.button}
-                                    onClick={handleClick}
-                                    variant="outlined"
-                                    color="primary"
-                                >
-                                    {Public ? 'Public' : 'Private'}
-                                </Button>
-                                <Button
-                                    id="algo_delete"
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={handleDelete}
-                                >
-                                    Delete
-                                </Button>
+      <div className="Algo">
+          <Accordion
+            square
+            expanded={expanded === 'panel1'}
+            onChange={handleChange('panel1')}
+          >
+              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                  <Typography component={'span'}>{props.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                  <Grid container>
+                      <Grid item xs={10}>
+                          <Typography component={'span'}>
+                              {props.description}
+                          </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                          <div style={{textAlign: 'center'}}>
+                              <Button
+                                id="algo_share"
+                                className={classes.button}
+                                onClick={handleClick}
+                                variant="outlined"
+                                color="primary"
+                              >
+                                  {Public ? 'Public' : 'Private'}
+                              </Button>
+                              <Button
+                                id="algo_delete"
+                                variant="outlined"
+                                color="primary"
+                                onClick={handleDelete}
+                              >
+                                  Delete
+                              </Button>
 
-                            </div>
-                        </Grid>
-                    </Grid>
+                          </div>
+                      </Grid>
+                  </Grid>
 
-                </AccordionDetails>
-            </Accordion>
-        </div>
+              </AccordionDetails>
+          </Accordion>
+      </div>
     );
 };
 
@@ -223,51 +221,51 @@ export const SavedAlgo = (props) => {
     };
 
     return (
-        <div className="SavedAlgo">
-            <Accordion
-                square
-                expanded={expanded === 'panel1'}
-                onChange={handleChange('panel1')}
-            >
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography component={'span'}>{props.algoName}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Grid container>
-                        <Grid item xs={10}>
-                            <Typography id="snippet_names" component={'span'}>
-                                snippet1: {props.snippetName1}
-                                <br/>
-                                snippet2: {props.snippetName2}
-                                <br/>
-                                snippet3: {props.snippetName3}
-                                <br/>
-                                snippet4: {props.snippetName4}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Button
-                                id="saved_algo_resume"
-                                className={classes.button}
-                                onClick={handleClick}
-                                variant="outlined"
-                                color="primary"
-                            >
-                                resume
-                            </Button>
-                            <Button
-                                id="saved_algo_delete"
-                                variant="outlined"
-                                color="primary"
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+      <div className="SavedAlgo">
+          <Accordion
+            square
+            expanded={expanded === 'panel1'}
+            onChange={handleChange('panel1')}
+          >
+              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                  <Typography component={'span'}>{props.algoName}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                  <Grid container>
+                      <Grid item xs={10}>
+                          <Typography id="snippet_names" component={'span'}>
+                              snippet1: {props.snippetName1}
+                              <br/>
+                              snippet2: {props.snippetName2}
+                              <br/>
+                              snippet3: {props.snippetName3}
+                              <br/>
+                              snippet4: {props.snippetName4}
+                          </Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                          <Button
+                            id="saved_algo_resume"
+                            className={classes.button}
+                            onClick={handleClick}
+                            variant="outlined"
+                            color="primary"
+                          >
+                              resume
+                          </Button>
+                          <Button
+                            id="saved_algo_delete"
+                            variant="outlined"
+                            color="primary"
+                            onClick={handleDelete}
+                          >
+                              Delete
+                          </Button>
+                      </Grid>
+                  </Grid>
+              </AccordionDetails>
+          </Accordion>
+      </div>
     );
 };
 
@@ -289,8 +287,8 @@ export const Snippet = (props) => {
             response = window.confirm('Do you wanna set this snippet public?');
         }
         if (response) {
+            setPublic(!Public);
             dispatch(shareSnippet(props.id, Public));
-            setPublic(props.public);
         }
     };
 
@@ -409,119 +407,119 @@ export const Snippet = (props) => {
     const [open, setOpen] = useState(true);
 
     return (
-        <div className="Snippet">
-            <Accordion
-                id="snippet_accordion"
-                square
-                expanded={expanded === 'panel1'}
-                onChange={handleChange('panel1')}
-            >
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography component={'span'}>{props.name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Grid container>
-                        <Grid item xs={10}>
-                            <Typography component='span'>
-                                {props.description}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                id="snippet_share"
-                                className={classes.button}
-                                onClick={handleClick}
-                                variant="outlined"
-                                color="primary"
-                            >
-                                {Public ? 'Public' : 'Private'}
-                            </Button>
-                            {/*<Button
-                                id="snippet_share"
-                                className={classes.button}
-                                onClick={handleOptimize}
-                                variant="outlined"
-                                color="primary"
-                            >
-                                Optimize
-                            </Button>
-                            <Popover
-                                open={OptOpen}
-                                anchorEl={OptAnchorEl}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                onClose={handleOptClose}
-                            >
-                                <OptimizationModal handlePending={handlePending}/>
-                            </Popover>*/}
-                        </Grid>
-                        <div style={{width:1000}}>
-                            <CodeMirror
-                                value={props.code}
-                                options={{
-                                    mode: 'python',
-                                    theme: 'material',
-                                    lineNumbers: true,
-                                    readOnly: true,
-                                }}
-                            />
-                        </div>
-                        {Pending ? 'Optimization Pending...' : null}
-                        {Graph ?
-                            <div>
-                                <Dialog fullWidth={true} maxWidth={'md'} open={open} onClose={handleClose}>
-                                    <DialogContent>
-                                        <h1>Result</h1>
-                                        <Typography variant="h6" gutterBottom component="div">
-                                            Profit
-                                        </Typography>
-                                        <ResponsiveContainer width={'100%'} height={250}>
-                                            <LineChart
-                                                data={data}
-                                                margin={{top: 5, right: 20, left: 20, bottom: 5}}
-                                            >
-                                                <CartesianGrid strokeDasharray="3 3"/>
-                                                <XAxis dataKey="date"/>
-                                                <YAxis
-                                                    dataKey='before'
-                                                    interval={0}
-                                                    domain={[
-                                                        /* istanbul ignore next */
-                                                        (dataMin) => Math.floor(dataMin - 2),
-                                                        /* istanbul ignore next */
-                                                        (dataMax) => Math.ceil(dataMax + 2),
-                                                    ]}
-                                                />
-                                                <YAxis
-                                                    dataKey='after'
-                                                    interval={0}
-                                                    domain={[
-                                                        /* istanbul ignore next */
-                                                        (dataMin) => Math.floor(dataMin - 2),
-                                                        /* istanbul ignore next */
-                                                        (dataMax) => Math.ceil(dataMax + 2),
-                                                    ]}
-                                                />
-                                                <Tooltip/>
-                                                <Legend/>
-                                                <Line type="monotone" dataKey="before" stroke="#82ca9d"/>
-                                                <Line type="monotone" dataKey="after" stroke="#3356a6"/>
-                                                <ReferenceLine y={100} stroke="red"/>
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </DialogContent>
-                                </Dialog>
-                            </div> : null}
-                    </Grid>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+      <div className="Snippet">
+          <Accordion
+            id="snippet_accordion"
+            square
+            expanded={expanded === 'panel1'}
+            onChange={handleChange('panel1')}
+          >
+              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                  <Typography component={'span'}>{props.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                  <Grid container>
+                      <Grid item xs={10}>
+                          <Typography component='span'>
+                              {props.description}
+                          </Typography>
+                      </Grid>
+                      <Grid item>
+                          <Button
+                            id="snippet_share"
+                            className={classes.button}
+                            onClick={handleClick}
+                            variant="outlined"
+                            color="primary"
+                          >
+                              {Public ? 'Public' : 'Private'}
+                          </Button>
+                          {/*<Button*/}
+                          {/*    id="snippet_share"*/}
+                          {/*    className={classes.button}*/}
+                          {/*    onClick={handleOptimize}*/}
+                          {/*    variant="outlined"*/}
+                          {/*    color="primary"*/}
+                          {/*>*/}
+                          {/*    Optimize*/}
+                          {/*</Button>*/}
+                          <Popover
+                            open={OptOpen}
+                            anchorEl={OptAnchorEl}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            onClose={handleOptClose}
+                          >
+                              <OptimizationModal handlePending={handlePending}/>
+                          </Popover>
+                      </Grid>
+                      <div style={{width:1000}}>
+                          <CodeMirror
+                            value={props.code}
+                            options={{
+                                mode: 'python',
+                                theme: 'material',
+                                lineNumbers: true,
+                                readOnly: true,
+                            }}
+                          />
+                      </div>
+                      {Pending ? 'Optimization Pending...' : null}
+                      {Graph ?
+                        <div>
+                            <Dialog fullWidth={true} maxWidth={'md'} open={open} onClose={handleClose}>
+                                <DialogContent>
+                                    <h1>Result</h1>
+                                    <Typography variant="h6" gutterBottom component="div">
+                                        Profit
+                                    </Typography>
+                                    <ResponsiveContainer width={'100%'} height={250}>
+                                        <LineChart
+                                          data={data}
+                                          margin={{top: 5, right: 20, left: 20, bottom: 5}}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3"/>
+                                            <XAxis dataKey="date"/>
+                                            <YAxis
+                                              dataKey='before'
+                                              interval={0}
+                                              domain={[
+                                                  /* istanbul ignore next */
+                                                  (dataMin) => Math.floor(dataMin - 2),
+                                                  /* istanbul ignore next */
+                                                  (dataMax) => Math.ceil(dataMax + 2),
+                                              ]}
+                                            />
+                                            <YAxis
+                                              dataKey='after'
+                                              interval={0}
+                                              domain={[
+                                                  /* istanbul ignore next */
+                                                  (dataMin) => Math.floor(dataMin - 2),
+                                                  /* istanbul ignore next */
+                                                  (dataMax) => Math.ceil(dataMax + 2),
+                                              ]}
+                                            />
+                                            <Tooltip/>
+                                            <Legend/>
+                                            <Line type="monotone" dataKey="before" stroke="#82ca9d"/>
+                                            <Line type="monotone" dataKey="after" stroke="#3356a6"/>
+                                            <ReferenceLine y={100} stroke="red"/>
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </DialogContent>
+                            </Dialog>
+                        </div> : null}
+                  </Grid>
+              </AccordionDetails>
+          </Accordion>
+      </div>
     );
 };
 
@@ -542,50 +540,50 @@ export const LikedSnippet = (props) => {
     };
 
     return (
-        <div className="LikedSnippet">
-            <Accordion
-                square
-                expanded={expanded === 'panel1'}
-                onChange={handleChange('panel1')}
-            >
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography component={'span'}>{props.name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Grid container>
-                        <Grid item xs={11}>
-                            <Typography component={'span'}>
-                                {props.description}
-                            </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                id="snippet_like"
-                                className={classes.button}
-                                variant="outlined"
-                                color="primary"
-                                onClick={handleClick}
-                            >
-                                unlike
-                            </Button>
-                        </Grid>
-                        <div style={{width:1000}}>
-                            <CodeMirror
-                                value={props.code}
-                                options={{
-                                    mode: 'python',
-                                    theme: 'material',
-                                    lineNumbers: true,
-                                    readOnly: true,
-                                }}
+      <div className="LikedSnippet">
+          <Accordion
+            square
+            expanded={expanded === 'panel1'}
+            onChange={handleChange('panel1')}
+          >
+              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                  <Typography component={'span'}>{props.name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                  <Grid container>
+                      <Grid item xs={11}>
+                          <Typography component={'span'}>
+                              {props.description}
+                          </Typography>
+                      </Grid>
+                      <Grid item>
+                          <Button
+                            id="snippet_like"
+                            className={classes.button}
+                            variant="outlined"
+                            color="primary"
+                            onClick={handleClick}
+                          >
+                              unlike
+                          </Button>
+                      </Grid>
+                      <div style={{width:1000}}>
+                          <CodeMirror
+                            value={props.code}
+                            options={{
+                                mode: 'python',
+                                theme: 'material',
+                                lineNumbers: true,
+                                readOnly: true,
+                            }}
 
-                            />
-                        </div>
-                    </Grid>
+                          />
+                      </div>
+                  </Grid>
 
-                </AccordionDetails>
-            </Accordion>
-        </div>
+              </AccordionDetails>
+          </Accordion>
+      </div>
     );
 };
 
@@ -636,83 +634,83 @@ export const ManagePage = (props) => {
     };
 
     return (
-        <div className="ManagePage">
-            <MenuBar/>
-            <Button
-                id="new-algorithm"
-                style={{
-                    marginLeft: 1050,
-                }}
-                onClick={() => {
-                    props.history.push('/algo/write');
-                }}
-                variant="contained"
-                color="primary"
-            >
-                New Algorithm
-            </Button>
-            <Tabs onChange={handleTabChange} value={value} indicatorColor="primary">
-                <Tab id="tab-one" value="one" label="My Algos"/>
-                <Tab id="tab-two" value="two" label="My Snippets"/>
-                <Tab id="tab-three" value="three" label="Liked Snippets"/>
-                <Tab id="tab-four" value="four" label="Saved Algos"/>
-            </Tabs>
-            <TabPanel value={value} index="one">
-                {myAlgos.map((algo) => {
-                    return (
-                        <Algo
-                            key={algo.id}
-                            id={algo.id}
-                            name={algo.name}
-                            description={algo.description}
-                            public={algo.is_public}
-                        />
-                    );
-                })}
-            </TabPanel>
-            <TabPanel value={value} index="two">
-                {mySnippets.map((snippet) => {
-                    return (
-                        <Snippet
-                            key={snippet.id}
-                            id={snippet.id}
-                            name={snippet.name}
-                            code={snippet.code}
-                            description={snippet.description}
-                            public={snippet.is_shared}
-                        />
-                    );
-                })}
-            </TabPanel>
-            <TabPanel value={value} index="three">
-                {likedSnippets.map((snippet) => {
-                    return (
-                        <LikedSnippet
-                            key={snippet.id}
-                            id={snippet.id}
-                            name={snippet.name}
-                            description={snippet.description}
-                            code={snippet.code}
-                        />
-                    );
-                })}
-            </TabPanel>
-            <TabPanel value={value} index="four">
-                {tempAlgos.map((algo) => {
-                    return (
-                        <SavedAlgo
-                            key={algo.id}
-                            algoName={algo.algoName}
-                            snippetName1={algo.snippetName1}
-                            snippetName2={algo.snippetName2}
-                            snippetName3={algo.snippetName3}
-                            snippetName4={algo.snippetName4}
-                            history={props.history}
-                        />
-                    );
-                })}
-            </TabPanel>
-        </div>
+      <div className="ManagePage">
+          <MenuBar/>
+          <Button
+            id="new-algorithm"
+            style={{
+                marginLeft: 1050,
+            }}
+            onClick={() => {
+                props.history.push('/algo/write');
+            }}
+            variant="contained"
+            color="primary"
+          >
+              New Algorithm
+          </Button>
+          <Tabs onChange={handleTabChange} value={value} indicatorColor="primary">
+              <Tab id="tab-one" value="one" label="My Algos"/>
+              <Tab id="tab-two" value="two" label="My Snippets"/>
+              <Tab id="tab-three" value="three" label="Liked Snippets"/>
+              <Tab id="tab-four" value="four" label="Saved Algos"/>
+          </Tabs>
+          <TabPanel value={value} index="one">
+              {myAlgos.map((algo) => {
+                  return (
+                    <Algo
+                      key={algo.id}
+                      id={algo.id}
+                      name={algo.name}
+                      description={algo.description}
+                      public={algo.is_public}
+                    />
+                  );
+              })}
+          </TabPanel>
+          <TabPanel value={value} index="two">
+              {mySnippets.map((snippet) => {
+                  return (
+                    <Snippet
+                      key={snippet.id}
+                      id={snippet.id}
+                      name={snippet.name}
+                      code={snippet.code}
+                      description={snippet.description}
+                      public={snippet.is_shared}
+                    />
+                  );
+              })}
+          </TabPanel>
+          <TabPanel value={value} index="three">
+              {likedSnippets.map((snippet) => {
+                  return (
+                    <LikedSnippet
+                      key={snippet.id}
+                      id={snippet.id}
+                      name={snippet.name}
+                      description={snippet.description}
+                      code={snippet.code}
+                    />
+                  );
+              })}
+          </TabPanel>
+          <TabPanel value={value} index="four">
+              {tempAlgos.map((algo) => {
+                  return (
+                    <SavedAlgo
+                      key={algo.id}
+                      algoName={algo.algoName}
+                      snippetName1={algo.snippetName1}
+                      snippetName2={algo.snippetName2}
+                      snippetName3={algo.snippetName3}
+                      snippetName4={algo.snippetName4}
+                      history={props.history}
+                    />
+                  );
+              })}
+          </TabPanel>
+      </div>
     );
 };
 
