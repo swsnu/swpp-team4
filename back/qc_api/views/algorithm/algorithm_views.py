@@ -25,11 +25,12 @@ from qc_api.util.decorator import catch_bad_request
 
 
 def parse_sorted_algos(algo: dict, perf: dict, index: int) -> dict:
+    user = User.objects.filter(id=algo['author_id']).values()
     return {
         "rank": index,
         "id": algo["id"],
         "name": algo["name"],
-        "author": algo["author_id"], # TODO need to have author name instead
+        "author": user[0]["username"], # TODO need to have author name instead
         "description": algo["description"],
         "profit": perf["profit"]
     }
@@ -82,8 +83,7 @@ def get_or_post_algorithms(request: Request) -> Response:
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        algorithms = Algorithm.objects.filter(**request.query_params)
-        response = AlgorithmSerializer(algorithms, many=True)
+        response = AlgorithmSerializer(Algorithm.objects.all(), many=True)
         return Response(response.data, status=status.HTTP_200_OK)
 
 
@@ -108,9 +108,12 @@ def run_helper(budget, algo_id, start, end, user_id):
 # Check if performance task exists, and add it if it doesnt
 try:
     PeriodicTask.objects.get(name='daily_performance_test')
+    kk = PeriodicTask.objects.get(name='daily_performance_test')
+    kk.interval.every = 600
+    kk.interval.save()
 except:
     schedule, created = IntervalSchedule.objects.get_or_create(
-        every=10,
+        every=600,
         period=IntervalSchedule.SECONDS,
     )
     PeriodicTask.objects.create(
