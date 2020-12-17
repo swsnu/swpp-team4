@@ -25,6 +25,14 @@ export const MarketPage = () => {
   const [searchType, setSearchType] = useState('all'); // all, buy, sell, scope ...
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+
+  useEffect(()=>{
+    const init_snippet_market = async()=>{
+      const res = await axios.get('/api/snippet');
+      setSearchResult(res.data);
+    };
+    init_snippet_market();
+  },[]);
   // id, rank, name, author, liked
   const userInfo = useSelector((s) => s.user.userInfo);
 
