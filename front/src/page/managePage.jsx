@@ -444,7 +444,7 @@ export const Snippet = (props) => {
                                 color="primary"
                             >
                                 Optimize
-                            </Button>*/}
+                            </Button>
                             <Popover
                                 open={OptOpen}
                                 anchorEl={OptAnchorEl}
@@ -459,7 +459,7 @@ export const Snippet = (props) => {
                                 onClose={handleOptClose}
                             >
                                 <OptimizationModal handlePending={handlePending}/>
-                            </Popover>
+                            </Popover>*/}
                         </Grid>
                         <div style={{width:1000}}>
                             <CodeMirror
