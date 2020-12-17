@@ -115,18 +115,18 @@ def opt_helper(algo_id: int, req_data: str, user_id: int):
     best, loss = optimize(offsets, var_scopes, algorithm_data)
     new_code = insert_params_non_global(offsets, list(best.values()), preprocessed_code)
     optimization = {
-        "parameters": best,
-        "profit": loss,
-        "new_code": new_code
+        "parameters": json.dumps(best),
+        "profit": json.dumps(loss),
+        "new_code": json.dumps(new_code)
     }
-    algorithm.optimization = json.dumps(optimization)
+    algorithm.optimization = str(optimization)
     algorithm.save()
     user = User.objects.get(pk=user_id)
     payload = {'head': "Optimization is Over!!!", 'body': 'Click "view" to see detailed report of your backtest'}
     send_user_notification(user=user, payload=payload, ttl=100)
 
 
-@api_view(['GET','POST'])
+@api_view(['GET', 'POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
 def run_optimization(request: Request, algo_id) -> Response:
