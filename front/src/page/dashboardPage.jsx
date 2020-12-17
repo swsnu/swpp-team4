@@ -88,6 +88,14 @@ export const DashboardPage = () => {
       });
     }
 
+    try {
+      const response = await axios.get(`api/algo/${id}/opt`);
+      console.log(response.data);
+      setOptimizedCode(response.data);
+    } catch (e) {
+      setOptimizedCode('');
+    }
+
     //optimization
     const scopeSnippet = data.snippet_scope_data.code;
     setUnOptimizedCode(scopeSnippet);
@@ -129,8 +137,24 @@ export const DashboardPage = () => {
   //   // TODO: get Backtesting and Performance(daily test) data of certain algorithm
   // };
 
-  const startOptimization = () => {
+  const startOptimization = async () => {
     console.log(optimizationRanges);
+    const ob = Object.keys(optimizationRanges).reduce((acc, cur) => {
+      if (isNaN(parseInt(optimizationRanges[cur]))) {
+        return acc;
+      } else {
+        return {
+          ...acc,
+          [cur]: parseInt(optimizationRanges[cur]),
+        };
+      }
+    }, {});
+    console.log(ob);
+    try {
+      await axios.post(`api/algo/${selectedAlgorithmId}`, ob);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -314,12 +338,6 @@ export const DashboardPage = () => {
                   marginTop: 16,
                 }}
               >
-                <Typography variant="h6" gutterBottom component="div">
-                  Optimization status
-                </Typography>
-                <div>
-                  {'not done'}
-                </div>
                 <br/>
                 <Typography variant="h6" gutterBottom component="div">
                   Current Scope Code
