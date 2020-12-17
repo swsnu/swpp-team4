@@ -55,8 +55,7 @@ def get_or_post_algorithms(request: Request) -> Response:
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        algorithms = Algorithm.objects.filter(**request.query_params)
-        response = AlgorithmSerializer(algorithms, many=True)
+        response = AlgorithmSerializer(Algorithm.objects.all(), many=True)
         return Response(response.data, status=status.HTTP_200_OK)
 
 

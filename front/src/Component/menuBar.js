@@ -140,13 +140,6 @@ export const MenuBar = (props) => {
                 Manage algo
               </Button>
               <Button
-                id="data_manage_button"
-                onClick={() => {}}
-                className={classes.button}
-              >
-                Manage data
-              </Button>
-              <Button
                 id="logout_button"
                 onClick={handleLogOut}
                 className={classes.button}

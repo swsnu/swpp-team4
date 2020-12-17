@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import {getAllAlgorithm} from "../store/actions/algo";
+import {useDispatch, useSelector} from "react-redux";
 
 const useRowStyles = makeStyles({
     root: {
@@ -98,28 +100,19 @@ const CollapsibleTable = props => {
 }
 
 export const LeaderboardPage = props => {
-
-    const [algoList, setAlgoList] = useState([]);
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
 
     /*istanbul ignore next*/
-    const getAlgorithms = async () => {
-        const response = await axios.get('/api/algo');
-        if (response.status === 200) {
-            setAlgoList(response.data);
-            const newRows = algoList.map(algo => createData(algo.id, algo.name, algo.author, algo.description));
-            setRows(newRows);
-        }
-    }
-
     useEffect(() => {
-        getAlgorithms();
-    },);
+        dispatch(getAllAlgorithm());
+    }, []);
+
+    const algoList = useSelector(store => store.algo.allAlgorithmList);
 
     return (
         <div className='LeaderboardPage'>
             <MenuBar/>
-            <CollapsibleTable rows={rows}/>
+            <CollapsibleTable rows={algoList.map(algo => createData(algo.id, algo.name, algo.author_name, algo.description))}/>
         </div>
     );
 }
