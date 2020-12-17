@@ -29,6 +29,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -50,12 +53,20 @@ export const DashboardPage = () => {
     transaction_log: '[]',
   });
 
+  const [optimizationParameterNum, setOptimizationParameterNum] = useState(0);
+  const [optimizationRanges, setOptimizationRanges] = useState({
+    // param_0_0  param_0_1
+    // param_1_0  param_1_1
+  });
+  const [unOptimizedCode, setUnOptimizedCode] = useState('');
+  const [optimizedCode, setOptimizedCode] = useState('');
+
   useEffect(() => {
     // get list of all my algorithms
     dispatch(getAllMyAlgorithm());
   }, []);
 
-  const selectAlgorithm = async (id) => {
+  const selectAlgorithm = async (id, data) => {
     setSelectedAlgorithmId(id);
     // TODO: get Backtesting and Performance(daily test) data of certain algorithm
     try {
@@ -76,6 +87,19 @@ export const DashboardPage = () => {
         transaction_log: '[]',
       });
     }
+
+    //optimization
+    const scopeSnippet = data.snippet_scope_data.code;
+    setUnOptimizedCode(scopeSnippet);
+    const paramNum = scopeSnippet.split('@').length - 1;
+    setOptimizationParameterNum(paramNum);
+    const ob = {};
+    for (let i = 1; i <= paramNum; i++) {
+      ob[`param_${i}_0`] = '1';
+      ob[`param_${i}_1`] = '10';
+    }
+    setOptimizationRanges(ob);
+    // TODO: fetch ~~
   };
 
 
@@ -105,6 +129,10 @@ export const DashboardPage = () => {
   //   // TODO: get Backtesting and Performance(daily test) data of certain algorithm
   // };
 
+  const startOptimization = () => {
+    console.log(optimizationRanges);
+  };
+
   return (
     <div>
       <MenuBar/>
@@ -123,7 +151,7 @@ export const DashboardPage = () => {
                     className={`myAlgo-${e.id}`}
                     selected={selectedAlgorithmId === e.id}
                     onClick={async () => {
-                      await selectAlgorithm(e.id);
+                      await selectAlgorithm(e.id, e);
                     }}
                   >
                     <ListItemText
@@ -146,6 +174,7 @@ export const DashboardPage = () => {
               >
                 <Tab id="tab-backtest" label="Backtest"/>
                 <Tab id="tab-simulation" label="Simulation"/>
+                <Tab id="tab-optimization" label="Optimization"/>
               </Tabs>
               <div
                 style={{
@@ -277,6 +306,114 @@ export const DashboardPage = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+              </div>
+              <div
+                style={{
+                  display: tab === 2 ? 'block' : 'none',
+                  height: 400,
+                  marginTop: 16,
+                }}
+              >
+                <Typography variant="h6" gutterBottom component="div">
+                  Optimization status
+                </Typography>
+                <div>
+                  {'not done'}
+                </div>
+                <br/>
+                <Typography variant="h6" gutterBottom component="div">
+                  Current Scope Code
+                </Typography>
+                <Grid container>
+                  <Grid item xs={9}>
+                    <CodeMirror
+                      value={unOptimizedCode}
+                      options={{
+                        mode: 'python',
+                        theme: 'material',
+                        lineNumbers: true,
+                        readOnly: true,
+                      }}
+                      onBeforeChange={
+                        /* istanbul ignore next */
+                        (editor, data, value) => {
+                        }
+                      }
+                    />
+                    <br/>
+                    <br/>
+                    <Typography variant="h6" gutterBottom component="div">
+                      Optimized Scope Code
+                    </Typography>
+                    <CodeMirror
+                      value={optimizedCode}
+                      options={{
+                        mode: 'python',
+                        theme: 'material',
+                        lineNumbers: true,
+                        readOnly: true,
+                      }}
+                      onBeforeChange={
+                        /* istanbul ignore next */
+                        (editor, data, value) => {
+                        }
+                      }
+                    />
+                    <br/>
+                    <br/>
+                    <br/>
+                  </Grid>
+                  <Grid item xs={3} style={{ padding: 20 }}>
+                    {Array(optimizationParameterNum).fill(true).map((_, i) =>
+                      <div style={{ marginBottom: 15 }} key={i}>
+                        <div>
+                          Parameter{i + 1}
+                          {/*optimizationRanges, setOptimizationRanges*/}
+                        </div>
+                        <TextField
+                          value={optimizationRanges[`param_${i}_0`] === undefined
+                            ? 1
+                            : optimizationRanges[`param_${i}_0`]
+                          }
+                          onChange={(e) => {
+                            setOptimizationRanges({
+                              ...optimizationRanges, [`param_${i}_0`]: e.target.value,
+                            });
+                          }}
+                          variant="outlined"
+                          size="small"
+                          label={`Parameter${i + 1} Min`}
+                          type="number"
+                        />
+                        <TextField
+                          value={optimizationRanges[`param_${i}_1`] === undefined
+                            ? 1
+                            : optimizationRanges[`param_${i}_1`]
+                          }
+                          onChange={(e) => {
+                            setOptimizationRanges({
+                              ...optimizationRanges, [`param_${i}_1`]: e.target.value,
+                            });
+                          }}
+                          variant="outlined"
+                          size="small"
+                          label={`Parameter${i + 1} Max`}
+                          type="number"
+                        />
+                      </div>)
+                    }
+                    <div>
+                      <Button
+                        id="start_optimization"
+                        variant="outlined"
+                        color="primary"
+                        onClick={startOptimization}
+                      >
+                        Optimize
+                      </Button>
+                    </div>
+                  </Grid>
+                </Grid>
               </div>
             </div>
           </Grid>
