@@ -24,6 +24,34 @@ from qc_api.serializers import AlgorithmSerializer
 from qc_api.util.decorator import catch_bad_request
 
 
+def parse_sorted_algos(algo: dict, perf: dict, index: int) -> dict:
+    user = User.objects.filter(id=algo['author_id']).values()
+    return {
+        "rank": index,
+        "id": algo["id"],
+        "name": algo["name"],
+        "author": user[0]["username"], # TODO need to have author name instead
+        "description": algo["description"],
+        "profit": perf["profit"]
+    }
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+def get_sorted_algorithms(request: Request) -> Response:
+    """
+    Get list of sorted algorithm for leaderboard display.
+    Sorting criteria:
+    """
+    public_algos = Algorithm.objects.filter(is_public=True).order_by("id").values()
+    performances = Performance.objects.filter(algorithm__is_public=True).order_by("algorithm_id").values()
+    print(public_algos[0])
+    print(performances[0]["profit"])
+    sorted_list = [(algo, perf) for perf, algo in
+                   sorted(zip(performances, public_algos), key=lambda pair: pair[0]['profit'], reverse=True)]
+    response = [parse_sorted_algos(pair[0], pair[1], index) for index, pair in enumerate(sorted_list)]
+    return Response(response, status=status.HTTP_200_OK)
+
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
@@ -156,16 +184,20 @@ def run_backtest(request: Request) -> Response:
 @api_view(['PUT', 'DELETE'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
-def share_or_delete_algorithm(request: Request, algo_id=0) -> Response:
+def share_or_delete_algorithm(request: Request, algo_id) -> Response:
     if request.method == 'PUT':
         body = request.body.decode()
         public = json.loads(body)['public']
         algo = Algorithm.objects.get(id=algo_id)
-        if public:
-            algo.is_shared = True
-        else:
-            algo.is_shared = False
+        print(algo.is_public)
+        algo.is_public = not algo.is_public
+        #if public:
+        #    algo.is_public = True
+        #else:
+        #    algo.is_public = False
         algo.save()
+        algo2 = Algorithm.objects.get(id=algo_id)
+        print(algo2.is_public)
         serializer = AlgorithmSerializer(algo)
         return Response(serializer.data, status.HTTP_200_OK)
     else:

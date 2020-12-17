@@ -54,6 +54,11 @@ def check_type_and_serialize_request(snippet_type: str, data: dict) -> ModelSeri
     return serializer
 
 
+#@api_view(['GET'])
+#def get_sorted_snippets(request: Request) -> Response:
+#    return
+
+
 @api_view(['GET', 'POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))

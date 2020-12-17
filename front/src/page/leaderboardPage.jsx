@@ -27,12 +27,12 @@ const useRowStyles = makeStyles({
 });
 
 /*istanbul ignore next*/
-const createData = (ranking, name, author, description) => {
+const createData = (ranking, name, author, profit, description) => {
     return {
         ranking,
         name,
         author,
-        //mdd,
+        profit,
         description
     };
 }
@@ -53,6 +53,7 @@ const Row = props => {
                 </TableCell>
                 <TableCell>{row.ranking}</TableCell>
                 <TableCell>{row.name}</TableCell>
+                <TableCell>{row.profit}</TableCell>
                 <TableCell align="right">{row.author}</TableCell>
                 {/*<TableCell align="right">{row.mdd}</TableCell*/}
             </TableRow>
@@ -85,6 +86,7 @@ const CollapsibleTable = props => {
                         <TableCell/>
                         <TableCell>id</TableCell>
                         <TableCell>Algorithm</TableCell>
+                        <TableCell>Profit</TableCell>
                         <TableCell align="right">Author</TableCell>
                         {/*<TableCell align="right">MDD</TableCell>*/}
                     </TableRow>
@@ -103,6 +105,16 @@ export const LeaderboardPage = props => {
     const dispatch = useDispatch();
 
     /*istanbul ignore next*/
+    //const getAlgorithms = async () => {
+    //    const response = await axios.get('/api/algo/sort');
+    //    if (response.status === 200) {
+    //        setAlgoList(response.data);
+    //        const newRows = algoList.map(algo => createData(algo.rank, algo.name, algo.author,
+    //            algo.profit, algo.description));
+    //        setRows(newRows);
+    //    }
+    //}
+
     useEffect(() => {
         dispatch(getAllAlgorithm());
     }, []);
@@ -112,7 +124,8 @@ export const LeaderboardPage = props => {
     return (
         <div className='LeaderboardPage'>
             <MenuBar/>
-            <CollapsibleTable rows={algoList.map(algo => createData(algo.id, algo.name, algo.author_name, algo.description))}/>
+            <CollapsibleTable rows={algoList.map(algo => createData(algo.rank, algo.name, algo.author,
+                algo.profit, algo.description))}/>
         </div>
     );
 }

@@ -254,7 +254,7 @@ export const getAllAlgorithm = () => {
   return async (dispatch) => {
     try {
       // TODO: shoot api
-      const response = await axios.get('/api/algo');
+      const response = await axios.get('/api/algo/sort');
       dispatch({
         type: 'GET_ALL_ALGORITHM',
         data: response.data, // TODO: change
