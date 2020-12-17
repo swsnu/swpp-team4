@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import {getAllAlgorithm} from "../store/actions/algo";
+import {useDispatch, useSelector} from "react-redux";
 
 const useRowStyles = makeStyles({
     root: {
@@ -25,12 +27,12 @@ const useRowStyles = makeStyles({
 });
 
 /*istanbul ignore next*/
-const createData = (ranking, name, author, description) => {
+const createData = (ranking, name, author, profit, description) => {
     return {
         ranking,
         name,
         author,
-        //mdd,
+        profit,
         description
     };
 }
@@ -51,6 +53,7 @@ const Row = props => {
                 </TableCell>
                 <TableCell>{row.ranking}</TableCell>
                 <TableCell>{row.name}</TableCell>
+                <TableCell>{row.profit}</TableCell>
                 <TableCell align="right">{row.author}</TableCell>
                 {/*<TableCell align="right">{row.mdd}</TableCell*/}
             </TableRow>
@@ -83,6 +86,7 @@ const CollapsibleTable = props => {
                         <TableCell/>
                         <TableCell>id</TableCell>
                         <TableCell>Algorithm</TableCell>
+                        <TableCell>Profit</TableCell>
                         <TableCell align="right">Author</TableCell>
                         {/*<TableCell align="right">MDD</TableCell>*/}
                     </TableRow>
@@ -98,28 +102,30 @@ const CollapsibleTable = props => {
 }
 
 export const LeaderboardPage = props => {
-
-    const [algoList, setAlgoList] = useState([]);
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
 
     /*istanbul ignore next*/
-    const getAlgorithms = async () => {
-        const response = await axios.get('/api/algo');
-        if (response.status === 200) {
-            setAlgoList(response.data);
-            const newRows = algoList.map(algo => createData(algo.id, algo.name, algo.author, algo.description));
-            setRows(newRows);
-        }
-    }
+    //const getAlgorithms = async () => {
+    //    const response = await axios.get('/api/algo/sort');
+    //    if (response.status === 200) {
+    //        setAlgoList(response.data);
+    //        const newRows = algoList.map(algo => createData(algo.rank, algo.name, algo.author,
+    //            algo.profit, algo.description));
+    //        setRows(newRows);
+    //    }
+    //}
 
     useEffect(() => {
-        getAlgorithms();
-    },);
+        dispatch(getAllAlgorithm());
+    }, []);
+
+    const algoList = useSelector(store => store.algo.allAlgorithmList);
 
     return (
         <div className='LeaderboardPage'>
             <MenuBar/>
-            <CollapsibleTable rows={rows}/>
+            <CollapsibleTable rows={algoList.map(algo => createData(algo.rank, algo.name, algo.author,
+                algo.profit, algo.description))}/>
         </div>
     );
 }
