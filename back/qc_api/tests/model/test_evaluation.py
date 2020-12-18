@@ -1,4 +1,5 @@
 """ TestCases for Evaluation Models """
+# pylint: disable=E1101
 from django.test import TestCase
 
 from ..utils import get_mock_algo
@@ -8,6 +9,7 @@ from ...util.utility import parse_date
 
 class ReportModelTestCase(TestCase):
     """ TestCases for Report Model """
+
     def setUp(self) -> None:
         """ Set up tests. """
         self.algo = get_mock_algo("algo")

@@ -1,4 +1,5 @@
 """ TestCase for views for Evaluation models. """
+# pylint: disable=E1101, E0012,
 from django.test import TestCase, Client
 
 from ..utils import get_mock_algo, get_signed_in_client

@@ -1,5 +1,5 @@
 """ Mocking functions for tests. """
-# pylint: disable=E5142
+# pylint: disable=E5142, E0012, E1101
 import json
 import os
 
