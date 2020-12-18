@@ -1,4 +1,4 @@
-""" views """
+""" views __init__.py """
 from .auth.auth_views import sign_in, sign_out, sign_up
 from .snippet.snippet_views import get_or_post_liked_snippets, get_my_snippets, get_liked_snippets, \
     share_or_not_snippet, like_or_unlike_snippet, get_put_post_snippets
