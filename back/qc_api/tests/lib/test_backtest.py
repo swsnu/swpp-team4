@@ -6,9 +6,15 @@ from datetime import date
 from ...lib import BackTester, UserSpace
 from ...models import Algorithm
 from ...serializers import AlgorithmSerializer
+from ..utils import get_mock_algo
 
 
 class UserSpaceTestCase(TestCase):
 
     def test_init(self):
-        userspace = UserSpace(universe=pd.DataFrame(), today=date.today(), variables=[])
+        algo = get_mock_algo(name="mock_algo")
+        algo_data = AlgorithmSerializer(algo).data
+        back_tester = BackTester(algorithm=algo_data, budget=1000000)
+
+
+

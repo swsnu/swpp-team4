@@ -50,13 +50,13 @@ class SandBox:
         self.opt_loss = 0.0
         self.run(back_tester)
 
-    def get_budget(self) -> float:
-        """
-        Get current budget.
-        Returns:
-            current budget.
-        """
-        return self.__budget
+    # def get_budget(self) -> float:
+    #     """
+    #     Get current budget.
+    #     Returns:
+    #         current budget.
+    #     """
+    #     return self.__budget
 
     # def get_start_date(self) -> date:
     #     """
@@ -157,18 +157,18 @@ class SandBox:
                 new_scope.append(st.dump_data())
 
             print(self.report)
-            if performance is not None:
-                performance.alpha = self.report["alpha"]
-                performance.profit = self.report["profit"]
-                performance.MDD = self.report["MDD"]
-                performance.deposit = self.report["deposit"]
-                performance.curr_portfolio = json.dumps(self.report["curr_portfolio"])
-                performance.transaction_log = json.dumps(new_transaction_log)
-                performance.max_min_dict = json.dumps(self.report["max_min_dict"])
-                # performance.profit_dict = json.dumps(new_profit_dict),
-                performance.scope = json.dumps(new_scope)
-                performance.profit_dict = json.dumps(new_profit_dict)
-                performance.save()
+            #if performance is not None:
+            performance.alpha = self.report["alpha"]
+            performance.profit = self.report["profit"]
+            performance.MDD = self.report["MDD"]
+            performance.deposit = self.report["deposit"]
+            performance.curr_portfolio = json.dumps(self.report["curr_portfolio"])
+            performance.transaction_log = json.dumps(new_transaction_log)
+            performance.max_min_dict = json.dumps(self.report["max_min_dict"])
+            # performance.profit_dict = json.dumps(new_profit_dict),
+            performance.scope = json.dumps(new_scope)
+            performance.profit_dict = json.dumps(new_profit_dict)
+            performance.save()
 
     def get_trading_dates(self) -> List[datetime.date]:
         """

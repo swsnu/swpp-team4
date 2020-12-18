@@ -104,7 +104,7 @@ def get_mock_algo(name: str, public: bool = False) -> Algorithm:
     buy = get_mock_snippet(SnippetType.BUY)
     sell = get_mock_snippet(SnippetType.SELL)
     amount = get_mock_snippet(SnippetType.AMOUNT)
-    variables = json.dumps(["d1_diff_rate", "volume"])
+    variables = json.dumps(["d1_diff_rate", "volume", "close"])
     algo = Algorithm.objects.create(name=name, snippet_scope=scope, snippet_buy=buy,
                                     snippet_sell=sell, snippet_amount=amount, is_public=public, variables=variables)
     return algo

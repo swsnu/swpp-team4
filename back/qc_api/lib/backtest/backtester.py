@@ -274,33 +274,33 @@ class BackTester:
         yesterday_profit = self.__max_min_dict.get("regi")[0]
         yesterday_mode = self.__max_min_dict.get("regi")[1]
 
-        if yesterday_mode == 'eq':
-            if profit > yesterday_profit:
-                self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
-                self.__max_min_dict.get("regi")[1] = 'gt'
-            elif profit < yesterday_profit:
-                self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
-                self.__max_min_dict.get("regi")[1] = 'lt'
-            else:
-                pass
-        elif yesterday_mode == 'gt':
-            if profit < yesterday_profit:
-                # local maxima
-                self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
-                self.__max_min_dict.get("regi")[1] = 'lt'
-            elif profit > yesterday_profit:
-                self.__max_min_dict.get("regi")[1] = 'gt'
-            else:
-                self.__max_min_dict.get("regi")[1] = 'eq'
-        else:
-            if profit < yesterday_profit:
-                self.__max_min_dict.get("regi")[1] = 'lt'
-            elif profit > yesterday_profit:
-                # local minima
-                self.__max_min_dict.get("regi")[1] = 'gt'
-                self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
-            else:
-                self.__max_min_dict.get("regi")[1] = 'eq'
+        # if yesterday_mode == 'eq':
+        #     if profit > yesterday_profit:
+        #         self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
+        #         self.__max_min_dict.get("regi")[1] = 'gt'
+        #     elif profit < yesterday_profit:
+        #         self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
+        #         self.__max_min_dict.get("regi")[1] = 'lt'
+        #     else:
+        #         pass
+        # elif yesterday_mode == 'gt':
+        #     if profit < yesterday_profit:
+        #         # local maxima
+        #         self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
+        #         self.__max_min_dict.get("regi")[1] = 'lt'
+        #     elif profit > yesterday_profit:
+        #         self.__max_min_dict.get("regi")[1] = 'gt'
+        #     else:
+        #         self.__max_min_dict.get("regi")[1] = 'eq'
+        # else:
+        #     if profit < yesterday_profit:
+        #         self.__max_min_dict.get("regi")[1] = 'lt'
+        #     elif profit > yesterday_profit:
+        #         # local minima
+        #         self.__max_min_dict.get("regi")[1] = 'gt'
+        #         self.__max_min_dict.get("list").append(self.__max_min_dict.get("regi")[0])
+        #     else:
+        #         self.__max_min_dict.get("regi")[1] = 'eq'
         self.__max_min_dict.get("regi")[0] = profit
 
     def report_result(self, start: datetime.date, end: datetime.date, mode: str = 'backtest') -> Dict[str, Any]:
@@ -330,17 +330,18 @@ class BackTester:
         At the end of the iteration, we can get the maximum dropdown within the backtest period, which can indicate the
         risk of the algorithm.
         """
-        max_min_list = self.__max_min_dict.get("list")
-        if len(max_min_list) <= 1:
-            return 0
-        max_diff = max_min_list[-2] - max_min_list[-1]
-        min_element = max_min_list[-1]
-        for i in range(1, len(max_min_list) + 1):
-            if max_min_list[-1 * i] - min_element > max_diff:
-                max_diff = max_min_list[-1 * i] - min_element
-
-            if max_min_list[-1 * i] < min_element:
-                min_element = max_min_list[-1 * i]
+        # max_min_list = self.__max_min_dict.get("list")
+        # if len(max_min_list) <= 1:
+        #     return 0
+        # max_diff = max_min_list[-2] - max_min_list[-1]
+        # min_element = max_min_list[-1]
+        # for i in range(1, len(max_min_list) + 1):
+        #     if max_min_list[-1 * i] - min_element > max_diff:
+        #         max_diff = max_min_list[-1 * i] - min_element
+        #
+        #     if max_min_list[-1 * i] < min_element:
+        #         min_element = max_min_list[-1 * i]
+        max_diff = 0
         return max_diff
 
     def __calculate_alpha(self, start: date, end: date) -> float:
@@ -360,14 +361,14 @@ class BackTester:
         Returns:
             true if it is safe to run backtest witht the given code.
         """
-        try:
-            DefensiveCodeExecutor.pre_validate(self.__snippet_scope)
-            DefensiveCodeExecutor.pre_validate(self.__snippet_sell)
-            DefensiveCodeExecutor.pre_validate(self.__snippet_buy)
-            DefensiveCodeExecutor.pre_validate(self.__snippet_amount)
-        except AssertionError as error:
-            print(error)
-            return False
+        # try:
+        DefensiveCodeExecutor.pre_validate(self.__snippet_scope)
+        DefensiveCodeExecutor.pre_validate(self.__snippet_sell)
+        DefensiveCodeExecutor.pre_validate(self.__snippet_buy)
+        DefensiveCodeExecutor.pre_validate(self.__snippet_amount)
+        # except AssertionError as error:
+        #     print(error)
+        #     return False
         return True
 
     def run(self, trading_dates: List[date]) -> None:
