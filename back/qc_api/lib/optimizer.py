@@ -49,18 +49,18 @@ def insert_params_non_global(offsets, params, code):
     return code
 
 
-def pre_change_global():
-    global algorithm_data
-    algorithm_data = AlgorithmSerializer(Algorithm.objects.get(pk=2)).data
-
-
-def change_global():
-    global algorithm_data
-    algorithm_data["snippet_scope_data"]["code"] = "dick_length>@ and dick_width<@"
-
-
-def post_global():
-    print(algorithm_data["snippet_scope_data"]["code"])
+# def pre_change_global():
+#     global algorithm_data
+#     algorithm_data = AlgorithmSerializer(Algorithm.objects.get(pk=2)).data
+#
+#
+# def change_global():
+#     global algorithm_data
+#     algorithm_data["snippet_scope_data"]["code"] = "dick_length>@ and dick_width<@"
+#
+#
+# def post_global():
+#     print(algorithm_data["snippet_scope_data"]["code"])
 
 
 def objective_func(params):
