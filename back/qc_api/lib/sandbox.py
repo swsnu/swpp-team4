@@ -1,9 +1,9 @@
 """
 Sandbox class
 """
-# pylint: disable=R0903, W0511, R0902, R0201, C0103
+# pylint: disable=R0903, W0511, R0902, R0201, C0103, E1101
 import json
-from datetime import datetime, date
+from datetime import datetime
 from typing import List, Optional
 
 from .backtest.backtester import BackTester
@@ -107,6 +107,9 @@ class SandBox:
         print('backtest sandbox done')
 
     def get_opt_loss(self) -> float:
+        """
+        get_opt_loss
+        """
         return self.opt_loss
 
     def clean_up(self, back_tester: BackTester) -> None:

@@ -1,8 +1,8 @@
 """userspace.py"""
-import pandas as pd
-
+# pylint: disable=R0903
 from datetime import date
-from typing import List, Dict, Any, Union
+from typing import List
+import pandas as pd
 from .wallet.stock import Stock
 
 
@@ -22,6 +22,9 @@ class UserSpace:
 
     @staticmethod
     def query(universe: pd.DataFrame, query_string: str) -> List[Stock]:
+        """
+        Static method for query
+        """
         scope = list(map(
             lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[3]),
             universe.query(query_string).to_numpy()

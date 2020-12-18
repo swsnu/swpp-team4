@@ -1,9 +1,9 @@
-import json
+"""optimizer.py"""
+# pylint: disable=C0114, C0116, W0603, C0103
+
 import re
 from typing import List, Any
 from hyperopt import fmin, tpe, hp, Trials
-from celery import shared_task
-from copy import copy
 from ..lib.sandbox import SandBox
 from ..models import Algorithm
 from ..serializers import AlgorithmSerializer
@@ -44,7 +44,7 @@ def insert_params_non_global(offsets, params, code):
     offset_update = 0
     for index, param in enumerate(params):
         code = code[:int(offsets[index]) + 1 + offset_update] + str(param) + \
-                        code[int(offsets[index]) + 1 + offset_update:]
+               code[int(offsets[index]) + 1 + offset_update:]
         offset_update = offset_update + len(str(param))
     return code
 
@@ -104,5 +104,4 @@ def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSeri
                 )
 
     print(best)
-    return best, (-1)*min([result['loss'] for result in trials.results])
-
+    return best, (-1) * min([result['loss'] for result in trials.results])
