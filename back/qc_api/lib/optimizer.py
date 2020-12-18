@@ -1,11 +1,10 @@
 """optimizer.py"""
-# pylint: disable=C0114, C0116, W0603, C0103
+# pylint: disable=C0114, C0116, W0603, C0103, C0200, R1710
 
 import re
 from typing import List, Any
 from hyperopt import fmin, tpe, hp, Trials
 from ..lib.sandbox import SandBox
-from ..models import Algorithm
 from ..serializers import AlgorithmSerializer
 
 algorithm_data = None
