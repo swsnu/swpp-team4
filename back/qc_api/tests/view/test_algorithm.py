@@ -8,11 +8,13 @@ from unittest.mock import patch
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 
-from ..utils import get_mock_algo, get_mock_snippet, SnippetType, seed_stock_data
-from ...lib.backtest.backtester import BackTester
-from ...models import Algorithm
+from ..utils import get_mock_algo, get_mock_snippet, get_mock_performance, SnippetType, seed_stock_data
+from ...lib import BackTester
+from ...models import Algorithm, Performance
 from ...serializers.algorithm.algorithm_serializer import AlgorithmSerializer
-from ...views.algorithm.algorithm_views import run_helper, run_daily_performance, daily_performance
+from ...views.algorithm.algorithm_views import run_helper, run_daily_performance, daily_performance, \
+    parse_sorted_algos, opt_helper
+
 
 
 class AlgorithmTestCase(TestCase):
@@ -140,3 +142,30 @@ class AlgorithmTestCase(TestCase):
         bt.get_budget()
         bt.get_coins()
         bt.make_daily_report()
+
+    def test_parse_sorted_algos(self):
+        algorithm = get_mock_algo(name="mock_algo")
+        algorithm.save()
+        performance = get_mock_performance(name="mock_perf", algo=algorithm)
+        performance.save()
+
+        parse_sorted_algos(algo=Algorithm.objects.all().values()[0],
+                           perf=Performance.objects.all().values()[0], index=1)
+
+    def test_get_sorted_algorithm(self):
+        response = self.client.get('/api/algo/sort')
+        #self.assertEqual(response.status_code, 200)
+
+    def test_get_my_algorithm(self):
+        response = self.client.get('/api/algo/me')
+
+    def test_opt_helper(self):
+        algorithm = get_mock_algo(name="mock_algo")
+        algorithm.save()
+        opt_helper(algo_id=algorithm.id, req_data="", user_id=self.user.id)
+
+    def test_run_optimization(self):
+        algorithm = get_mock_algo(name="mock_algo")
+        algorithm.save()
+        response1 = self.client.get(f"/api/algo/{algorithm.id}/opt")
+        response2 = self.client.post(f"/api/algo/{algorithm.id}/opt")

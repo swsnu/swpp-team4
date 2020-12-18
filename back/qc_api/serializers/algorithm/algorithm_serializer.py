@@ -11,7 +11,7 @@ from qc_api.serializers import SnippetScopeSerializer, SnippetBuySerializer, \
 
 class AlgorithmSerializer(serializers.ModelSerializer):
     """ Serializer class for Algorithm """
-    author_name = serializers.SerializerMethodField()
+    #author_name = serializers.SerializerMethodField()
     snippet_scope_data = serializers.SerializerMethodField()
     snippet_sell_data = serializers.SerializerMethodField()
     snippet_buy_data = serializers.SerializerMethodField()
@@ -23,7 +23,7 @@ class AlgorithmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Algorithm
-        fields = ['id', 'name', 'description', 'author', 'author_name', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
+        fields = ['id', 'name', 'description', 'author', 'is_public', 'snippet_scope', 'snippet_sell', 'snippet_buy',
                   'snippet_amount', 'create_at', 'update_at', 'snippet_scope_data', 'snippet_sell_data',
                   'snippet_buy_data', 'snippet_amount_data', 'variables', 'optimization',
                   'snippet_scope_name', 'snippet_sell_name', 'snippet_buy_name', 'snippet_amount_name']
@@ -62,6 +62,6 @@ class AlgorithmSerializer(serializers.ModelSerializer):
         """relational representation for snippet_amount"""
         return obj.snippet_amount.name
 
-    def get_author_name(self, obj: Algorithm) -> str:
-        """relational representation for author_name"""
-        return obj.author.username
+    #def get_author_name(self, obj: Algorithm) -> str:
+    #    """relational representation for author_name"""
+    #    return obj.author.username

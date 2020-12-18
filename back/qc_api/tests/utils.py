@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 
 import default_dataset_seeder
-from qc_api.models import Algorithm
+from qc_api.models import Algorithm, Performance
 from qc_api.models.algorithm.snippet import Snippet, SnippetScope, SnippetBuy, SnippetSell, SnippetAmount
 from qc_api.util.utility import SnippetType, parse_date
 
@@ -108,6 +108,11 @@ def get_mock_algo(name: str, public: bool = False) -> Algorithm:
     algo = Algorithm.objects.create(name=name, snippet_scope=scope, snippet_buy=buy,
                                     snippet_sell=sell, snippet_amount=amount, is_public=public, variables=variables)
     return algo
+
+
+def get_mock_performance(name: str, algo: Algorithm) -> Performance:
+    performance = Performance.objects.create(name=name, algorithm=algo, alpha=1)
+    return performance
 
 
 def seed_stock_data() -> None:

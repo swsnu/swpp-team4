@@ -45,8 +45,6 @@ def get_sorted_algorithms(request: Request) -> Response:
     """
     public_algos = Algorithm.objects.all().order_by("id").values()
     performances = Performance.objects.filter(algorithm__is_public=True).order_by("algorithm_id").values()
-    print(public_algos[0])
-    print(performances[0]["profit"])
     sorted_list = [(algo, perf) for perf, algo in
                    sorted(zip(performances, public_algos), key=lambda pair: pair[0]['profit'], reverse=True)]
     response = [parse_sorted_algos(pair[0], pair[1], index) for index, pair in enumerate(sorted_list)]
