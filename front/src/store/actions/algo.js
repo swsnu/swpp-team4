@@ -64,7 +64,7 @@ const mockAllMyAlgorithm = [
     update_at: '2020-11-09T18:05:30.427122Z',
     snippet_scope_data: {
       code:
-        "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
+        'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
       name: '1st test algorithm: scope',
       description: 'first test scope',
       author: 2,
@@ -73,7 +73,7 @@ const mockAllMyAlgorithm = [
     },
     snippet_sell_data: {
       code:
-        "for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)",
+        'for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe[\'code\'] == str(int(candidate.get_id()))].iloc[0][\'close\'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)',
       name: '1st test algorithm: sell',
       description: 'first test sell',
       author: 2,
@@ -113,7 +113,7 @@ const mockAllMyAlgorithm = [
     update_at: '2020-11-09T18:06:13.244504Z',
     snippet_scope_data: {
       code:
-        "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
+        'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
       name: '1st test algorithm: scope',
       description: 'first test scope',
       author: 2,
@@ -122,7 +122,7 @@ const mockAllMyAlgorithm = [
     },
     snippet_sell_data: {
       code:
-        "for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)",
+        'for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe[\'code\'] == str(int(candidate.get_id()))].iloc[0][\'close\'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)',
       name: '1st test algorithm: sell',
       description: 'first test sell',
       author: 2,
@@ -162,7 +162,7 @@ const mockAllMyAlgorithm = [
     update_at: '2020-11-09T18:47:24.136800Z',
     snippet_scope_data: {
       code:
-        "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
+        'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
       name: '1st test algorithm: scope',
       description: 'first test scope',
       author: 2,
@@ -171,7 +171,7 @@ const mockAllMyAlgorithm = [
     },
     snippet_sell_data: {
       code:
-        "for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)",
+        'for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe[\'code\'] == str(int(candidate.get_id()))].iloc[0][\'close\'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)',
       name: '1st test algorithm: sell',
       description: 'first test sell',
       author: 2,
@@ -211,7 +211,7 @@ const mockAllMyAlgorithm = [
     update_at: '2020-11-09T19:05:46.443277Z',
     snippet_scope_data: {
       code:
-        "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query('(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)').to_numpy()))",
+        'scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), universe.query(\'(yes_clo_5 < yes_clo_20) and (clo5 > clo20) and (volume >5000000)\').to_numpy()))',
       name: '1st test algorithm: scope',
       description: 'first test scope',
       author: 2,
@@ -220,7 +220,7 @@ const mockAllMyAlgorithm = [
     },
     snippet_sell_data: {
       code:
-        "for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe['code'] == str(int(candidate.get_id()))].iloc[0]['close'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)",
+        'for index, candidate in enumerate(sell_candidates):\r\n            if (self.universe.loc[self.universe[\'code\'] == str(int(candidate.get_id()))].iloc[0][\'close\'])/candidate.avg_purchase_price-1>0.05:\r\n                chosen_stocks.append(candidate)',
       name: '1st test algorithm: sell',
       description: 'first test sell',
       author: 2,
@@ -253,14 +253,14 @@ export const getAllAlgorithm = () => {
   // GET all algorithms and put it to algo.ownedAlgorithmList
   return async (dispatch) => {
     try {
-      // TODO: shoot api
       const response = await axios.get('/api/algo/sort');
       dispatch({
         type: 'GET_ALL_ALGORITHM',
-        data: response.data, // TODO: change
+        data: response.data,
       });
     } catch (e) {
-      // TODO handle error
+      /* istanbul ignore next */
+      console.log(e);
     }
   };
 };
@@ -269,14 +269,14 @@ export const getAllMyAlgorithm = () => {
   // GET all algorithms and put it to algo.ownedAlgorithmList
   return async (dispatch) => {
     try {
-      // TODO: shoot api
       const response = await axios.get('/api/algo/me');
       dispatch({
         type: 'GET_OWNED_ALGORITHM',
-        data: response.data, // TODO: change
+        data: response.data,
       });
     } catch (e) {
-      // TODO handle error
+      /* istanbul ignore next */
+      console.log(e);
     }
   };
 };

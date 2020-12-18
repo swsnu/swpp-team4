@@ -168,8 +168,6 @@ else:
   /* istanbul ignore next */
   const handleImport = () => {
     setImportModalOpen(true);
-    // TODO: change content of modal
-    // make editor readonly by changing snippetValidated & snippetSubmitted
   };
 
   const handleImportState = (type, name, des, code) => {

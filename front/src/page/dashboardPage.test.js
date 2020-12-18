@@ -10,6 +10,8 @@ import * as NewBackTestFormImport from '../Component/dashboard/backtest/newBackT
 import * as BacktestRowImport from '../Component/dashboard/backtest/backtestRow';
 import axios from 'axios';
 
+jest.mock('react-codemirror2');
+
 const stubInitialState = {
   userInfo: {
     email: '',
@@ -37,7 +39,7 @@ describe('DashboardPage', () => {
       <Provider store={mockStore}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route path="/" component={DashboardPage} />
+            <Route path="/" component={DashboardPage}/>
           </Switch>
         </ConnectedRouter>
       </Provider>
@@ -48,15 +50,53 @@ describe('DashboardPage', () => {
     jest.clearAllMocks();
   });
 
-  it('should render DashboardPage without errors', () => {
+  it('should render DashboardPage without errors and call startBacktest()', () => {
     jest
       .spyOn(NewBackTestFormImport, 'NewBackTestForm')
       .mockImplementation(({ onSubmit }) => {
         useEffect(() => {
-          onSubmit();
+          onSubmit({
+            startDate: '2020-02-03',
+            endDate: '2020-04-03',
+            startingBudget: '10000000',
+          });
         }, []);
         return <>Mock Component :)</>;
       });
+    jest.spyOn(axios, 'post').mockImplementation(() => {
+      return new Promise((resolve) => {
+        const result = {
+          status: 200,
+        };
+        resolve(result);
+      });
+    });
+    const component = createMount()(dashboard);
+    const wrapper = component.find('DashboardPage');
+    expect(wrapper.length).toBe(1);
+  });
+  it('should render DashboardPage without errors and fail startBacktest()', () => {
+    jest
+      .spyOn(NewBackTestFormImport, 'NewBackTestForm')
+      .mockImplementation(({ onSubmit }) => {
+        useEffect(() => {
+          onSubmit({
+            startDate: '2020-02-03',
+            endDate: '2020-04-03',
+            startingBudget: '10000000',
+          });
+        }, []);
+        return <>Mock Component :)</>;
+      });
+    jest.spyOn(axios, 'post').mockImplementation(() => {
+      return new Promise((resolve, reject) => {
+        const result = {
+          status: 404,
+          data: { logged_in: false },
+        };
+        reject(result);
+      });
+    });
     const component = createMount()(dashboard);
     const wrapper = component.find('DashboardPage');
     expect(wrapper.length).toBe(1);
@@ -66,39 +106,58 @@ describe('DashboardPage', () => {
     const component = createMount()(dashboard);
     component.find('button#tab-simulation').simulate('click');
     component.find('button#tab-backtest').simulate('click');
+    component.find('button#tab-optimization').simulate('click');
   });
 
   it('should display backtest data', () => {
-    jest
-      .spyOn(BacktestRowImport, 'BacktestRow')
+    jest.spyOn(BacktestRowImport, 'BacktestRow')
       .mockImplementation(({ onOpenLog }) => {
         onOpenLog();
         return <>Another Mock Component :)</>;
       });
-    jest.spyOn(axios, 'get').mockImplementation(() => {
-      return {
-        data: [
-          {
-            id: 1,
-            transaction_log: '',
-            daily_profit: '',
-          },
-          {
-            id: 2,
-            transaction_log: '',
-            daily_profit: '',
-          },
-        ],
-      };
+    jest.spyOn(axios, 'get').mockImplementation((url) => {
+      if (url.includes('performance')) {
+        return new Promise((resolve) => {
+          const result = {
+            status: 200,
+            data: { profit_dict: '{"2020-02-03":3}', transaction_log: '[{date:"2020-02-03"}]' },
+          };
+          resolve(result);
+        });
+      } else {
+        return new Promise((resolve) => {
+          const result = {
+            status: 200,
+            data: [
+              {
+                id: 1,
+                transaction_log: '',
+                daily_profit: '',
+              },
+              {
+                id: 2,
+                transaction_log: '',
+                daily_profit: '',
+              },
+            ],
+          };
+          resolve(result);
+        });
+      }
     });
     const component = createMount()(dashboard);
     component.find('div.myAlgo-1').simulate('click');
-    jest.spyOn(axios, 'get').mockImplementation(() => {
-      return false;
-    });
     component.find('div.myAlgo-1').simulate('click');
   });
 
-  // it('should fetch and display BacktestRow table', () => {
+
+  it('should test start_optimization', () => {
+    const component = createMount()(dashboard);
+    component.find('button#start_optimization').simulate('click');
+  });
+
+  // it('should test 2222', () => {
+  //   const component = createMount()(dashboard);
   // });
+
 });

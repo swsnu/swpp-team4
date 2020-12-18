@@ -13,6 +13,8 @@ import Container from '@material-ui/core/Container';
 import { createMount } from '@material-ui/core/test-utils';
 import { createMemoryHistory } from 'history';
 
+jest.mock('react-codemirror2');
+
 const mockStore = getMockStore(
   {
     userInfo: {

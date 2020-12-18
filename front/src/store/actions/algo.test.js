@@ -102,4 +102,18 @@ describe('algo actions', () => {
     });
     await store.dispatch(actionCreators.shareAlgo(0, true));
   });
+
+  it('should getAllAlgorithm', async () => {
+    axios.get = jest.fn(() => {
+      return Promise.resolve({ status: 200, data: {} });
+    });
+    await store.dispatch(actionCreators.getAllAlgorithm());
+  });
+
+  it('should getAllAlgorithm but get bad response', async () => {
+    axios.get = jest.fn(() => {
+      return Promise.resolve({ status: 400, data: {} });
+    });
+    await store.dispatch(actionCreators.getAllAlgorithm());
+  });
 });

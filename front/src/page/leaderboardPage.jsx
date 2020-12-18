@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import MenuBar from "../Component/menuBar";
+import React, { useEffect, useState } from 'react';
+import MenuBar from '../Component/menuBar';
 import axios from 'axios';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,117 +15,117 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import {getAllAlgorithm} from "../store/actions/algo";
-import {useDispatch, useSelector} from "react-redux";
+import { getAllAlgorithm } from '../store/actions/algo';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useRowStyles = makeStyles({
-    root: {
-        '& > *': {
-            borderBottom: 'unset',
-        },
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
     },
+  },
 });
 
 /*istanbul ignore next*/
 const createData = (ranking, name, author, profit, description) => {
-    return {
-        ranking,
-        name,
-        author,
-        profit,
-        description
-    };
-}
+  return {
+    ranking,
+    name,
+    author,
+    profit,
+    description,
+  };
+};
 
 /*istanbul ignore next*/
 const Row = props => {
-    const {row} = props;
-    const [open, setOpen] = React.useState(false);
-    const classes = useRowStyles();
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles();
 
-    return (
-        <React.Fragment>
-            <TableRow className={classes.root}>
-                <TableCell>
-                    <IconButton id='row-button' aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                        {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                    </IconButton>
-                </TableCell>
-                <TableCell>{row.ranking}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.profit}</TableCell>
-                <TableCell align="right">{row.author}</TableCell>
-                {/*<TableCell align="right">{row.mdd}</TableCell*/}
-            </TableRow>
-            <TableRow>
-                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box margin={1}>
-                            {/*<Typography variant="h6" gutterBottom component="div">
+  return (
+    <React.Fragment>
+      <TableRow className={classes.root}>
+        <TableCell>
+          <IconButton id='row-button' aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+          </IconButton>
+        </TableCell>
+        <TableCell>{row.ranking}</TableCell>
+        <TableCell>{row.name}</TableCell>
+        <TableCell>{row.profit}</TableCell>
+        <TableCell align="right">{row.author}</TableCell>
+        {/*<TableCell align="right">{row.mdd}</TableCell*/}
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box margin={1}>
+              {/*<Typography variant="h6" gutterBottom component="div">
                                 Graph
                             </Typography>*/}
-                            <Typography variant="h6" gutterBottom component="div">
-                                Description
-                            </Typography>
-                            {row.description}
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
-    );
-}
+              <Typography variant="h6" gutterBottom component="div">
+                Description
+              </Typography>
+              {row.description}
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+};
 
 /*istanbul ignore next*/
 const CollapsibleTable = props => {
-    return (
-        <TableContainer component={Paper}>
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell/>
-                        <TableCell>id</TableCell>
-                        <TableCell>Algorithm</TableCell>
-                        <TableCell>Profit</TableCell>
-                        <TableCell align="right">Author</TableCell>
-                        {/*<TableCell align="right">MDD</TableCell>*/}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {props.rows.map((row) => (
-                        <Row key={row.name} row={row}/>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
-}
+  return (
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell/>
+            <TableCell>id</TableCell>
+            <TableCell>Algorithm</TableCell>
+            <TableCell>Profit</TableCell>
+            <TableCell align="right">Author</TableCell>
+            {/*<TableCell align="right">MDD</TableCell>*/}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {props.rows.map((row) => (
+            <Row key={row.name} row={row}/>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 export const LeaderboardPage = props => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    /*istanbul ignore next*/
-    //const getAlgorithms = async () => {
-    //    const response = await axios.get('/api/algo/sort');
-    //    if (response.status === 200) {
-    //        setAlgoList(response.data);
-    //        const newRows = algoList.map(algo => createData(algo.rank, algo.name, algo.author,
-    //            algo.profit, algo.description));
-    //        setRows(newRows);
-    //    }
-    //}
+  /*istanbul ignore next*/
+  //const getAlgorithms = async () => {
+  //    const response = await axios.get('/api/algo/sort');
+  //    if (response.status === 200) {
+  //        setAlgoList(response.data);
+  //        const newRows = algoList.map(algo => createData(algo.rank, algo.name, algo.author,
+  //            algo.profit, algo.description));
+  //        setRows(newRows);
+  //    }
+  //}
 
-    useEffect(() => {
-        dispatch(getAllAlgorithm());
-    }, []);
+  useEffect(() => {
+    dispatch(getAllAlgorithm());
+  }, []);
 
-    const algoList = useSelector(store => store.algo.allAlgorithmList);
+  const algoList = useSelector(store => store.algo.allAlgorithmList);
 
-    return (
-        <div className='LeaderboardPage'>
-            <MenuBar/>
-            <CollapsibleTable rows={algoList.map(algo => createData(algo.rank, algo.name, algo.author,
-                algo.profit, algo.description))}/>
-        </div>
-    );
-}
+  return (
+    <div className='LeaderboardPage'>
+      <MenuBar/>
+      <CollapsibleTable rows={algoList.map(algo =>
+        createData(algo.rank, algo.name, algo.author, algo.profit, algo.description))}/>
+    </div>
+  );
+};

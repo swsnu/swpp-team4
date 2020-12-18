@@ -68,13 +68,12 @@ export const DashboardPage = () => {
 
   const selectAlgorithm = async (id, data) => {
     setSelectedAlgorithmId(id);
-    // TODO: get Backtesting and Performance(daily test) data of certain algorithm
     try {
       const response = await axios.get(`api/algo/${id}/report`);
       console.log(response);
       setTableData(response.data);
     } catch (e) {
-      console.log(e);
+      /* istanbul ignore next */
       setTableData([]);
     }
     try {
@@ -82,6 +81,7 @@ export const DashboardPage = () => {
       console.log(response);
       setSimulationData(response.data);
     } catch (e) {
+      /* istanbul ignore next */
       setSimulationData({
         profit_dict: '[]',
         transaction_log: '[]',
@@ -93,22 +93,25 @@ export const DashboardPage = () => {
       console.log(response.data);
       setOptimizedCode(response.data);
     } catch (e) {
+      /* istanbul ignore next */
       setOptimizedCode('');
     }
 
     //optimization
-    const scopeSnippet = data.snippet_scope_data.code;
-    setUnOptimizedCode(scopeSnippet);
-    const paramNum = scopeSnippet.split('@').length - 1;
-    setOptimizationParameterNum(paramNum);
-    const ob = {};
-    for (let i = 0; i <= paramNum; i++) {
-      ob[`param_${i}_0`] = '1';
-      ob[`param_${i}_1`] = '10';
+    /* istanbul ignore next */
+    {
+      const scopeSnippet = data.snippet_scope_data.code;
+      setUnOptimizedCode(scopeSnippet);
+      const paramNum = scopeSnippet.split('@').length - 1;
+      setOptimizationParameterNum(paramNum);
+      const ob = {};
+      for (let i = 0; i < paramNum; i++) {
+        ob[`param_${i}_0`] = '1';
+        ob[`param_${i}_1`] = '10';
+      }
+      setOptimizationRanges(ob);
     }
-    setOptimizationRanges(ob);
   };
-
 
   const startBacktest = async (
     {
@@ -127,17 +130,15 @@ export const DashboardPage = () => {
       console.log(response);
       window.alert('백테스팅을 시작했습니다.');
     } catch (e) {
+      /* istanbul ignore next */
       window.alert('에러 발생! 백테스팅이 시작되지 않았습니다.');
       console.log(e);
     }
   };
-  // /* istanbul ignore next */
-  // const getAlgorithmEvaluation = (id) => {
-  //   // TODO: get Backtesting and Performance(daily test) data of certain algorithm
-  // };
 
   const startOptimization = async () => {
     console.log(optimizationRanges);
+    /* istanbul ignore next */
     const ob = Object.keys(optimizationRanges).reduce((acc, cur) => {
       if (isNaN(parseInt(optimizationRanges[cur]))) {
         return acc;
@@ -150,8 +151,9 @@ export const DashboardPage = () => {
     }, {});
     console.log(ob);
     try {
-      await axios.post(`api/algo/${selectedAlgorithmId}`, ob);
+      await axios.post(`api/algo/${selectedAlgorithmId}/opt`, ob);
     } catch (e) {
+      /* istanbul ignore next */
       console.log(e);
     }
   };
@@ -171,6 +173,7 @@ export const DashboardPage = () => {
                   <ListItem
                     divider
                     button
+                    key={`myAlgo-${e.id}`}
                     className={`myAlgo-${e.id}`}
                     selected={selectedAlgorithmId === e.id}
                     onClick={async () => {
@@ -276,7 +279,7 @@ export const DashboardPage = () => {
                 <ResponsiveContainer width={'100%'} height={250}>
                   <LineChart
                     data={
-                      Object.keys(JSON.parse(simulationData.profit_dict)).map(e => ({
+                      Object.keys(JSON.parse(simulationData.profit_dict)).map(/* istanbul ignore next */ e => ({
                         date: e,
                         profit: JSON.parse(simulationData.profit_dict)[e],
                       }))
@@ -318,7 +321,7 @@ export const DashboardPage = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {JSON.parse(simulationData.transaction_log).map((e, i) => (
+                      {JSON.parse(simulationData.transaction_log).map(/* istanbul ignore next */ (e, i) => (
                         <RowByDateWithLogTable
                           key={i}
                           transaction_log={JSON.parse(simulationData.transaction_log)[i]}
@@ -381,11 +384,12 @@ export const DashboardPage = () => {
                     <br/>
                   </Grid>
                   <Grid item xs={3} style={{ padding: 20 }}>
-                    {Array(optimizationParameterNum).fill(true).map((_, i) =>
+                    {Array(optimizationParameterNum).fill(true).map(/* istanbul ignore next */ (_, i) =>
                       <div style={{ marginBottom: 15 }} key={i}>
                         <TextField
+                          id={`parameter${i + 1}-min`}
                           value={optimizationRanges[`param_${i}_0`] === undefined
-                            ? 1
+                            ? '1'
                             : optimizationRanges[`param_${i}_0`]
                           }
                           onChange={(e) => {
@@ -399,8 +403,9 @@ export const DashboardPage = () => {
                           type="number"
                         />
                         <TextField
+                          id={`parameter${i + 1}-max`}
                           value={optimizationRanges[`param_${i}_1`] === undefined
-                            ? 1
+                            ? '1'
                             : optimizationRanges[`param_${i}_1`]
                           }
                           onChange={(e) => {
