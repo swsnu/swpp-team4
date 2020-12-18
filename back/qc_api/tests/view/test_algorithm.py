@@ -40,6 +40,7 @@ class AlgorithmTestCase(TestCase):
     def test_algorithm_list_api_logged_in(self):
         """Test for /algo GET in logged in state"""
         algorithm = get_mock_algo(name="mock_algo")
+        algorithm.author = self.user
         algorithm.save()
         response = self.client.get('/api/algo')
         self.assertEqual(response.status_code, 200)
@@ -53,6 +54,7 @@ class AlgorithmTestCase(TestCase):
         amount = get_mock_snippet(SnippetType.AMOUNT)
         response = self.client.post('/api/algo', json.dumps({
             'name': 'test_algorithm',
+            'author': self.user.id,
             'description': 'algorithm for testcase',
             'snippet_scope': scope.id,
             'snippet_sell': sell.id,
@@ -63,19 +65,23 @@ class AlgorithmTestCase(TestCase):
 
     def test_algorithm_list_invalid_post(self):
         """Test for /algo POST with invalid data"""
+        scope = get_mock_snippet(SnippetType.SCOPE)
+        sell = get_mock_snippet(SnippetType.SELL)
+        buy = get_mock_snippet(SnippetType.BUY)
+        amount = get_mock_snippet(SnippetType.AMOUNT)
         response = self.client.post('/api/algo', json.dumps({
-            'name': 'test_algorithm',
             'description': 'algorithm for testcase',
-            'snippet_scope': 'scope.id',
-            'snippet_sell': 'sell.id',
-            'snippet_buy': 'buy.id',
-            'snippet_amount': 'amount.id'
+            'snippet_scope': scope.id,
+            'snippet_sell': sell.id,
+            'snippet_buy': buy.id,
+            'snippet_amount': amount.id
         }), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_share_or_delete_algorithm(self):
         """ Test sharing or deleting algorithm. """
         stub_algo = get_mock_algo(name='')
+        stub_algo.author = self.user
         stub_algo.save()
         response = self.client.put('/api/algo/1', json.dumps({'public': 'true'}))
         self.assertEqual(response.status_code, 200)
@@ -88,6 +94,7 @@ class AlgorithmTestCase(TestCase):
     def test_share_or_delete_algorithm_not_logged_in(self):
         client = Client()
         stub_algo = get_mock_algo(name='')
+        stub_algo.author = self.user
         stub_algo.save()
         response = client.put('/api/algo/1', json.dumps({'public': 'true'}))
         self.assertEqual(response.status_code, 403)
@@ -119,12 +126,14 @@ class AlgorithmTestCase(TestCase):
         seed_stock_data()
         run_daily_performance()
         stub_algo = get_mock_algo(name='')
+        stub_algo.author = self.user
         stub_algo.save()
         daily_performance.delay(performance_date='2020-01-09', algorithm_id=1)
 
     def test_backtester(self):
         seed_stock_data()
         stub_algo = get_mock_algo(name='')
+        stub_algo.author = self.user
         stub_algo.save()
         asd = AlgorithmSerializer(Algorithm.objects.first()).data
         bt = BackTester(budget=100000, algorithm=asd)

@@ -80,14 +80,18 @@ def get_mock_snippet(snippet_type: SnippetType) -> Snippet:
         Snippet object
     """
     if snippet_type == SnippetType.SCOPE:
-        snippet = SnippetScope.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_scope_data"]["code"])
+        snippet = SnippetScope.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_scope_data"]["code"],
+                                              variables=json.dumps(["close"]))
     elif snippet_type == SnippetType.BUY:
-        snippet = SnippetBuy.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_buy_data"]["code"])
+        snippet = SnippetBuy.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_buy_data"]["code"],
+                                            variables=json.dumps(["close"]))
     elif snippet_type == SnippetType.SELL:
-        snippet = SnippetSell.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_sell_data"]["code"])
+        snippet = SnippetSell.objects.create(name=snippet_type, code=mock_algo_ser_data["snippet_sell_data"]["code"],
+                                             variables=json.dumps(["close"]))
     else:
         snippet = SnippetAmount.objects.create(name=snippet_type,
-                                               code=mock_algo_ser_data["snippet_amount_data"]["code"])
+                                               code=mock_algo_ser_data["snippet_amount_data"]["code"],
+                                               variables=json.dumps(["close"]))
     return snippet
 
 
