@@ -13,8 +13,7 @@ from qc_api.util.utility import SnippetType, parse_date
 
 mock_algo_ser_data = {
     "snippet_scope_data": {
-        'code': "scope = list(map(lambda stock: Stock(name=stock[2], stock_id=stock[1], price=stock[4]), "
-                "universe.query('(volume >50000)').to_numpy()))"
+        'code': "scope = QC.query(universe, '(d1_diff_rate>0.5) and (volume>1000000)')"
     },
     'snippet_buy_data': {
         'code': "for index, candidate in enumerate(scope):"
@@ -101,8 +100,9 @@ def get_mock_algo(name: str, public: bool = False) -> Algorithm:
     buy = get_mock_snippet(SnippetType.BUY)
     sell = get_mock_snippet(SnippetType.SELL)
     amount = get_mock_snippet(SnippetType.AMOUNT)
+    variables = json.dumps(["d1_diff_rate", "volume"])
     algo = Algorithm.objects.create(name=name, snippet_scope=scope, snippet_buy=buy,
-                                    snippet_sell=sell, snippet_amount=amount, is_public=public)
+                                    snippet_sell=sell, snippet_amount=amount, is_public=public, variables=variables)
     return algo
 
 

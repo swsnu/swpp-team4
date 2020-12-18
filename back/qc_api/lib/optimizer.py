@@ -90,8 +90,7 @@ def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSeri
     # Build search space dictionary out of var scope
     space = {}
     for i in range(len(offsets)):
-        space[str(offsets[i])] = hp.uniform(str(offsets[i]), var_scopes[i], var_scopes[i + 1])
-    print("space!!!!!", space)
+        space[str(offsets[i])] = hp.uniform(str(offsets[i]), float(var_scopes[i]), float(var_scopes[i + 1]))
     # Initialize Trials instance for optimization logging
     trials = Trials()
 

@@ -102,8 +102,10 @@ class AlgorithmTestCase(TestCase):
         seed_stock_data()
         # mock_delay = run_helper
         stub_algo = get_mock_algo(name='')
+        stub_algo.author = self.user
         stub_algo.save()
         budget = 10000000
+        print(stub_algo.id)
         response = self.client.post('/api/algo/backtest', json.dumps({
             'algo_id': stub_algo.id,
             'budget': budget,

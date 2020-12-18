@@ -71,7 +71,6 @@ def insert_into_sql(chunk):
     Returns:
         chunk of Stock objects.
     """
-    print("hello world!")
     bulk_list = []
     for row in chunk:
         bulk_list.append(StockData(
@@ -148,7 +147,7 @@ def seed_kospi_or_kosdaq(name, stock_type, chunk_size, start=None, end=None):
         chunk['date'] = chunk['date'].apply(lambda x: datetime.datetime.strptime(x, '%b %d, %Y'))
 
         chunk_as_mat = chunk.to_numpy()
-        print(chunk_as_mat[-1][0], chunk_as_mat[0][0])
+        # print(chunk_as_mat[-1][0], chunk_as_mat[0][0])
         # TODO. convert timestamp to datetime
         #  if start is not None and chunk_as_mat[-1][0] < start:
         #      continue
@@ -211,6 +210,6 @@ def run(chunk_size: int, path: str, name: str, start=None, end=None):
     return result
 
 
-run(100, 'static/KOSPI.csv', 'kospi')
-run(100, 'static/KOSDAQ.csv', 'kosdaq')
-run(100, 'static/csv_stock.csv', 'stock_data')
+# run(100, 'static/KOSPI.csv', 'kospi')
+# run(100, 'static/KOSDAQ.csv', 'kosdaq')
+# run(100, 'static/csv_stock.csv', 'stock_data')
