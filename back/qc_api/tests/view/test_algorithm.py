@@ -1,7 +1,7 @@
 """
 test_algorithm.py
 """
-# pylint: disable=E5142, C0116, W0613, R0201, C0103, R0201
+# pylint: disable=C0116, W0613, R0201, C0103, R0201, E1101, W0612, C0304, E0012
 import json
 from unittest.mock import patch
 
@@ -14,7 +14,6 @@ from ...models import Algorithm, Performance
 from ...serializers.algorithm.algorithm_serializer import AlgorithmSerializer
 from ...views.algorithm.algorithm_views import run_helper, run_daily_performance, daily_performance, \
     parse_sorted_algos, opt_helper
-
 
 
 class AlgorithmTestCase(TestCase):
@@ -154,7 +153,7 @@ class AlgorithmTestCase(TestCase):
 
     def test_get_sorted_algorithm(self):
         response = self.client.get('/api/algo/sort')
-        #self.assertEqual(response.status_code, 200)
+        # self.assertEqual(response.status_code, 200)
 
     def test_get_my_algorithm(self):
         response = self.client.get('/api/algo/me')
