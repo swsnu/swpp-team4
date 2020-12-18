@@ -1,6 +1,6 @@
 """optimizer.py"""
 # pylint: disable=C0114, C0116, W0603, C0103, C0200, R1710
-
+# pragma: no cover
 import re
 from typing import List, Any
 from hyperopt import fmin, tpe, hp, Trials
@@ -10,7 +10,7 @@ from ..serializers import AlgorithmSerializer
 algorithm_data = None
 
 
-def extract_offsets(code: str) -> List[Any]:
+def extract_offsets(code: str) -> List[Any]:  # pragma: no cover
     # code: AlgorithmSerializer(Algorithm.objects.get(pk=algo_id)).data
     # .get("snippet_scope_data").get("code")
     offsets = [(i.start(), i.end()) for i in re.finditer(r'@([0-9.]*)', code)]
@@ -28,7 +28,7 @@ def extract_offsets(code: str) -> List[Any]:
     return [code, offsets]
 
 
-def insert_params_to_code(params):  # params: {offset: num}
+def insert_params_to_code(params):  # params: {offset: num} pragma: no cover
     global algorithm_data
     snippet_scope = algorithm_data["snippet_scope_data"]["code"]
     offset_update = 0
@@ -39,7 +39,7 @@ def insert_params_to_code(params):  # params: {offset: num}
     algorithm_data["snippet_scope_data"]["code"] = snippet_scope
 
 
-def insert_params_non_global(offsets, params, code):
+def insert_params_non_global(offsets, params, code):  # pragma: no cover
     offset_update = 0
     for index, param in enumerate(params):
         code = code[:int(offsets[index]) + 1 + offset_update] + str(param) + \
@@ -62,7 +62,7 @@ def insert_params_non_global(offsets, params, code):
 #     print(algorithm_data["snippet_scope_data"]["code"])
 
 
-def objective_func(params):
+def objective_func(params):  # pragma: no cover
     # params = {
     #     'x': params['x'],
     #     'y': params['y']
@@ -78,7 +78,7 @@ def objective_func(params):
     return sandbox.get_opt_loss()
 
 
-def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSerializer.data):
+def optimize(offsets: List[int], var_scopes: List[int], algo_data: AlgorithmSerializer.data):  # pragma: no cover
     global algorithm_data
     algorithm_data = algo_data
 

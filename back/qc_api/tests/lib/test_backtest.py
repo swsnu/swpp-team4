@@ -15,6 +15,3 @@ class UserSpaceTestCase(TestCase):
         algo = get_mock_algo(name="mock_algo")
         algo_data = AlgorithmSerializer(algo).data
         back_tester = BackTester(algorithm=algo_data, budget=1000000)
-
-
-

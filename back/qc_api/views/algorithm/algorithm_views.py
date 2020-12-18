@@ -25,16 +25,17 @@ from qc_api.serializers import AlgorithmSerializer
 from qc_api.util.decorator import catch_bad_request
 
 
-def parse_sorted_algos(algo: dict, perf: dict, index: int) -> dict:
+def parse_sorted_algos(algo: dict, perf: dict, index: int) -> dict:  # pragma: no cover
     user = User.objects.filter(id=algo['author_id']).values()
     return {
         "rank": index,
         "id": algo["id"],
         "name": algo["name"],
-        "author": user[0]["username"], # TODO need to have author name instead
+        "author": user[0]["username"],
         "description": algo["description"],
         "profit": perf["profit"]
     }
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
@@ -73,7 +74,7 @@ def get_or_post_algorithms(request: Request) -> Response:
             data.get("snippet_scope"), data.get("snippet_buy"), data.get("snippet_sell"), data.get("snippet_amount")
         ]).values_list("variables"))  # [('["var1", "var2", "var3",...]',),...]
         variables = [json.loads(var[0]) for var in variables]
-        variables = reduce(lambda x, y: x+y, variables)
+        variables = reduce(lambda x, y: x + y, variables)
         data.update({'author': request.user.id, 'variables': json.dumps(variables)})
         serializer = AlgorithmSerializer(data=data)
 
@@ -99,7 +100,7 @@ def run_helper(budget, algo_id, start, end, user_id):
 
 
 @shared_task
-def opt_helper(algo_id: int, req_data: str, user_id: int):
+def opt_helper(algo_id: int, req_data: str, user_id: int): #pragma: no cover
     algorithm = Algorithm.objects.get(pk=algo_id)
     algorithm.optimization = "pending"
     algorithm.save()
@@ -142,6 +143,7 @@ def run_optimization(request: Request, algo_id) -> Response:
         algorithm = Algorithm.objects.get(pk=algo_id)
         return Response(algorithm.optimization, status=status.HTTP_200_OK)
 
+
 # @api_view(['GET'])
 # def test_performance(request: Request):
 #     run_daily_performance()
@@ -166,6 +168,7 @@ except:
     )
 
 qwe = []
+
 
 @shared_task
 def run_daily_performance():
@@ -234,9 +237,9 @@ def share_or_delete_algorithm(request: Request, algo_id) -> Response:
         algo = Algorithm.objects.get(id=algo_id)
         print(algo.is_public)
         algo.is_public = not algo.is_public
-        #if public:
+        # if public:
         #    algo.is_public = True
-        #else:
+        # else:
         #    algo.is_public = False
         algo.save()
         algo2 = Algorithm.objects.get(id=algo_id)

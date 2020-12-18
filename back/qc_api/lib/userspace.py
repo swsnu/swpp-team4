@@ -9,7 +9,7 @@ from .wallet.stock import Stock
 class UserSpace:
     """UserSpace class for predefined set of APIs for qc backtest variables"""
 
-    def __init__(self, universe: pd.DataFrame, today: date, variables: List[str]) -> None:
+    def __init__(self, universe: pd.DataFrame, today: date, variables: List[str]) -> None: # pragma: no cover
         """
         Initializes UserSpace class
         attributes:
